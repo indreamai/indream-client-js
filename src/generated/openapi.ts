@@ -4,757 +4,801 @@
  */
 
 export interface paths {
-    "/v1/exports": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List export tasks */
-        get: operations["listExports"];
-        put?: never;
-        /**
-         * Create export task
-         * @description Idempotency is optional.
-         *     - If `Idempotency-Key` is provided, request replay uses header idempotency.
-         *     - If header is omitted but `clientTaskId` is provided, task deduplication uses `clientTaskId`.
-         *     - If both are omitted, every request creates a new task.
-         *     - Active Open API export tasks are limited to 2 per user. When exceeded, API returns `422 OPEN_API_EXPORT_CONCURRENCY_LIMIT_EXCEEDED`.
-         */
-        post: operations["createExport"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/exports/{taskId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get export task */
-        get: operations["getExport"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/editor/capabilities": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get editor capabilities */
-        get: operations["getEditorCapabilities"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/editor/validate": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Validate editor state */
-        post: operations["validateEditorState"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
+  '/v1/exports': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List export tasks */
+    get: operations['listExports']
+    put?: never
+    /**
+     * Create export task
+     * @description Idempotency is optional.
+     *     - If `Idempotency-Key` is provided, request replay uses header idempotency.
+     *     - If header is omitted but `clientTaskId` is provided, task deduplication uses `clientTaskId`.
+     *     - If both are omitted, every request creates a new task.
+     *     - Active Open API export tasks are limited to 2 per user. When exceeded, API returns `422 OPEN_API_EXPORT_CONCURRENCY_LIMIT_EXCEEDED`.
+     */
+    post: operations['createExport']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/v1/exports/{taskId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get export task */
+    get: operations['getExport']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/v1/editor/capabilities': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get editor capabilities */
+    get: operations['getEditorCapabilities']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/v1/editor/validate': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Validate editor state */
+    post: operations['validateEditorState']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
 }
-export type webhooks = Record<string, never>;
+export type webhooks = Record<string, never>
 export interface components {
-    schemas: {
-        Problem: {
-            type: string;
-            title: string;
-            status: number;
-            detail: string;
-            errorCode?: string;
-        };
-        CreateExportRequest: {
-            clientTaskId?: string;
-            editorState: components["schemas"]["editor-state.v1.schema"];
-            stateVersion?: string;
-            /** @enum {integer} */
-            fps: 30 | 60;
-            compositionWidth?: number;
-            compositionHeight?: number;
-            /** @enum {string} */
-            ratio: "16:9" | "9:16" | "1:1" | "4:3" | "3:4" | "custom";
-            scale: number;
-            /** @enum {string} */
-            format: "mp4" | "webm";
-            callbackUrl?: string;
-            callbackHeaders?: {
-                [key: string]: string;
-            };
-        };
-        CreateExportResponseData: {
-            taskId: string;
-            /** Format: date-time */
-            createdAt: string;
-            durationSeconds: number;
-            billedStandardSeconds: number;
-            chargedCredits: string;
-        };
-        ExportTask: {
-            taskId: string;
-            createdByApiKeyId: string | null;
-            clientTaskId: string | null;
-            /** @enum {string} */
-            status: "PENDING" | "PROCESSING" | "COMPLETED" | "FAILED" | "PAUSED" | "CANCELED";
-            progress: number;
-            error: string | null;
-            outputUrl: string | null;
-            durationSeconds: number;
-            billedStandardSeconds: number;
-            chargedCredits: string;
-            callbackUrl: string | null;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            completedAt: string | null;
-        };
-        EditorCapabilities: {
-            version: string;
-            animations: string[];
-            transitions: string[];
-            transitionPresets: {
-                id: string;
-                type: string;
-                label: string;
-                params?: {
-                    [key: string]: unknown;
-                };
-            }[];
-            effects: string[];
-            effectPresets: {
-                id: string;
-                type: string;
-                label: string;
-                defaultDurationInSeconds?: number;
-                defaultIntensity?: number;
-                params?: {
-                    [key: string]: unknown;
-                };
-            }[];
-            filters: string[];
-            filterPresets: {
-                id: string;
-                type: string;
-                label: string;
-                defaultDurationInSeconds?: number;
-                defaultIntensity?: number;
-                params?: {
-                    [key: string]: unknown;
-                };
-            }[];
-            shapes: string[];
-            backgroundPresets: {
-                colors: string[];
-                gradients: string[];
-                images: string[];
-                blurLevels: number[];
-            };
-            illustrations: string[];
-        };
-        EditorValidationError: {
-            code: string;
-            path: string;
-            message: string;
-        };
-        EditorValidationResult: {
-            valid: boolean;
-            errors: components["schemas"]["EditorValidationError"][];
-        };
-        CreateExportResponseEnvelope: {
-            data: components["schemas"]["CreateExportResponseData"];
-            meta: {
-                [key: string]: unknown;
-            };
-        };
-        GetExportResponseEnvelope: {
-            data: components["schemas"]["ExportTask"];
-            meta: {
-                [key: string]: unknown;
-            };
-        };
-        ListExportsResponseEnvelope: {
-            data: components["schemas"]["ExportTask"][];
-            meta: {
-                nextPageCursor?: string | null;
-            } & {
-                [key: string]: unknown;
-            };
-        };
-        EditorCapabilitiesResponseEnvelope: {
-            data: components["schemas"]["EditorCapabilities"];
-            meta: {
-                [key: string]: unknown;
-            };
-        };
-        EditorValidateResponseEnvelope: {
-            data: components["schemas"]["EditorValidationResult"];
-            meta: {
-                capabilitiesVersion?: string;
-            } & {
-                [key: string]: unknown;
-            };
-        };
-        baseAsset: {
-            id: string;
-            type: string;
-            filename: string;
-            size: number;
-            remoteUrl?: string | null;
-            remoteKey?: string | null;
-            mimeType: string;
+  schemas: {
+    Problem: {
+      type: string
+      title: string
+      status: number
+      detail: string
+      errorCode?: string
+    }
+    CreateExportRequest: {
+      clientTaskId?: string
+      editorState: components['schemas']['editor-state.v1.schema']
+      stateVersion?: string
+      /** @enum {integer} */
+      fps: 30 | 60
+      compositionWidth?: number
+      compositionHeight?: number
+      /** @enum {string} */
+      ratio: '16:9' | '9:16' | '1:1' | '4:3' | '3:4' | 'custom'
+      scale: number
+      /** @enum {string} */
+      format: 'mp4' | 'webm'
+      callbackUrl?: string
+      callbackHeaders?: {
+        [key: string]: string
+      }
+    }
+    CreateExportResponseData: {
+      taskId: string
+      /** Format: date-time */
+      createdAt: string
+      durationSeconds: number
+      billedStandardSeconds: number
+      chargedCredits: string
+    }
+    ExportTask: {
+      taskId: string
+      createdByApiKeyId: string | null
+      clientTaskId: string | null
+      /** @enum {string} */
+      status: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED' | 'PAUSED' | 'CANCELED'
+      progress: number
+      error: string | null
+      outputUrl: string | null
+      durationSeconds: number
+      billedStandardSeconds: number
+      chargedCredits: string
+      callbackUrl: string | null
+      /** Format: date-time */
+      createdAt: string
+      /** Format: date-time */
+      completedAt: string | null
+    }
+    EditorCapabilities: {
+      version: string
+      animations: string[]
+      transitions: string[]
+      transitionPresets: {
+        id: string
+        type: string
+        label: string
+        params?: {
+          [key: string]: unknown
+        }
+      }[]
+      effects: string[]
+      effectPresets: {
+        id: string
+        type: string
+        label: string
+        defaultDurationInSeconds?: number
+        defaultIntensity?: number
+        params?: {
+          [key: string]: unknown
+        }
+      }[]
+      filters: string[]
+      filterPresets: {
+        id: string
+        type: string
+        label: string
+        defaultDurationInSeconds?: number
+        defaultIntensity?: number
+        params?: {
+          [key: string]: unknown
+        }
+      }[]
+      shapes: string[]
+      backgroundPresets: {
+        colors: string[]
+        gradients: string[]
+        images: string[]
+        blurLevels: number[]
+      }
+      illustrations: string[]
+    }
+    EditorValidationError: {
+      code: string
+      path: string
+      message: string
+    }
+    EditorValidationResult: {
+      valid: boolean
+      errors: components['schemas']['EditorValidationError'][]
+    }
+    CreateExportResponseEnvelope: {
+      data: components['schemas']['CreateExportResponseData']
+      meta: {
+        [key: string]: unknown
+      }
+    }
+    GetExportResponseEnvelope: {
+      data: components['schemas']['ExportTask']
+      meta: {
+        [key: string]: unknown
+      }
+    }
+    ListExportsResponseEnvelope: {
+      data: components['schemas']['ExportTask'][]
+      meta: {
+        nextPageCursor?: string | null
+      } & {
+        [key: string]: unknown
+      }
+    }
+    EditorCapabilitiesResponseEnvelope: {
+      data: components['schemas']['EditorCapabilities']
+      meta: {
+        [key: string]: unknown
+      }
+    }
+    EditorValidateResponseEnvelope: {
+      data: components['schemas']['EditorValidationResult']
+      meta: {
+        capabilitiesVersion?: string
+      } & {
+        [key: string]: unknown
+      }
+    }
+    baseAsset: {
+      id: string
+      type: string
+      filename: string
+      size: number
+      remoteUrl?: string | null
+      remoteKey?: string | null
+      mimeType: string
+    } & {
+      [key: string]: unknown
+    }
+    primitive: string | number | boolean
+    animationSpec: {
+      /** @enum {string} */
+      type:
+        | 'fade'
+        | 'slide-up'
+        | 'slide-down'
+        | 'slide-left'
+        | 'slide-right'
+        | 'zoom-in'
+        | 'zoom-out'
+      durationTicks: number
+      /** @enum {string} */
+      easing?: 'linear' | 'ease-in' | 'ease-out' | 'ease-in-out'
+      params?: {
+        [key: string]: components['schemas']['primitive']
+      }
+    } & {
+      [key: string]: unknown
+    }
+    baseItem: {
+      id: string
+      type: string
+      durationTicks: number
+      startTicks: number
+      top: number
+      left: number
+      width: number
+      height: number
+      opacity: number
+      isDraggingInTimeline: boolean
+    } & {
+      [key: string]: unknown
+    }
+    clipAnimations: {
+      in?: components['schemas']['animationSpec']
+      out?: components['schemas']['animationSpec']
+    }
+    track: {
+      id: string
+      items: string[]
+      hidden: boolean
+      muted: boolean
+    } & {
+      [key: string]: unknown
+    }
+    imageAsset: components['schemas']['baseAsset'] & {
+      /** @constant */
+      type: 'image'
+      width: number
+      height: number
+    }
+    videoAsset: components['schemas']['baseAsset'] & {
+      /** @constant */
+      type: 'video'
+      durationInSeconds: number
+      hasAudioTrack: boolean
+      width: number
+      height: number
+    }
+    gifAsset: components['schemas']['baseAsset'] & {
+      /** @constant */
+      type: 'gif'
+      durationInSeconds: number
+      width: number
+      height: number
+      /** @enum {string} */
+      loopBehavior: 'finite' | 'loop'
+    }
+    audioAsset: components['schemas']['baseAsset'] & {
+      /** @constant */
+      type: 'audio'
+      durationInSeconds: number
+    }
+    captionAsset: components['schemas']['baseAsset'] & {
+      /** @constant */
+      type: 'caption'
+      captions: {
+        [key: string]: unknown
+      }[]
+    }
+    lottieAsset: components['schemas']['baseAsset'] & {
+      /** @constant */
+      type: 'lottie'
+      durationInSeconds: number
+      width: number
+      height: number
+      /** @enum {string} */
+      resourceType: 'lottie' | 'svg'
+      resourceJson?: {
+        [key: string]: unknown
+      } | null
+      resourceComponentId?: string | null
+      materialConfig?: {
+        [key: string]: unknown
+      } | null
+    }
+    imageItem: components['schemas']['baseItem'] & {
+      /** @constant */
+      type: 'image'
+      assetId: string
+      stickerId?: string | null
+      stickerVersion?: number | null
+      keepAspectRatio: boolean
+      borderRadius: number
+      rotation: number
+      cropLeft?: number
+      cropTop?: number
+      cropRight?: number
+      cropBottom?: number
+      animations?: components['schemas']['clipAnimations']
+    }
+    videoItem: components['schemas']['baseItem'] & {
+      /** @constant */
+      type: 'video'
+      assetId: string
+      keepAspectRatio: boolean
+      borderRadius: number
+      rotation: number
+      videoStartFromInSeconds: number
+      decibelAdjustment: number
+      playbackRate: number
+      audioFadeInDurationInSeconds: number
+      audioFadeOutDurationInSeconds: number
+      cropLeft?: number
+      cropTop?: number
+      cropRight?: number
+      cropBottom?: number
+      animations?: components['schemas']['clipAnimations']
+    }
+    gifItem: components['schemas']['baseItem'] & {
+      /** @constant */
+      type: 'gif'
+      assetId: string
+      keepAspectRatio: boolean
+      borderRadius: number
+      rotation: number
+      gifStartFromInSeconds: number
+      playbackRate: number
+      cropLeft?: number
+      cropTop?: number
+      cropRight?: number
+      cropBottom?: number
+      animations?: components['schemas']['clipAnimations']
+    }
+    lottieItem: components['schemas']['baseItem'] & {
+      /** @constant */
+      type: 'lottie'
+      assetId: string
+      keepAspectRatio: boolean
+      rotation: number
+      lottieStartFromInSeconds: number
+      playbackRate: number
+      animations?: components['schemas']['clipAnimations']
+    }
+    audioItem: components['schemas']['baseItem'] & {
+      /** @constant */
+      type: 'audio'
+      assetId: string
+      audioStartFromInSeconds: number
+      decibelAdjustment: number
+      playbackRate: number
+      audioFadeInDurationInSeconds: number
+      audioFadeOutDurationInSeconds: number
+    }
+    textItem: components['schemas']['baseItem'] & {
+      /** @constant */
+      type: 'text'
+      text: string
+      color: string
+      /** @enum {string} */
+      align: 'left' | 'center' | 'right'
+      fontFamily: string
+      fontStyle: {
+        variant: string
+        weight: string
+      } & {
+        [key: string]: unknown
+      }
+      fontSize: number
+      lineHeight: number
+      letterSpacing: number
+      resizeOnEdit: boolean
+      /** @enum {string} */
+      direction: 'ltr' | 'rtl'
+      strokeWidth: number
+      strokeColor: string
+      background?:
+        | null
+        | ({
+            color: string
+            horizontalPadding: number
+            borderRadius: number
+          } & {
+            [key: string]: unknown
+          })
+      rotation?: number
+      animations?: components['schemas']['clipAnimations']
+    }
+    textTemplateItem: components['schemas']['baseItem'] & {
+      /** @constant */
+      type: 'text-template'
+      /** @constant */
+      schemaVersion: 2
+      templateId: string
+      templateCategory: string
+      nodes: ({
+        /** @enum {string} */
+        type: 'image' | 'text'
+      } & {
+        [key: string]: unknown
+      })[]
+      rotation?: number
+      animations?: components['schemas']['clipAnimations']
+    }
+    captionsItem: components['schemas']['baseItem'] & {
+      /** @constant */
+      type: 'captions'
+      assetId: string
+      fontFamily: string
+      fontStyle: {
+        variant: string
+        weight: string
+      } & {
+        [key: string]: unknown
+      }
+      lineHeight: number
+      letterSpacing: number
+      fontSize: number
+      /** @enum {string} */
+      align: 'left' | 'center' | 'right'
+      color: string
+      highlightColor: string
+      strokeWidth: number
+      strokeColor: string
+      /** @enum {string} */
+      direction: 'ltr' | 'rtl'
+      pageDurationInMilliseconds: number
+      captionStartInSeconds: number
+      maxLines: number
+      /** @enum {string} */
+      source: 'manual' | 'auto' | 'upload'
+      captionGroupId: string | null
+      background:
+        | null
+        | ({
+            color: string
+            horizontalPadding: number
+            borderRadius: number
+          } & {
+            [key: string]: unknown
+          })
+      rotation?: number
+      animations?: components['schemas']['clipAnimations']
+    }
+    solidItem: components['schemas']['baseItem'] & {
+      /** @constant */
+      type: 'solid'
+      color: string
+      /** @enum {string} */
+      shape: 'rectangle' | 'circle' | 'triangle' | 'star'
+      keepAspectRatio: boolean
+      borderRadius: number
+      rotation: number
+      animations?: components['schemas']['clipAnimations']
+    }
+    illustrationItem: components['schemas']['baseItem'] & {
+      /** @constant */
+      type: 'illustration'
+      illustrationName: string
+      color: string
+      keepAspectRatio: boolean
+      rotation: number
+      animations?: components['schemas']['clipAnimations']
+    }
+    effectItem: components['schemas']['baseItem'] & {
+      /** @constant */
+      type: 'effect'
+      /** @enum {string} */
+      effectType: 'flash-to-black' | 'blur' | 'blurred-opening' | 'fade-in' | 'fade-out'
+      intensity: number
+      params?: {
+        [key: string]: components['schemas']['primitive']
+      }
+    }
+    filterItem: components['schemas']['baseItem'] & {
+      /** @constant */
+      type: 'filter'
+      /** @enum {string} */
+      filterType:
+        | 'verdant-glow'
+        | 'cyberpunk-neon'
+        | 'vaporwave-blue'
+        | 'sunset-orange'
+        | 'lemon-cyan'
+        | 'absolute-red'
+        | 'sakura-pink'
+        | 'twilight-dusk'
+      intensity: number
+      params?: {
+        [key: string]: components['schemas']['primitive']
+      }
+    }
+    chartItem: components['schemas']['baseItem'] & {
+      /** @constant */
+      type: 'chart'
+      chartType: string
+      themeColor: string
+      data: {
+        [key: string]: unknown
+      }
+      animationDurationTicks: number
+      keepAspectRatio: boolean
+      rotation: number
+      animations?: components['schemas']['clipAnimations']
+    }
+    transition: {
+      id: string
+      trackId: string
+      fromClipId: string
+      toClipId: string
+      /** @enum {string} */
+      type: 'fade' | 'slide' | 'wipe' | 'flip' | 'clock-wipe' | 'iris'
+      durationTicks: number
+      /** @enum {string} */
+      easing?: 'linear' | 'ease-in' | 'ease-out' | 'ease-in-out'
+      params?: {
+        [key: string]: components['schemas']['primitive']
+      }
+    } & {
+      [key: string]: unknown
+    }
+    globalBackground:
+      | {
+          /** @constant */
+          type: 'none'
+        }
+      | ({
+          /** @constant */
+          type: 'color'
+          color: string
+          gradient: string | null
         } & {
-            [key: string]: unknown;
-        };
-        primitive: string | number | boolean;
-        animationSpec: {
-            /** @enum {string} */
-            type: "fade" | "slide-up" | "slide-down" | "slide-left" | "slide-right" | "zoom-in" | "zoom-out";
-            durationTicks: number;
-            /** @enum {string} */
-            easing?: "linear" | "ease-in" | "ease-out" | "ease-in-out";
-            params?: {
-                [key: string]: components["schemas"]["primitive"];
-            };
+          [key: string]: unknown
+        })
+      | {
+          /** @constant */
+          type: 'blur'
+          /** @enum {integer} */
+          level: 0 | 1 | 2 | 3 | 4
+        }
+      | ({
+          /** @constant */
+          type: 'image'
+          imageAssetId: string | null
+          imageUrl: string
+          /** @enum {string} */
+          source: 'preset' | 'custom'
         } & {
-            [key: string]: unknown;
-        };
-        baseItem: {
-            id: string;
-            type: string;
-            durationTicks: number;
-            startTicks: number;
-            top: number;
-            left: number;
-            width: number;
-            height: number;
-            opacity: number;
-            isDraggingInTimeline: boolean;
+          [key: string]: unknown
+        })
+    brandRuntime:
+      | ({
+          brandId?: string | null
+          logoX?: number
+          logoY?: number
+          managedItemIds?: string[]
+          managedAssetIds?: string[]
+          introShiftInFrames?: number
+          overlayTrackId?: string | null
+          underlayTrackId?: string | null
         } & {
-            [key: string]: unknown;
-        };
-        clipAnimations: {
-            in?: components["schemas"]["animationSpec"];
-            out?: components["schemas"]["animationSpec"];
-        };
-        track: {
-            id: string;
-            items: string[];
-            hidden: boolean;
-            muted: boolean;
-        } & {
-            [key: string]: unknown;
-        };
-        imageAsset: components["schemas"]["baseAsset"] & {
-            /** @constant */
-            type: "image";
-            width: number;
-            height: number;
-        };
-        videoAsset: components["schemas"]["baseAsset"] & {
-            /** @constant */
-            type: "video";
-            durationInSeconds: number;
-            hasAudioTrack: boolean;
-            width: number;
-            height: number;
-        };
-        gifAsset: components["schemas"]["baseAsset"] & {
-            /** @constant */
-            type: "gif";
-            durationInSeconds: number;
-            width: number;
-            height: number;
-            /** @enum {string} */
-            loopBehavior: "finite" | "loop";
-        };
-        audioAsset: components["schemas"]["baseAsset"] & {
-            /** @constant */
-            type: "audio";
-            durationInSeconds: number;
-        };
-        captionAsset: components["schemas"]["baseAsset"] & {
-            /** @constant */
-            type: "caption";
-            captions: {
-                [key: string]: unknown;
-            }[];
-        };
-        lottieAsset: components["schemas"]["baseAsset"] & {
-            /** @constant */
-            type: "lottie";
-            durationInSeconds: number;
-            width: number;
-            height: number;
-            /** @enum {string} */
-            resourceType: "lottie" | "svg";
-            resourceJson?: {
-                [key: string]: unknown;
-            } | null;
-            resourceComponentId?: string | null;
-            materialConfig?: {
-                [key: string]: unknown;
-            } | null;
-        };
-        imageItem: components["schemas"]["baseItem"] & {
-            /** @constant */
-            type: "image";
-            assetId: string;
-            stickerId?: string | null;
-            stickerVersion?: number | null;
-            keepAspectRatio: boolean;
-            borderRadius: number;
-            rotation: number;
-            cropLeft?: number;
-            cropTop?: number;
-            cropRight?: number;
-            cropBottom?: number;
-            animations?: components["schemas"]["clipAnimations"];
-        };
-        videoItem: components["schemas"]["baseItem"] & {
-            /** @constant */
-            type: "video";
-            assetId: string;
-            keepAspectRatio: boolean;
-            borderRadius: number;
-            rotation: number;
-            videoStartFromInSeconds: number;
-            decibelAdjustment: number;
-            playbackRate: number;
-            audioFadeInDurationInSeconds: number;
-            audioFadeOutDurationInSeconds: number;
-            cropLeft?: number;
-            cropTop?: number;
-            cropRight?: number;
-            cropBottom?: number;
-            animations?: components["schemas"]["clipAnimations"];
-        };
-        gifItem: components["schemas"]["baseItem"] & {
-            /** @constant */
-            type: "gif";
-            assetId: string;
-            keepAspectRatio: boolean;
-            borderRadius: number;
-            rotation: number;
-            gifStartFromInSeconds: number;
-            playbackRate: number;
-            cropLeft?: number;
-            cropTop?: number;
-            cropRight?: number;
-            cropBottom?: number;
-            animations?: components["schemas"]["clipAnimations"];
-        };
-        lottieItem: components["schemas"]["baseItem"] & {
-            /** @constant */
-            type: "lottie";
-            assetId: string;
-            keepAspectRatio: boolean;
-            rotation: number;
-            lottieStartFromInSeconds: number;
-            playbackRate: number;
-            animations?: components["schemas"]["clipAnimations"];
-        };
-        audioItem: components["schemas"]["baseItem"] & {
-            /** @constant */
-            type: "audio";
-            assetId: string;
-            audioStartFromInSeconds: number;
-            decibelAdjustment: number;
-            playbackRate: number;
-            audioFadeInDurationInSeconds: number;
-            audioFadeOutDurationInSeconds: number;
-        };
-        textItem: components["schemas"]["baseItem"] & {
-            /** @constant */
-            type: "text";
-            text: string;
-            color: string;
-            /** @enum {string} */
-            align: "left" | "center" | "right";
-            fontFamily: string;
-            fontStyle: {
-                variant: string;
-                weight: string;
-            } & {
-                [key: string]: unknown;
-            };
-            fontSize: number;
-            lineHeight: number;
-            letterSpacing: number;
-            resizeOnEdit: boolean;
-            /** @enum {string} */
-            direction: "ltr" | "rtl";
-            strokeWidth: number;
-            strokeColor: string;
-            background?: null | ({
-                color: string;
-                horizontalPadding: number;
-                borderRadius: number;
-            } & {
-                [key: string]: unknown;
-            });
-            rotation?: number;
-            animations?: components["schemas"]["clipAnimations"];
-        };
-        textTemplateItem: components["schemas"]["baseItem"] & {
-            /** @constant */
-            type: "text-template";
-            /** @constant */
-            schemaVersion: 2;
-            templateId: string;
-            templateCategory: string;
-            nodes: ({
-                /** @enum {string} */
-                type: "image" | "text";
-            } & {
-                [key: string]: unknown;
-            })[];
-            rotation?: number;
-            animations?: components["schemas"]["clipAnimations"];
-        };
-        captionsItem: components["schemas"]["baseItem"] & {
-            /** @constant */
-            type: "captions";
-            assetId: string;
-            fontFamily: string;
-            fontStyle: {
-                variant: string;
-                weight: string;
-            } & {
-                [key: string]: unknown;
-            };
-            lineHeight: number;
-            letterSpacing: number;
-            fontSize: number;
-            /** @enum {string} */
-            align: "left" | "center" | "right";
-            color: string;
-            highlightColor: string;
-            strokeWidth: number;
-            strokeColor: string;
-            /** @enum {string} */
-            direction: "ltr" | "rtl";
-            pageDurationInMilliseconds: number;
-            captionStartInSeconds: number;
-            maxLines: number;
-            /** @enum {string} */
-            source: "manual" | "auto" | "upload";
-            captionGroupId: string | null;
-            background: null | ({
-                color: string;
-                horizontalPadding: number;
-                borderRadius: number;
-            } & {
-                [key: string]: unknown;
-            });
-            rotation?: number;
-            animations?: components["schemas"]["clipAnimations"];
-        };
-        solidItem: components["schemas"]["baseItem"] & {
-            /** @constant */
-            type: "solid";
-            color: string;
-            /** @enum {string} */
-            shape: "rectangle" | "circle" | "triangle" | "star";
-            keepAspectRatio: boolean;
-            borderRadius: number;
-            rotation: number;
-            animations?: components["schemas"]["clipAnimations"];
-        };
-        illustrationItem: components["schemas"]["baseItem"] & {
-            /** @constant */
-            type: "illustration";
-            illustrationName: string;
-            color: string;
-            keepAspectRatio: boolean;
-            rotation: number;
-            animations?: components["schemas"]["clipAnimations"];
-        };
-        effectItem: components["schemas"]["baseItem"] & {
-            /** @constant */
-            type: "effect";
-            /** @enum {string} */
-            effectType: "flash-to-black" | "blur" | "blurred-opening" | "fade-in" | "fade-out";
-            intensity: number;
-            params?: {
-                [key: string]: components["schemas"]["primitive"];
-            };
-        };
-        filterItem: components["schemas"]["baseItem"] & {
-            /** @constant */
-            type: "filter";
-            /** @enum {string} */
-            filterType: "verdant-glow" | "cyberpunk-neon" | "vaporwave-blue" | "sunset-orange" | "lemon-cyan" | "absolute-red" | "sakura-pink" | "twilight-dusk";
-            intensity: number;
-            params?: {
-                [key: string]: components["schemas"]["primitive"];
-            };
-        };
-        chartItem: components["schemas"]["baseItem"] & {
-            /** @constant */
-            type: "chart";
-            chartType: string;
-            themeColor: string;
-            data: {
-                [key: string]: unknown;
-            };
-            animationDurationTicks: number;
-            keepAspectRatio: boolean;
-            rotation: number;
-            animations?: components["schemas"]["clipAnimations"];
-        };
-        transition: {
-            id: string;
-            trackId: string;
-            fromClipId: string;
-            toClipId: string;
-            /** @enum {string} */
-            type: "fade" | "slide" | "wipe" | "flip" | "clock-wipe" | "iris";
-            durationTicks: number;
-            /** @enum {string} */
-            easing?: "linear" | "ease-in" | "ease-out" | "ease-in-out";
-            params?: {
-                [key: string]: components["schemas"]["primitive"];
-            };
-        } & {
-            [key: string]: unknown;
-        };
-        globalBackground: {
-            /** @constant */
-            type: "none";
-        } | ({
-            /** @constant */
-            type: "color";
-            color: string;
-            gradient: string | null;
-        } & {
-            [key: string]: unknown;
-        }) | {
-            /** @constant */
-            type: "blur";
-            /** @enum {integer} */
-            level: 0 | 1 | 2 | 3 | 4;
-        } | ({
-            /** @constant */
-            type: "image";
-            imageAssetId: string | null;
-            imageUrl: string;
-            /** @enum {string} */
-            source: "preset" | "custom";
-        } & {
-            [key: string]: unknown;
-        });
-        brandRuntime: ({
-            brandId?: string | null;
-            logoX?: number;
-            logoY?: number;
-            managedItemIds?: string[];
-            managedAssetIds?: string[];
-            introShiftInFrames?: number;
-            overlayTrackId?: string | null;
-            underlayTrackId?: string | null;
-        } & {
-            [key: string]: unknown;
-        }) | null;
-        /** IndreamEditorStateV1 */
-        "editor-state.v1.schema": {
-            compositionWidth: number;
-            compositionHeight: number;
-            /** @constant */
-            timebaseTicksPerSecond: 240000;
-            /** @enum {string} */
-            outputRatio?: "16:9" | "9:16" | "1:1" | "4:3" | "3:4" | "custom";
-            tracks: components["schemas"]["track"][];
-            assets: {
-                [key: string]: components["schemas"]["imageAsset"] | components["schemas"]["videoAsset"] | components["schemas"]["gifAsset"] | components["schemas"]["audioAsset"] | components["schemas"]["captionAsset"] | components["schemas"]["lottieAsset"];
-            };
-            items: {
-                [key: string]: components["schemas"]["imageItem"] | components["schemas"]["videoItem"] | components["schemas"]["gifItem"] | components["schemas"]["lottieItem"] | components["schemas"]["audioItem"] | components["schemas"]["textItem"] | components["schemas"]["textTemplateItem"] | components["schemas"]["captionsItem"] | components["schemas"]["solidItem"] | components["schemas"]["illustrationItem"] | components["schemas"]["effectItem"] | components["schemas"]["filterItem"] | components["schemas"]["chartItem"];
-            };
-            transitions: {
-                [key: string]: components["schemas"]["transition"];
-            };
-            globalBackground?: components["schemas"]["globalBackground"];
-            brandRuntime?: components["schemas"]["brandRuntime"];
-            deletedAssets?: {
-                [key: string]: unknown;
-            }[];
-        } & {
-            [key: string]: unknown;
-        };
-    };
-    responses: {
-        /** @description Error response */
-        Problem: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                "application/json": components["schemas"]["Problem"];
-            };
-        };
-    };
-    parameters: never;
-    requestBodies: never;
-    headers: never;
-    pathItems: never;
+          [key: string]: unknown
+        })
+      | null
+    /** IndreamEditorStateV1 */
+    'editor-state.v1.schema': {
+      compositionWidth: number
+      compositionHeight: number
+      /** @constant */
+      timebaseTicksPerSecond: 240000
+      /** @enum {string} */
+      outputRatio?: '16:9' | '9:16' | '1:1' | '4:3' | '3:4' | 'custom'
+      tracks: components['schemas']['track'][]
+      assets: {
+        [key: string]:
+          | components['schemas']['imageAsset']
+          | components['schemas']['videoAsset']
+          | components['schemas']['gifAsset']
+          | components['schemas']['audioAsset']
+          | components['schemas']['captionAsset']
+          | components['schemas']['lottieAsset']
+      }
+      items: {
+        [key: string]:
+          | components['schemas']['imageItem']
+          | components['schemas']['videoItem']
+          | components['schemas']['gifItem']
+          | components['schemas']['lottieItem']
+          | components['schemas']['audioItem']
+          | components['schemas']['textItem']
+          | components['schemas']['textTemplateItem']
+          | components['schemas']['captionsItem']
+          | components['schemas']['solidItem']
+          | components['schemas']['illustrationItem']
+          | components['schemas']['effectItem']
+          | components['schemas']['filterItem']
+          | components['schemas']['chartItem']
+      }
+      transitions: {
+        [key: string]: components['schemas']['transition']
+      }
+      globalBackground?: components['schemas']['globalBackground']
+      brandRuntime?: components['schemas']['brandRuntime']
+      deletedAssets?: {
+        [key: string]: unknown
+      }[]
+    } & {
+      [key: string]: unknown
+    }
+  }
+  responses: {
+    /** @description Error response */
+    Problem: {
+      headers: {
+        [name: string]: unknown
+      }
+      content: {
+        'application/json': components['schemas']['Problem']
+      }
+    }
+  }
+  parameters: never
+  requestBodies: never
+  headers: never
+  pathItems: never
 }
-export type $defs = Record<string, never>;
+export type $defs = Record<string, never>
 export interface operations {
-    listExports: {
-        parameters: {
-            query?: {
-                pageSize?: number;
-                pageCursor?: string;
-                createdByApiKeyId?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Export task list */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ListExportsResponseEnvelope"];
-                };
-            };
-            400: components["responses"]["Problem"];
-            401: components["responses"]["Problem"];
-        };
-    };
-    createExport: {
-        parameters: {
-            query?: never;
-            header?: {
-                "Idempotency-Key"?: string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateExportRequest"];
-            };
-        };
-        responses: {
-            /** @description Export task created */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CreateExportResponseEnvelope"];
-                };
-            };
-            400: components["responses"]["Problem"];
-            401: components["responses"]["Problem"];
-            409: components["responses"]["Problem"];
-            422: components["responses"]["Problem"];
-        };
-    };
-    getExport: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                taskId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Export task detail */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GetExportResponseEnvelope"];
-                };
-            };
-            400: components["responses"]["Problem"];
-            401: components["responses"]["Problem"];
-            404: components["responses"]["Problem"];
-        };
-    };
-    getEditorCapabilities: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Supported editor abilities and presets */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["EditorCapabilitiesResponseEnvelope"];
-                };
-            };
-            401: components["responses"]["Problem"];
-        };
-    };
-    validateEditorState: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    editorState: components["schemas"]["editor-state.v1.schema"];
-                };
-            };
-        };
-        responses: {
-            /** @description Validation result */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["EditorValidateResponseEnvelope"];
-                };
-            };
-            400: components["responses"]["Problem"];
-            401: components["responses"]["Problem"];
-        };
-    };
+  listExports: {
+    parameters: {
+      query?: {
+        pageSize?: number
+        pageCursor?: string
+        createdByApiKeyId?: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Export task list */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ListExportsResponseEnvelope']
+        }
+      }
+      400: components['responses']['Problem']
+      401: components['responses']['Problem']
+    }
+  }
+  createExport: {
+    parameters: {
+      query?: never
+      header?: {
+        'Idempotency-Key'?: string
+      }
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateExportRequest']
+      }
+    }
+    responses: {
+      /** @description Export task created */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CreateExportResponseEnvelope']
+        }
+      }
+      400: components['responses']['Problem']
+      401: components['responses']['Problem']
+      409: components['responses']['Problem']
+      422: components['responses']['Problem']
+    }
+  }
+  getExport: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        taskId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Export task detail */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['GetExportResponseEnvelope']
+        }
+      }
+      400: components['responses']['Problem']
+      401: components['responses']['Problem']
+      404: components['responses']['Problem']
+    }
+  }
+  getEditorCapabilities: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Supported editor abilities and presets */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['EditorCapabilitiesResponseEnvelope']
+        }
+      }
+      401: components['responses']['Problem']
+    }
+  }
+  validateEditorState: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': {
+          editorState: components['schemas']['editor-state.v1.schema']
+        }
+      }
+    }
+    responses: {
+      /** @description Validation result */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['EditorValidateResponseEnvelope']
+        }
+      }
+      400: components['responses']['Problem']
+      401: components['responses']['Problem']
+    }
+  }
 }
