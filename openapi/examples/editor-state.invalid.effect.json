@@ -1,0 +1,31 @@
+{
+  "compositionWidth": 1920,
+  "compositionHeight": 1080,
+  "timebaseTicksPerSecond": 240000,
+  "tracks": [
+    {
+      "id": "track-1",
+      "hidden": false,
+      "muted": false,
+      "items": ["item-effect-1"]
+    }
+  ],
+  "assets": {},
+  "items": {
+    "item-effect-1": {
+      "id": "item-effect-1",
+      "type": "effect",
+      "effectType": "NotExistsEffect",
+      "intensity": 1,
+      "startTicks": 0,
+      "durationTicks": 30,
+      "top": 0,
+      "left": 0,
+      "width": 1920,
+      "height": 1080,
+      "opacity": 1,
+      "isDraggingInTimeline": false
+    }
+  },
+  "transitions": {}
+}

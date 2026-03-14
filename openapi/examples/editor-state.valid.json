@@ -1,0 +1,119 @@
+{
+  "compositionWidth": 1920,
+  "compositionHeight": 1080,
+  "timebaseTicksPerSecond": 240000,
+  "tracks": [
+    {
+      "id": "track-1",
+      "hidden": false,
+      "muted": false,
+      "items": ["item-image-1", "item-solid-1", "item-effect-1", "item-filter-1"]
+    }
+  ],
+  "assets": {
+    "asset-image-1": {
+      "id": "asset-image-1",
+      "type": "image",
+      "filename": "cover.png",
+      "size": 1024,
+      "remoteUrl": "https://example.com/cover.png",
+      "remoteKey": "cover.png",
+      "mimeType": "image/png",
+      "width": 1920,
+      "height": 1080
+    }
+  },
+  "items": {
+    "item-image-1": {
+      "id": "item-image-1",
+      "type": "image",
+      "assetId": "asset-image-1",
+      "startTicks": 0,
+      "durationTicks": 120,
+      "top": 0,
+      "left": 0,
+      "width": 1920,
+      "height": 1080,
+      "opacity": 1,
+      "isDraggingInTimeline": false,
+      "borderRadius": 0,
+      "rotation": 0,
+      "cropLeft": 0,
+      "cropTop": 0,
+      "cropRight": 0,
+      "cropBottom": 0,
+      "keepAspectRatio": true,
+      "animations": {
+        "in": {
+          "type": "fade",
+          "durationTicks": 10,
+          "easing": "linear"
+        }
+      }
+    },
+    "item-solid-1": {
+      "id": "item-solid-1",
+      "type": "solid",
+      "color": "#111827",
+      "shape": "rectangle",
+      "startTicks": 120,
+      "durationTicks": 120,
+      "top": 0,
+      "left": 0,
+      "width": 1920,
+      "height": 1080,
+      "opacity": 1,
+      "isDraggingInTimeline": false,
+      "borderRadius": 0,
+      "rotation": 0,
+      "keepAspectRatio": false
+    },
+    "item-effect-1": {
+      "id": "item-effect-1",
+      "type": "effect",
+      "effectType": "blur",
+      "intensity": 1,
+      "startTicks": 10,
+      "durationTicks": 30,
+      "top": 0,
+      "left": 0,
+      "width": 1920,
+      "height": 1080,
+      "opacity": 1,
+      "isDraggingInTimeline": false
+    },
+    "item-filter-1": {
+      "id": "item-filter-1",
+      "type": "filter",
+      "filterType": "cyberpunk-neon",
+      "intensity": 1,
+      "params": {
+        "blend": 0.65
+      },
+      "startTicks": 45,
+      "durationTicks": 40,
+      "top": 0,
+      "left": 0,
+      "width": 1920,
+      "height": 1080,
+      "opacity": 1,
+      "isDraggingInTimeline": false
+    }
+  },
+  "transitions": {
+    "transition-1": {
+      "id": "transition-1",
+      "trackId": "track-1",
+      "fromClipId": "item-image-1",
+      "toClipId": "item-solid-1",
+      "type": "fade",
+      "durationTicks": 15,
+      "easing": "ease-in-out"
+    }
+  },
+  "globalBackground": {
+    "type": "color",
+    "color": "#111827",
+    "gradient": null
+  }
+}

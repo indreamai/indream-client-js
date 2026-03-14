@@ -1,0 +1,69 @@
+{
+  "name": "@indreamai/client",
+  "version": "0.1.1",
+  "description": "Official JavaScript client for Indream Open API (Node.js and Edge runtimes)",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src tests",
+    "test": "vitest run",
+    "test:api": "vitest run tests/api",
+    "test:editor-state:core": "vitest run tests/editor-state/core",
+    "test:editor-state:full": "vitest run tests/editor-state/full",
+    "test:mock": "pnpm run test:api && pnpm run test:editor-state:core",
+    "test:ci": "pnpm run test:mock && pnpm run test:editor-state:full",
+    "test:live": "vitest run tests/integration",
+    "sync:spec": "pnpm --dir ../indream-app run openapi:sync-client-spec",
+    "generate:types": "openapi-typescript openapi/openapi.yaml -o src/generated/openapi.ts"
+  },
+  "keywords": [
+    "indream",
+    "client",
+    "api",
+    "typescript",
+    "edge",
+    "workers"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/indreamai/indream-client-js.git"
+  },
+  "homepage": "https://github.com/indreamai/indream-client-js",
+  "bugs": {
+    "url": "https://github.com/indreamai/indream-client-js/issues"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@edge-runtime/vm": "5.0.0",
+    "@types/node": "24.10.0",
+    "@typescript-eslint/eslint-plugin": "8.46.3",
+    "@typescript-eslint/parser": "8.46.3",
+    "ajv": "8.17.1",
+    "eslint": "9.39.1",
+    "eslint-config-prettier": "10.1.8",
+    "eslint-plugin-prettier": "5.5.4",
+    "openapi-typescript": "7.10.1",
+    "prettier": "3.6.2",
+    "tsup": "8.5.0",
+    "typescript": "5.9.3",
+    "vitest": "3.2.4"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "pnpm@10.26.1"
+}

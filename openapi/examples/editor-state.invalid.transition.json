@@ -1,0 +1,77 @@
+{
+  "compositionWidth": 1920,
+  "compositionHeight": 1080,
+  "timebaseTicksPerSecond": 240000,
+  "tracks": [
+    {
+      "id": "track-1",
+      "hidden": false,
+      "muted": false,
+      "items": ["item-1", "item-2", "item-3"]
+    }
+  ],
+  "assets": {},
+  "items": {
+    "item-1": {
+      "id": "item-1",
+      "type": "solid",
+      "color": "#111827",
+      "shape": "rectangle",
+      "startTicks": 0,
+      "durationTicks": 100,
+      "top": 0,
+      "left": 0,
+      "width": 1920,
+      "height": 1080,
+      "opacity": 1,
+      "isDraggingInTimeline": false,
+      "borderRadius": 0,
+      "rotation": 0,
+      "keepAspectRatio": false
+    },
+    "item-2": {
+      "id": "item-2",
+      "type": "solid",
+      "color": "#1f2937",
+      "shape": "rectangle",
+      "startTicks": 100,
+      "durationTicks": 100,
+      "top": 0,
+      "left": 0,
+      "width": 1920,
+      "height": 1080,
+      "opacity": 1,
+      "isDraggingInTimeline": false,
+      "borderRadius": 0,
+      "rotation": 0,
+      "keepAspectRatio": false
+    },
+    "item-3": {
+      "id": "item-3",
+      "type": "solid",
+      "color": "#374151",
+      "shape": "rectangle",
+      "startTicks": 200,
+      "durationTicks": 100,
+      "top": 0,
+      "left": 0,
+      "width": 1920,
+      "height": 1080,
+      "opacity": 1,
+      "isDraggingInTimeline": false,
+      "borderRadius": 0,
+      "rotation": 0,
+      "keepAspectRatio": false
+    }
+  },
+  "transitions": {
+    "transition-1": {
+      "id": "transition-1",
+      "trackId": "track-1",
+      "fromClipId": "item-1",
+      "toClipId": "item-3",
+      "type": "not-supported",
+      "durationTicks": 15
+    }
+  }
+}

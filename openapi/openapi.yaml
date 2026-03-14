@@ -1,0 +1,497 @@
+openapi: 3.1.0
+info:
+  title: Indream Open API
+  version: 1.0.0
+  license:
+    name: Proprietary
+    identifier: LicenseRef-Indream-Proprietary
+  description: |
+    Public API for editor export workflow.
+servers:
+  - url: https://api.indream.ai
+security:
+  - ApiKeyAuth: []
+tags:
+  - name: Exports
+    description: Export task lifecycle APIs.
+  - name: Editor
+    description: Editor capabilities and state validation APIs.
+
+paths:
+  /v1/exports:
+    post:
+      tags: [Exports]
+      summary: Create export task
+      description: |
+        Idempotency is optional.
+        - If `Idempotency-Key` is provided, request replay uses header idempotency.
+        - If header is omitted but `clientTaskId` is provided, task deduplication uses `clientTaskId`.
+        - If both are omitted, every request creates a new task.
+        - Active Open API export tasks are limited to 2 per user. When exceeded, API returns `422 OPEN_API_EXPORT_CONCURRENCY_LIMIT_EXCEEDED`.
+      operationId: createExport
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateExportRequest'
+      responses:
+        '201':
+          description: Export task created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateExportResponseEnvelope'
+        '400':
+          $ref: '#/components/responses/Problem'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '409':
+          $ref: '#/components/responses/Problem'
+        '422':
+          $ref: '#/components/responses/Problem'
+    get:
+      tags: [Exports]
+      summary: List export tasks
+      operationId: listExports
+      parameters:
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+        - name: pageCursor
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: createdByApiKeyId
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Export task list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListExportsResponseEnvelope'
+        '400':
+          $ref: '#/components/responses/Problem'
+        '401':
+          $ref: '#/components/responses/Problem'
+
+  /v1/exports/{taskId}:
+    get:
+      tags: [Exports]
+      summary: Get export task
+      operationId: getExport
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Export task detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetExportResponseEnvelope'
+        '400':
+          $ref: '#/components/responses/Problem'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+
+  /v1/editor/capabilities:
+    get:
+      tags: [Editor]
+      summary: Get editor capabilities
+      operationId: getEditorCapabilities
+      responses:
+        '200':
+          description: Supported editor abilities and presets
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EditorCapabilitiesResponseEnvelope'
+        '401':
+          $ref: '#/components/responses/Problem'
+
+  /v1/editor/validate:
+    post:
+      tags: [Editor]
+      summary: Validate editor state
+      operationId: validateEditorState
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [editorState]
+              properties:
+                editorState:
+                  $ref: './schemas/editor-state.v1.schema.json'
+      responses:
+        '200':
+          description: Validation result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EditorValidateResponseEnvelope'
+        '400':
+          $ref: '#/components/responses/Problem'
+        '401':
+          $ref: '#/components/responses/Problem'
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+
+  responses:
+    Problem:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+
+  schemas:
+    Problem:
+      type: object
+      required: [type, title, status, detail]
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        errorCode:
+          type: string
+
+    CreateExportRequest:
+      type: object
+      required: [editorState, ratio, scale, fps, format]
+      properties:
+        clientTaskId:
+          type: string
+          maxLength: 128
+        editorState:
+          $ref: './schemas/editor-state.v1.schema.json'
+        stateVersion:
+          type: string
+          maxLength: 32
+        fps:
+          type: integer
+          enum: [30, 60]
+        compositionWidth:
+          type: integer
+          minimum: 50
+          maximum: 1920
+        compositionHeight:
+          type: integer
+          minimum: 50
+          maximum: 1920
+        ratio:
+          type: string
+          enum: ['16:9', '9:16', '1:1', '4:3', '3:4', 'custom']
+        scale:
+          type: number
+          minimum: 0.6
+          maximum: 8.0
+        format:
+          type: string
+          enum: [mp4, webm]
+        callbackUrl:
+          type: string
+          maxLength: 1024
+        callbackHeaders:
+          type: object
+          additionalProperties:
+            type: string
+
+    CreateExportResponseData:
+      type: object
+      required: [taskId, createdAt, durationSeconds, billedStandardSeconds, chargedCredits]
+      properties:
+        taskId:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        durationSeconds:
+          type: number
+        billedStandardSeconds:
+          type: integer
+        chargedCredits:
+          type: string
+
+    ExportTask:
+      type: object
+      required:
+        - taskId
+        - createdByApiKeyId
+        - clientTaskId
+        - status
+        - progress
+        - error
+        - outputUrl
+        - durationSeconds
+        - billedStandardSeconds
+        - chargedCredits
+        - callbackUrl
+        - createdAt
+        - completedAt
+      properties:
+        taskId:
+          type: string
+        createdByApiKeyId:
+          type: [string, 'null']
+        clientTaskId:
+          type: [string, 'null']
+        status:
+          type: string
+          enum: [PENDING, PROCESSING, COMPLETED, FAILED, PAUSED, CANCELED]
+        progress:
+          type: number
+        error:
+          type: [string, 'null']
+        outputUrl:
+          type: [string, 'null']
+        durationSeconds:
+          type: number
+        billedStandardSeconds:
+          type: integer
+        chargedCredits:
+          type: string
+        callbackUrl:
+          type: [string, 'null']
+        createdAt:
+          type: string
+          format: date-time
+        completedAt:
+          type: [string, 'null']
+          format: date-time
+
+    EditorCapabilities:
+      type: object
+      required:
+        - version
+        - animations
+        - transitions
+        - transitionPresets
+        - effects
+        - effectPresets
+        - filters
+        - filterPresets
+        - shapes
+        - backgroundPresets
+        - illustrations
+      properties:
+        version:
+          type: string
+        animations:
+          type: array
+          items:
+            type: string
+        transitions:
+          type: array
+          items:
+            type: string
+        transitionPresets:
+          type: array
+          items:
+            type: object
+            required: [id, type, label]
+            properties:
+              id:
+                type: string
+              type:
+                type: string
+              label:
+                type: string
+              params:
+                type: object
+                additionalProperties: true
+            additionalProperties: false
+        effects:
+          type: array
+          items:
+            type: string
+        effectPresets:
+          type: array
+          items:
+            type: object
+            required: [id, type, label]
+            properties:
+              id:
+                type: string
+              type:
+                type: string
+              label:
+                type: string
+              defaultDurationInSeconds:
+                type: number
+              defaultIntensity:
+                type: number
+              params:
+                type: object
+                additionalProperties: true
+            additionalProperties: false
+        filters:
+          type: array
+          items:
+            type: string
+        filterPresets:
+          type: array
+          items:
+            type: object
+            required: [id, type, label]
+            properties:
+              id:
+                type: string
+              type:
+                type: string
+              label:
+                type: string
+              defaultDurationInSeconds:
+                type: number
+              defaultIntensity:
+                type: number
+              params:
+                type: object
+                additionalProperties: true
+            additionalProperties: false
+        shapes:
+          type: array
+          items:
+            type: string
+        backgroundPresets:
+          type: object
+          required: [colors, gradients, images, blurLevels]
+          properties:
+            colors:
+              type: array
+              items:
+                type: string
+            gradients:
+              type: array
+              items:
+                type: string
+            images:
+              type: array
+              items:
+                type: string
+            blurLevels:
+              type: array
+              items:
+                type: integer
+          additionalProperties: false
+        illustrations:
+          type: array
+          items:
+            type: string
+      additionalProperties: false
+
+    EditorValidationError:
+      type: object
+      required: [code, path, message]
+      properties:
+        code:
+          type: string
+        path:
+          type: string
+        message:
+          type: string
+      additionalProperties: false
+
+    EditorValidationResult:
+      type: object
+      required: [valid, errors]
+      properties:
+        valid:
+          type: boolean
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditorValidationError'
+      additionalProperties: false
+
+    CreateExportResponseEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          $ref: '#/components/schemas/CreateExportResponseData'
+        meta:
+          type: object
+          additionalProperties: true
+
+    GetExportResponseEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          $ref: '#/components/schemas/ExportTask'
+        meta:
+          type: object
+          additionalProperties: true
+
+    ListExportsResponseEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExportTask'
+        meta:
+          type: object
+          properties:
+            nextPageCursor:
+              type: [string, 'null']
+          additionalProperties: true
+
+    EditorCapabilitiesResponseEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          $ref: '#/components/schemas/EditorCapabilities'
+        meta:
+          type: object
+          additionalProperties: true
+
+    EditorValidateResponseEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          $ref: '#/components/schemas/EditorValidationResult'
+        meta:
+          type: object
+          properties:
+            capabilitiesVersion:
+              type: string
+          additionalProperties: true
