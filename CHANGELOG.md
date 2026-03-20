@@ -6,20 +6,21 @@ All notable changes to `@indreamai/client` are documented in this file.
 
 ### Highlights
 
-- Added caption animation capability metadata in `GET /v1/editor/capabilities`.
 - Synced the SDK to the latest Indream Editor State OpenAPI contract.
+- `exports.create` and `editor.validate` now use the same strict `editorState` schema type.
+- Added caption animation capability metadata from `GET /v1/editor/capabilities`.
 
 ### Breaking Changes
 
 - `IEditorCapabilities` now requires `captionAnimations`.
-- Editor-state payloads must follow the latest schema shape for animated numeric fields (for example `{ "value": number, "keyframes": [] }` where required).
+- TypeScript callers can no longer pass loosely shaped `editorState` objects to `exports.create` and `editor.validate`.
 - Caption assets now require `timingGranularity` (`word` | `line`).
 
 ### Migration Guide
 
 1. Update capability parsing logic to consume `captionAnimations.in`, `captionAnimations.out`, and `captionAnimations.loop`.
-2. If you construct editor-state JSON manually, migrate numeric geometry/motion fields to the schema-defined animated track shape.
-3. Ensure caption assets include `timingGranularity` before calling `POST /v1/editor/validate` or `POST /v1/exports`.
+2. Align manual `editorState` builders to the latest schema before calling `POST /v1/editor/validate` and `POST /v1/exports`.
+3. Ensure caption assets include `timingGranularity` (`word` or `line`).
 
 ### Notes
 

@@ -1,12 +1,18 @@
 import { describe, expect, it } from 'vitest'
 import { AuthError, RateLimitError, ValidationError } from '../../src/errors'
 import { IndreamClient } from '../../src/client'
+import type { TEditorStateV1 } from '../../src/types'
+import { buildMinimalValidEditorState } from '../editor-state/fixtures/builders'
 import { getIndreamApiUrl, getMockApiKey } from '../utils/env'
 
 const apiKey = getMockApiKey()
 const baseURL = getIndreamApiUrl()
 
 describe('error mapping', () => {
+  const createEditorState = (): TEditorStateV1 => {
+    return buildMinimalValidEditorState() as unknown as TEditorStateV1
+  }
+
   it('maps 401 to AuthError', async () => {
     const client = new IndreamClient({
       apiKey,
@@ -44,7 +50,9 @@ describe('error mapping', () => {
         ),
     })
 
-    await expect(client.editor.validate({})).rejects.toBeInstanceOf(ValidationError)
+    await expect(client.editor.validate(createEditorState())).rejects.toBeInstanceOf(
+      ValidationError
+    )
   })
 
   it('maps 429 to RateLimitError', async () => {

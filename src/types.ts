@@ -1,7 +1,10 @@
+import type { components } from './generated/openapi'
+
 export type TExportRatio = '16:9' | '9:16' | '1:1' | '4:3' | '3:4' | 'custom'
 export type TExportFormat = 'mp4' | 'webm'
 export type TTaskStatus = 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED' | 'PAUSED' | 'CANCELED'
 export type TExportWebhookEventType = 'EXPORT_STARTED' | 'EXPORT_COMPLETED' | 'EXPORT_FAILED'
+export type TEditorStateV1 = components['schemas']['editor-state.v1.schema']
 
 export interface IApiProblem {
   type: string
@@ -18,7 +21,7 @@ export interface IApiEnvelope<T> {
 
 export interface ICreateExportRequest {
   clientTaskId?: string
-  editorState: Record<string, unknown>
+  editorState: TEditorStateV1
   stateVersion?: string
   fps: 30 | 60
   compositionWidth?: number

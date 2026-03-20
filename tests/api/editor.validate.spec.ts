@@ -1,12 +1,18 @@
 import { describe, expect, it } from 'vitest'
 import { IndreamClient } from '../../src/client'
 import { RateLimitError } from '../../src/errors'
+import type { TEditorStateV1 } from '../../src/types'
+import { buildMinimalValidEditorState } from '../editor-state/fixtures/builders'
 import { getIndreamApiUrl, getMockApiKey } from '../utils/env'
 
 const apiKey = getMockApiKey()
 const baseURL = getIndreamApiUrl()
 
 describe('editor.validate', () => {
+  const createEditorState = (): TEditorStateV1 => {
+    return buildMinimalValidEditorState() as unknown as TEditorStateV1
+  }
+
   it('sends wrapped editorState payload and content-type header', async () => {
     let capturedBody = ''
     let capturedContentType = ''
@@ -31,13 +37,12 @@ describe('editor.validate', () => {
       },
     })
 
-    await client.editor.validate({ foo: 'bar' })
+    const editorState = createEditorState()
+    await client.editor.validate(editorState)
 
     expect(capturedContentType).toContain('application/json')
     expect(JSON.parse(capturedBody)).toEqual({
-      editorState: {
-        foo: 'bar',
-      },
+      editorState,
     })
   })
 
@@ -63,7 +68,7 @@ describe('editor.validate', () => {
       },
     })
 
-    await expect(client.editor.validate({})).rejects.toBeInstanceOf(RateLimitError)
+    await expect(client.editor.validate(createEditorState())).rejects.toBeInstanceOf(RateLimitError)
     expect(callCount).toBe(1)
   })
 })

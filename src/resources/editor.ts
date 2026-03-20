@@ -1,4 +1,9 @@
-import type { IEditorCapabilities, IEditorValidationResult, IRequestOptions } from '../types'
+import type {
+  IEditorCapabilities,
+  IEditorValidationResult,
+  IRequestOptions,
+  TEditorStateV1,
+} from '../types'
 import type { IndreamClient } from '../client'
 
 export class EditorResource {
@@ -16,7 +21,7 @@ export class EditorResource {
   }
 
   async validate(
-    editorState: Record<string, unknown>,
+    editorState: TEditorStateV1,
     options: IRequestOptions = {}
   ): Promise<IEditorValidationResult> {
     return await this.client.request<IEditorValidationResult>('/v1/editor/validate', {

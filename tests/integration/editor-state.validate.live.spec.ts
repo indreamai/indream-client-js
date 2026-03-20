@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { ValidationError } from '../../src/errors'
 import { IndreamClient } from '../../src/client'
+import type { TEditorStateV1 } from '../../src/types'
 import { getIndreamApiKey, getIndreamApiUrl } from '../utils/env'
 import { editorStateExamples } from '../editor-state/fixtures/examples'
 
@@ -13,7 +14,9 @@ const createLiveClient = () => {
   })
 }
 
-const buildImageTransitionState = (): Record<string, unknown> => {
+const staticTrack = (value: number) => ({ value, keyframes: [] })
+
+const buildImageTransitionState = (): TEditorStateV1 => {
   return {
     compositionWidth: 1280,
     compositionHeight: 720,
@@ -47,15 +50,17 @@ const buildImageTransitionState = (): Record<string, unknown> => {
         assetId: 'asset-image-1',
         startTicks: 0,
         durationTicks: 120,
-        top: 0,
-        left: 0,
-        width: 1280,
-        height: 720,
-        opacity: 1,
+        top: staticTrack(0),
+        left: staticTrack(0),
+        width: staticTrack(1280),
+        height: staticTrack(720),
+        scaleX: staticTrack(1),
+        scaleY: staticTrack(1),
+        opacity: staticTrack(1),
         isDraggingInTimeline: false,
         keepAspectRatio: true,
-        borderRadius: 0,
-        rotation: 0,
+        borderRadius: staticTrack(0),
+        rotation: staticTrack(0),
       },
       'item-solid-1': {
         id: 'item-solid-1',
@@ -64,15 +69,17 @@ const buildImageTransitionState = (): Record<string, unknown> => {
         shape: 'rectangle',
         startTicks: 120,
         durationTicks: 120,
-        top: 0,
-        left: 0,
-        width: 1280,
-        height: 720,
-        opacity: 1,
+        top: staticTrack(0),
+        left: staticTrack(0),
+        width: staticTrack(1280),
+        height: staticTrack(720),
+        scaleX: staticTrack(1),
+        scaleY: staticTrack(1),
+        opacity: staticTrack(1),
         isDraggingInTimeline: false,
         keepAspectRatio: false,
-        borderRadius: 0,
-        rotation: 0,
+        borderRadius: staticTrack(0),
+        rotation: staticTrack(0),
       },
     },
     transitions: {
@@ -94,7 +101,7 @@ const buildImageTransitionState = (): Record<string, unknown> => {
   }
 }
 
-const buildVideoState = (): Record<string, unknown> => {
+const buildVideoState = (): TEditorStateV1 => {
   return {
     compositionWidth: 1280,
     compositionHeight: 720,
@@ -129,17 +136,19 @@ const buildVideoState = (): Record<string, unknown> => {
         assetId: 'asset-video-1',
         startTicks: 0,
         durationTicks: 240,
-        top: 0,
-        left: 0,
-        width: 1280,
-        height: 720,
-        opacity: 1,
+        top: staticTrack(0),
+        left: staticTrack(0),
+        width: staticTrack(1280),
+        height: staticTrack(720),
+        scaleX: staticTrack(1),
+        scaleY: staticTrack(1),
+        opacity: staticTrack(1),
         isDraggingInTimeline: false,
         keepAspectRatio: true,
-        borderRadius: 0,
-        rotation: 0,
+        borderRadius: staticTrack(0),
+        rotation: staticTrack(0),
         videoStartFromInSeconds: 0,
-        decibelAdjustment: 0,
+        decibelAdjustment: staticTrack(0),
         playbackRate: 1,
         audioFadeInDurationInSeconds: 0,
         audioFadeOutDurationInSeconds: 0,
@@ -149,7 +158,7 @@ const buildVideoState = (): Record<string, unknown> => {
   }
 }
 
-const buildTextTemplateState = (): Record<string, unknown> => {
+const buildTextTemplateState = (): TEditorStateV1 => {
   return {
     compositionWidth: 1280,
     compositionHeight: 720,
@@ -183,11 +192,13 @@ const buildTextTemplateState = (): Record<string, unknown> => {
         ],
         startTicks: 0,
         durationTicks: 120,
-        top: 0,
-        left: 0,
-        width: 1280,
-        height: 720,
-        opacity: 1,
+        top: staticTrack(0),
+        left: staticTrack(0),
+        width: staticTrack(1280),
+        height: staticTrack(720),
+        scaleX: staticTrack(1),
+        scaleY: staticTrack(1),
+        opacity: staticTrack(1),
         isDraggingInTimeline: false,
       },
     },
@@ -234,7 +245,9 @@ describe('live editor-state validation scenarios', () => {
     const client = createLiveClient()
 
     try {
-      const result = await client.editor.validate(editorStateExamples.invalidEffect)
+      const result = await client.editor.validate(
+        editorStateExamples.invalidEffect as unknown as TEditorStateV1
+      )
       expect(result.valid).toBe(false)
       expect(result.errors.length).toBeGreaterThan(0)
     } catch (error) {

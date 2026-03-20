@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { ErrorObject } from 'ajv'
 import { IndreamClient } from '../../../src/client'
+import type { TEditorStateV1 } from '../../../src/types'
 import { getIndreamApiUrl, getMockApiKey } from '../../utils/env'
 import { editorStateExamples } from '../fixtures/examples'
 import { semanticTransitionInvalidState } from '../fixtures/matrix'
@@ -124,7 +125,9 @@ describe('editor.validate semantic mock', () => {
       fetch: createMockValidateFetch(),
     })
 
-    const result = await client.editor.validate(editorStateExamples.valid)
+    const result = await client.editor.validate(
+      editorStateExamples.valid as unknown as TEditorStateV1
+    )
     expect(result.valid).toBe(true)
     expect(result.errors).toHaveLength(0)
   })
@@ -136,19 +139,25 @@ describe('editor.validate semantic mock', () => {
       fetch: createMockValidateFetch(),
     })
 
-    const effectResult = await client.editor.validate(editorStateExamples.invalidEffect)
+    const effectResult = await client.editor.validate(
+      editorStateExamples.invalidEffect as unknown as TEditorStateV1
+    )
     expect(effectResult.valid).toBe(false)
     expect(effectResult.errors.some((item) => item.code === 'EDITOR_EFFECT_TYPE_INVALID')).toBe(
       true
     )
 
-    const filterResult = await client.editor.validate(editorStateExamples.invalidFilter)
+    const filterResult = await client.editor.validate(
+      editorStateExamples.invalidFilter as unknown as TEditorStateV1
+    )
     expect(filterResult.valid).toBe(false)
     expect(filterResult.errors.some((item) => item.code === 'EDITOR_FILTER_TYPE_INVALID')).toBe(
       true
     )
 
-    const transitionResult = await client.editor.validate(editorStateExamples.invalidTransition)
+    const transitionResult = await client.editor.validate(
+      editorStateExamples.invalidTransition as unknown as TEditorStateV1
+    )
     expect(transitionResult.valid).toBe(false)
     expect(
       transitionResult.errors.some((item) => item.code === 'EDITOR_TRANSITION_TYPE_INVALID')
@@ -162,7 +171,9 @@ describe('editor.validate semantic mock', () => {
       fetch: createMockValidateFetch(),
     })
 
-    const result = await client.editor.validate(semanticTransitionInvalidState())
+    const result = await client.editor.validate(
+      semanticTransitionInvalidState() as unknown as TEditorStateV1
+    )
     expect(result.valid).toBe(false)
     expect(result.errors.some((item) => item.code === 'EDITOR_TRANSITION_CLIP_NOT_ADJACENT')).toBe(
       true

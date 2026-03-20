@@ -1,11 +1,17 @@
 import { describe, expect, it } from 'vitest'
 import { IndreamClient } from '../../src/client'
+import type { TEditorStateV1 } from '../../src/types'
+import { buildMinimalValidEditorState } from '../editor-state/fixtures/builders'
 import { getIndreamApiUrl, getMockApiKey } from '../utils/env'
 
 const apiKey = getMockApiKey()
 const baseURL = getIndreamApiUrl()
 
 describe('idempotency header', () => {
+  const createEditorState = (): TEditorStateV1 => {
+    return buildMinimalValidEditorState() as unknown as TEditorStateV1
+  }
+
   it('does not require idempotency key for exports.create', async () => {
     let called = false
     const capturedHeaders: Record<string, string> = {}
@@ -37,7 +43,7 @@ describe('idempotency header', () => {
     })
 
     await client.exports.create({
-      editorState: {},
+      editorState: createEditorState(),
       ratio: '9:16',
       scale: 0.6,
       fps: 30,

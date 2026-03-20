@@ -3,9 +3,12 @@ import { extname, resolve } from 'node:path'
 import { randomUUID } from 'node:crypto'
 import { describe, expect, it } from 'vitest'
 import { IndreamClient } from '../../src/client'
+import type { TEditorStateV1 } from '../../src/types'
 import { getIndreamApiKey, getIndreamApiUrl } from '../utils/env'
 
-const buildLiveEditorState = (): Record<string, unknown> => {
+const staticTrack = (value: number) => ({ value, keyframes: [] })
+
+const buildLiveEditorState = (): TEditorStateV1 => {
   return {
     timebaseTicksPerSecond: 240000,
     compositionWidth: 1280,
@@ -27,14 +30,16 @@ const buildLiveEditorState = (): Record<string, unknown> => {
         shape: 'rectangle',
         startTicks: 0,
         durationTicks: 240000,
-        top: 100,
-        left: 100,
-        width: 200,
-        height: 350,
-        opacity: 1,
+        top: staticTrack(100),
+        left: staticTrack(100),
+        width: staticTrack(200),
+        height: staticTrack(350),
+        scaleX: staticTrack(1),
+        scaleY: staticTrack(1),
+        opacity: staticTrack(1),
         isDraggingInTimeline: false,
-        borderRadius: 0,
-        rotation: 0,
+        borderRadius: staticTrack(0),
+        rotation: staticTrack(0),
         keepAspectRatio: false,
       },
     },
