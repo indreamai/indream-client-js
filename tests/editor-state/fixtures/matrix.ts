@@ -48,7 +48,7 @@ const assetMissingFieldMapping: Record<string, string> = {
   video: 'durationInSeconds',
   gif: 'loopBehavior',
   audio: 'durationInSeconds',
-  caption: 'captions',
+  caption: 'timingGranularity',
   lottie: 'resourceType',
 }
 

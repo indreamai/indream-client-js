@@ -339,7 +339,7 @@
         },
         {
           "type": "object",
-          "required": ["type", "captions"],
+          "required": ["type", "captions", "timingGranularity"],
           "properties": {
             "type": {
               "const": "caption"
@@ -350,6 +350,10 @@
                 "type": "object",
                 "additionalProperties": true
               }
+            },
+            "timingGranularity": {
+              "type": "string",
+              "enum": ["word", "line"]
             }
           }
         }
@@ -416,18 +420,93 @@
       },
       "additionalProperties": false
     },
-    "baseItem": {
+    "captionAnimationSpec": {
+      "type": "object",
+      "required": ["type", "durationTicks"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "converge",
+            "elastic-pop",
+            "typewriter",
+            "lay-down",
+            "center-type-out",
+            "curtain-close",
+            "jitter",
+            "rainbow",
+            "sweep-shine"
+          ]
+        },
+        "durationTicks": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "easing": {
+          "type": "string",
+          "enum": ["linear", "ease-in", "ease-out", "ease-in-out"]
+        },
+        "params": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/primitive"
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "captionClipAnimations": {
+      "type": "object",
+      "properties": {
+        "in": {
+          "$ref": "#/definitions/captionAnimationSpec"
+        },
+        "out": {
+          "$ref": "#/definitions/captionAnimationSpec"
+        },
+        "loop": {
+          "$ref": "#/definitions/captionAnimationSpec"
+        }
+      },
+      "additionalProperties": false
+    },
+    "keyframePoint": {
+      "type": "object",
+      "required": ["timeTicks", "value"],
+      "properties": {
+        "timeTicks": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "value": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "animatedNumberTrack": {
+      "type": "object",
+      "required": ["value", "keyframes"],
+      "properties": {
+        "value": {
+          "type": "number"
+        },
+        "keyframes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/keyframePoint"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "timelineItemBase": {
       "type": "object",
       "required": [
         "id",
         "type",
         "durationTicks",
         "startTicks",
-        "top",
-        "left",
-        "width",
-        "height",
-        "opacity",
         "isDraggingInTimeline"
       ],
       "properties": {
@@ -446,28 +525,57 @@
           "type": "integer",
           "minimum": 0
         },
-        "top": {
-          "type": "number"
-        },
-        "left": {
-          "type": "number"
-        },
-        "width": {
-          "type": "number",
-          "minimum": 1
-        },
-        "height": {
-          "type": "number",
-          "minimum": 1
-        },
-        "opacity": {
-          "type": "number"
-        },
         "isDraggingInTimeline": {
           "type": "boolean"
         }
       },
       "additionalProperties": true
+    },
+    "geometryItemBase": {
+      "type": "object",
+      "required": [
+        "top",
+        "left",
+        "width",
+        "height",
+        "scaleX",
+        "scaleY",
+        "opacity"
+      ],
+      "properties": {
+        "top": {
+          "$ref": "#/definitions/animatedNumberTrack"
+        },
+        "left": {
+          "$ref": "#/definitions/animatedNumberTrack"
+        },
+        "width": {
+          "$ref": "#/definitions/animatedNumberTrack"
+        },
+        "height": {
+          "$ref": "#/definitions/animatedNumberTrack"
+        },
+        "scaleX": {
+          "$ref": "#/definitions/animatedNumberTrack"
+        },
+        "scaleY": {
+          "$ref": "#/definitions/animatedNumberTrack"
+        },
+        "opacity": {
+          "$ref": "#/definitions/animatedNumberTrack"
+        }
+      },
+      "additionalProperties": true
+    },
+    "baseItem": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/timelineItemBase"
+        },
+        {
+          "$ref": "#/definitions/geometryItemBase"
+        }
+      ]
     },
     "imageItem": {
       "allOf": [
@@ -497,23 +605,22 @@
               "type": "boolean"
             },
             "borderRadius": {
-              "type": "number",
-              "minimum": 0
+              "$ref": "#/definitions/animatedNumberTrack"
             },
             "rotation": {
-              "type": "number"
+              "$ref": "#/definitions/animatedNumberTrack"
             },
             "cropLeft": {
-              "type": "number"
+              "$ref": "#/definitions/animatedNumberTrack"
             },
             "cropTop": {
-              "type": "number"
+              "$ref": "#/definitions/animatedNumberTrack"
             },
             "cropRight": {
-              "type": "number"
+              "$ref": "#/definitions/animatedNumberTrack"
             },
             "cropBottom": {
-              "type": "number"
+              "$ref": "#/definitions/animatedNumberTrack"
             },
             "animations": {
               "$ref": "#/definitions/clipAnimations"
@@ -553,18 +660,17 @@
               "type": "boolean"
             },
             "borderRadius": {
-              "type": "number",
-              "minimum": 0
+              "$ref": "#/definitions/animatedNumberTrack"
             },
             "rotation": {
-              "type": "number"
+              "$ref": "#/definitions/animatedNumberTrack"
             },
             "videoStartFromInSeconds": {
               "type": "number",
               "minimum": 0
             },
             "decibelAdjustment": {
-              "type": "number"
+              "$ref": "#/definitions/animatedNumberTrack"
             },
             "playbackRate": {
               "type": "number",
@@ -579,16 +685,16 @@
               "minimum": 0
             },
             "cropLeft": {
-              "type": "number"
+              "$ref": "#/definitions/animatedNumberTrack"
             },
             "cropTop": {
-              "type": "number"
+              "$ref": "#/definitions/animatedNumberTrack"
             },
             "cropRight": {
-              "type": "number"
+              "$ref": "#/definitions/animatedNumberTrack"
             },
             "cropBottom": {
-              "type": "number"
+              "$ref": "#/definitions/animatedNumberTrack"
             },
             "animations": {
               "$ref": "#/definitions/clipAnimations"
@@ -625,11 +731,10 @@
               "type": "boolean"
             },
             "borderRadius": {
-              "type": "number",
-              "minimum": 0
+              "$ref": "#/definitions/animatedNumberTrack"
             },
             "rotation": {
-              "type": "number"
+              "$ref": "#/definitions/animatedNumberTrack"
             },
             "gifStartFromInSeconds": {
               "type": "number",
@@ -640,16 +745,16 @@
               "minimum": 0.01
             },
             "cropLeft": {
-              "type": "number"
+              "$ref": "#/definitions/animatedNumberTrack"
             },
             "cropTop": {
-              "type": "number"
+              "$ref": "#/definitions/animatedNumberTrack"
             },
             "cropRight": {
-              "type": "number"
+              "$ref": "#/definitions/animatedNumberTrack"
             },
             "cropBottom": {
-              "type": "number"
+              "$ref": "#/definitions/animatedNumberTrack"
             },
             "animations": {
               "$ref": "#/definitions/clipAnimations"
@@ -685,7 +790,7 @@
               "type": "boolean"
             },
             "rotation": {
-              "type": "number"
+              "$ref": "#/definitions/animatedNumberTrack"
             },
             "lottieStartFromInSeconds": {
               "type": "number",
@@ -731,7 +836,7 @@
               "minimum": 0
             },
             "decibelAdjustment": {
-              "type": "number"
+              "$ref": "#/definitions/animatedNumberTrack"
             },
             "playbackRate": {
               "type": "number",
@@ -852,10 +957,13 @@
               ]
             },
             "rotation": {
-              "type": "number"
+              "$ref": "#/definitions/animatedNumberTrack"
             },
             "animations": {
               "$ref": "#/definitions/clipAnimations"
+            },
+            "captionAnimations": {
+              "$ref": "#/definitions/captionClipAnimations"
             }
           }
         }
@@ -899,7 +1007,7 @@
               }
             },
             "rotation": {
-              "type": "number"
+              "$ref": "#/definitions/animatedNumberTrack"
             },
             "animations": {
               "$ref": "#/definitions/clipAnimations"
@@ -1036,10 +1144,13 @@
               ]
             },
             "rotation": {
-              "type": "number"
+              "$ref": "#/definitions/animatedNumberTrack"
             },
             "animations": {
               "$ref": "#/definitions/clipAnimations"
+            },
+            "captionAnimations": {
+              "$ref": "#/definitions/captionClipAnimations"
             }
           }
         }
@@ -1068,11 +1179,10 @@
               "type": "boolean"
             },
             "borderRadius": {
-              "type": "number",
-              "minimum": 0
+              "$ref": "#/definitions/animatedNumberTrack"
             },
             "rotation": {
-              "type": "number"
+              "$ref": "#/definitions/animatedNumberTrack"
             },
             "animations": {
               "$ref": "#/definitions/clipAnimations"
@@ -1110,7 +1220,7 @@
               "type": "boolean"
             },
             "rotation": {
-              "type": "number"
+              "$ref": "#/definitions/animatedNumberTrack"
             },
             "animations": {
               "$ref": "#/definitions/clipAnimations"
@@ -1122,7 +1232,7 @@
     "effectItem": {
       "allOf": [
         {
-          "$ref": "#/definitions/baseItem"
+          "$ref": "#/definitions/timelineItemBase"
         },
         {
           "type": "object",
@@ -1152,7 +1262,7 @@
     "filterItem": {
       "allOf": [
         {
-          "$ref": "#/definitions/baseItem"
+          "$ref": "#/definitions/timelineItemBase"
         },
         {
           "type": "object",
@@ -1226,7 +1336,7 @@
               "type": "boolean"
             },
             "rotation": {
-              "type": "number"
+              "$ref": "#/definitions/animatedNumberTrack"
             },
             "animations": {
               "$ref": "#/definitions/clipAnimations"

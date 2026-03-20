@@ -65,9 +65,23 @@ export interface IExportWebhookEvent {
   task: IExportTask
 }
 
+export interface ICaptionAnimationPresetItem {
+  id: string
+  type: string
+  label: string
+  preview: string
+}
+
+export interface ICaptionAnimationPresetGroups {
+  in: ICaptionAnimationPresetItem[]
+  out: ICaptionAnimationPresetItem[]
+  loop: ICaptionAnimationPresetItem[]
+}
+
 export interface IEditorCapabilities {
   version: string
   animations: string[]
+  captionAnimations: ICaptionAnimationPresetGroups
   transitions: string[]
   transitionPresets: Array<{
     id: string

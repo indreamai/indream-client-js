@@ -299,6 +299,7 @@ components:
       required:
         - version
         - animations
+        - captionAnimations
         - transitions
         - transitionPresets
         - effects
@@ -315,6 +316,56 @@ components:
           type: array
           items:
             type: string
+        captionAnimations:
+          type: object
+          required: [in, out, loop]
+          properties:
+            in:
+              type: array
+              items:
+                type: object
+                required: [id, type, label, preview]
+                properties:
+                  id:
+                    type: string
+                  type:
+                    type: string
+                  label:
+                    type: string
+                  preview:
+                    type: string
+                additionalProperties: false
+            out:
+              type: array
+              items:
+                type: object
+                required: [id, type, label, preview]
+                properties:
+                  id:
+                    type: string
+                  type:
+                    type: string
+                  label:
+                    type: string
+                  preview:
+                    type: string
+                additionalProperties: false
+            loop:
+              type: array
+              items:
+                type: object
+                required: [id, type, label, preview]
+                properties:
+                  id:
+                    type: string
+                  type:
+                    type: string
+                  label:
+                    type: string
+                  preview:
+                    type: string
+                additionalProperties: false
+          additionalProperties: false
         transitions:
           type: array
           items:

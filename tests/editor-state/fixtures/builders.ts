@@ -26,6 +26,11 @@ export const deepClone = <T>(value: T): T => {
   return JSON.parse(JSON.stringify(value)) as T
 }
 
+const staticTrack = (value: number): Record<string, unknown> => ({
+  value,
+  keyframes: [],
+})
+
 const baseTrack = () => ({
   id: 'track-1',
   hidden: false,
@@ -38,11 +43,13 @@ const baseItem = (id: string, type: string): Record<string, unknown> => ({
   type,
   startTicks: 0,
   durationTicks: 120,
-  top: 0,
-  left: 0,
-  width: 320,
-  height: 180,
-  opacity: 1,
+  top: staticTrack(0),
+  left: staticTrack(0),
+  width: staticTrack(320),
+  height: staticTrack(180),
+  scaleX: staticTrack(1),
+  scaleY: staticTrack(1),
+  opacity: staticTrack(1),
   isDraggingInTimeline: false,
 })
 
@@ -108,6 +115,7 @@ export const createAssetByType = (
       ...baseAsset(id, type),
       filename: `${id}.json`,
       mimeType: 'application/json',
+      timingGranularity: 'line',
       captions: [
         {
           startInSeconds: 0,
@@ -146,12 +154,12 @@ export const createItemByType = (
       ...baseItem(id, type),
       assetId,
       keepAspectRatio: true,
-      borderRadius: 0,
-      rotation: 0,
-      cropLeft: 0,
-      cropTop: 0,
-      cropRight: 0,
-      cropBottom: 0,
+      borderRadius: staticTrack(0),
+      rotation: staticTrack(0),
+      cropLeft: staticTrack(0),
+      cropTop: staticTrack(0),
+      cropRight: staticTrack(0),
+      cropBottom: staticTrack(0),
     }
   }
 
@@ -160,17 +168,17 @@ export const createItemByType = (
       ...baseItem(id, type),
       assetId,
       keepAspectRatio: true,
-      borderRadius: 0,
-      rotation: 0,
+      borderRadius: staticTrack(0),
+      rotation: staticTrack(0),
       videoStartFromInSeconds: 0,
-      decibelAdjustment: 0,
+      decibelAdjustment: staticTrack(0),
       playbackRate: 1,
       audioFadeInDurationInSeconds: 0,
       audioFadeOutDurationInSeconds: 0,
-      cropLeft: 0,
-      cropTop: 0,
-      cropRight: 0,
-      cropBottom: 0,
+      cropLeft: staticTrack(0),
+      cropTop: staticTrack(0),
+      cropRight: staticTrack(0),
+      cropBottom: staticTrack(0),
     }
   }
 
@@ -179,14 +187,14 @@ export const createItemByType = (
       ...baseItem(id, type),
       assetId,
       keepAspectRatio: true,
-      borderRadius: 0,
-      rotation: 0,
+      borderRadius: staticTrack(0),
+      rotation: staticTrack(0),
       gifStartFromInSeconds: 0,
       playbackRate: 1,
-      cropLeft: 0,
-      cropTop: 0,
-      cropRight: 0,
-      cropBottom: 0,
+      cropLeft: staticTrack(0),
+      cropTop: staticTrack(0),
+      cropRight: staticTrack(0),
+      cropBottom: staticTrack(0),
     }
   }
 
@@ -195,7 +203,7 @@ export const createItemByType = (
       ...baseItem(id, type),
       assetId,
       keepAspectRatio: true,
-      rotation: 0,
+      rotation: staticTrack(0),
       lottieStartFromInSeconds: 0,
       playbackRate: 1,
     }
@@ -206,7 +214,7 @@ export const createItemByType = (
       ...baseItem(id, type),
       assetId,
       audioStartFromInSeconds: 0,
-      decibelAdjustment: 0,
+      decibelAdjustment: staticTrack(0),
       playbackRate: 1,
       audioFadeInDurationInSeconds: 0,
       audioFadeOutDurationInSeconds: 0,
@@ -232,7 +240,7 @@ export const createItemByType = (
       strokeWidth: 0,
       strokeColor: '#000000',
       background: null,
-      rotation: 0,
+      rotation: staticTrack(0),
     }
   }
 
@@ -253,7 +261,7 @@ export const createItemByType = (
           text: 'template title',
         },
       ],
-      rotation: 0,
+      rotation: staticTrack(0),
     }
   }
 
@@ -285,7 +293,7 @@ export const createItemByType = (
         horizontalPadding: 12,
         borderRadius: 8,
       },
-      rotation: 0,
+      rotation: staticTrack(0),
     }
   }
 
@@ -295,8 +303,8 @@ export const createItemByType = (
       color: '#111827',
       shape: 'rectangle',
       keepAspectRatio: false,
-      borderRadius: 0,
-      rotation: 0,
+      borderRadius: staticTrack(0),
+      rotation: staticTrack(0),
     }
   }
 
@@ -306,7 +314,7 @@ export const createItemByType = (
       illustrationName: 'illustration-1',
       color: '#22d3ee',
       keepAspectRatio: true,
-      rotation: 0,
+      rotation: staticTrack(0),
     }
   }
 
@@ -336,15 +344,17 @@ export const createItemByType = (
     ...baseItem(id, 'chart'),
     chartType: 'bar',
     themeColor: '#3b82f6',
-    data: [
-      {
-        label: 'A',
-        value: 42,
-      },
-    ],
+    data: {
+      series: [
+        {
+          label: 'A',
+          value: 42,
+        },
+      ],
+    },
     animationDurationTicks: 12,
     keepAspectRatio: true,
-    rotation: 0,
+    rotation: staticTrack(0),
   }
 }
 

@@ -19,11 +19,6 @@
       "intensity": 1,
       "startTicks": 0,
       "durationTicks": 30,
-      "top": 0,
-      "left": 0,
-      "width": 1920,
-      "height": 1080,
-      "opacity": 1,
       "isDraggingInTimeline": false
     }
   },

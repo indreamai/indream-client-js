@@ -61,6 +61,11 @@ describe('retry boundary', () => {
             data: {
               version: 'v1',
               animations: [],
+              captionAnimations: {
+                in: [],
+                out: [],
+                loop: [],
+              },
               transitions: [],
               transitionPresets: [],
               effects: [],

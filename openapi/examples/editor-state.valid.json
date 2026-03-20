@@ -7,7 +7,7 @@
       "id": "track-1",
       "hidden": false,
       "muted": false,
-      "items": ["item-image-1", "item-solid-1", "item-effect-1", "item-filter-1"]
+      "items": ["item-image-1", "item-solid-1", "item-effect-1", "item-filter-1", "item-text-1"]
     }
   ],
   "assets": {
@@ -21,6 +21,23 @@
       "mimeType": "image/png",
       "width": 1920,
       "height": 1080
+    },
+    "asset-caption-1": {
+      "id": "asset-caption-1",
+      "type": "caption",
+      "filename": "captions.json",
+      "size": 512,
+      "remoteUrl": null,
+      "remoteKey": null,
+      "mimeType": "application/json",
+      "timingGranularity": "line",
+      "captions": [
+        {
+          "text": "Line one",
+          "startMs": 0,
+          "endMs": 1200
+        }
+      ]
     }
   },
   "items": {
@@ -30,18 +47,20 @@
       "assetId": "asset-image-1",
       "startTicks": 0,
       "durationTicks": 120,
-      "top": 0,
-      "left": 0,
-      "width": 1920,
-      "height": 1080,
-      "opacity": 1,
+      "top": { "value": 0, "keyframes": [] },
+      "left": { "value": 0, "keyframes": [] },
+      "width": { "value": 1920, "keyframes": [] },
+      "height": { "value": 1080, "keyframes": [] },
+      "scaleX": { "value": 1, "keyframes": [] },
+      "scaleY": { "value": 1, "keyframes": [] },
+      "opacity": { "value": 1, "keyframes": [] },
       "isDraggingInTimeline": false,
-      "borderRadius": 0,
-      "rotation": 0,
-      "cropLeft": 0,
-      "cropTop": 0,
-      "cropRight": 0,
-      "cropBottom": 0,
+      "borderRadius": { "value": 0, "keyframes": [] },
+      "rotation": { "value": 0, "keyframes": [] },
+      "cropLeft": { "value": 0, "keyframes": [] },
+      "cropTop": { "value": 0, "keyframes": [] },
+      "cropRight": { "value": 0, "keyframes": [] },
+      "cropBottom": { "value": 0, "keyframes": [] },
       "keepAspectRatio": true,
       "animations": {
         "in": {
@@ -58,14 +77,16 @@
       "shape": "rectangle",
       "startTicks": 120,
       "durationTicks": 120,
-      "top": 0,
-      "left": 0,
-      "width": 1920,
-      "height": 1080,
-      "opacity": 1,
+      "top": { "value": 0, "keyframes": [] },
+      "left": { "value": 0, "keyframes": [] },
+      "width": { "value": 1920, "keyframes": [] },
+      "height": { "value": 1080, "keyframes": [] },
+      "scaleX": { "value": 1, "keyframes": [] },
+      "scaleY": { "value": 1, "keyframes": [] },
+      "opacity": { "value": 1, "keyframes": [] },
       "isDraggingInTimeline": false,
-      "borderRadius": 0,
-      "rotation": 0,
+      "borderRadius": { "value": 0, "keyframes": [] },
+      "rotation": { "value": 0, "keyframes": [] },
       "keepAspectRatio": false
     },
     "item-effect-1": {
@@ -75,11 +96,6 @@
       "intensity": 1,
       "startTicks": 10,
       "durationTicks": 30,
-      "top": 0,
-      "left": 0,
-      "width": 1920,
-      "height": 1080,
-      "opacity": 1,
       "isDraggingInTimeline": false
     },
     "item-filter-1": {
@@ -92,12 +108,52 @@
       },
       "startTicks": 45,
       "durationTicks": 40,
-      "top": 0,
-      "left": 0,
-      "width": 1920,
-      "height": 1080,
-      "opacity": 1,
       "isDraggingInTimeline": false
+    },
+    "item-text-1": {
+      "id": "item-text-1",
+      "type": "text",
+      "text": "Caption animation example",
+      "color": "#ffffff",
+      "align": "center",
+      "fontFamily": "TikTok Sans",
+      "fontStyle": {
+        "variant": "normal",
+        "weight": "600"
+      },
+      "fontSize": 64,
+      "lineHeight": 1.1,
+      "letterSpacing": 0,
+      "resizeOnEdit": true,
+      "direction": "ltr",
+      "strokeWidth": 0,
+      "strokeColor": "#000000",
+      "background": null,
+      "rotation": { "value": 0, "keyframes": [] },
+      "startTicks": 90,
+      "durationTicks": 120,
+      "top": { "value": 160, "keyframes": [] },
+      "left": { "value": 160, "keyframes": [] },
+      "width": { "value": 960, "keyframes": [] },
+      "height": { "value": 240, "keyframes": [] },
+      "scaleX": { "value": 1, "keyframes": [] },
+      "scaleY": { "value": 1, "keyframes": [] },
+      "opacity": { "value": 1, "keyframes": [] },
+      "isDraggingInTimeline": false,
+      "captionAnimations": {
+        "in": {
+          "type": "converge",
+          "durationTicks": 24
+        },
+        "loop": {
+          "type": "jitter",
+          "durationTicks": 30
+        },
+        "out": {
+          "type": "curtain-close",
+          "durationTicks": 24
+        }
+      }
     }
   },
   "transitions": {
