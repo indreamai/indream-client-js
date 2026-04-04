@@ -100,7 +100,7 @@ const waitForProjectAsset = async (params: {
 
 describe('live projects and assets flow', () => {
   it(
-    'creates a project, uploads an asset, binds it to the project, and cleans up',
+    'creates a project, uploads an asset, exports from the project, and cleans up',
     async () => {
       const client = createLiveClient()
       const suffix = randomUUID().slice(0, 8)
@@ -146,6 +146,30 @@ describe('live projects and assets flow', () => {
         expect(
           (reloadedProject.editorState.items['item-solid-1'] as { color?: string }).color
         ).toBe('#22c55e')
+
+        const createdExport = await client.projects.createExport(
+          projectId,
+          {
+            ratio: '16:9',
+            scale: 0.6,
+            fps: 30,
+            format: 'mp4',
+          },
+          {
+            idempotencyKey: `live-project-export-${suffix}`,
+          }
+        )
+        expect(createdExport.taskId).toBeTruthy()
+        expect(createdExport.projectId).toBe(projectId)
+
+        const completedExport = await client.exports.wait(createdExport.taskId, {
+          timeoutMs: 20 * 60 * 1000,
+          pollIntervalMs: 3_000,
+        })
+        expect(completedExport.taskId).toBe(createdExport.taskId)
+        expect(completedExport.projectId).toBe(projectId)
+        expect(completedExport.status).toBe('COMPLETED')
+        expect(completedExport.outputUrl).toBeTruthy()
 
         let uploadedAsset
         try {
@@ -220,6 +244,6 @@ describe('live projects and assets flow', () => {
         }
       }
     },
-    10 * 60 * 1000
+    25 * 60 * 1000
   )
 })
