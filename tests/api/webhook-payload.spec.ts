@@ -8,6 +8,7 @@ describe('webhook payload contract', () => {
       occurredAt: '2026-03-11T13:00:00.000Z',
       task: {
         taskId: '638ad4d9-51e5-42ec-bb50-0db761bba304',
+        projectId: '93fb8aa8-c301-441d-bb8d-ea733cd72a7e',
         createdByApiKeyId: '36daa18d-1cfb-4828-bef4-309e27de4235',
         clientTaskId: 'client-1',
         status: 'COMPLETED',
@@ -27,6 +28,7 @@ describe('webhook payload contract', () => {
 
     const parsed = parseExportWebhookEvent(payload)
     expect(parsed.eventType).toBe('EXPORT_COMPLETED')
+    expect(parsed.task.projectId).toBe('93fb8aa8-c301-441d-bb8d-ea733cd72a7e')
     expect(parsed.task.status).toBe('COMPLETED')
     expect(parsed.task.durationSeconds).toBe(18.4)
     expect(parsed.task.billedStandardSeconds).toBe(32)
@@ -52,6 +54,7 @@ describe('webhook payload contract', () => {
       occurredAt: '2026-03-11T13:00:00.000Z',
       task: {
         taskId: 'f8353d52-c938-4949-a452-376e3d1c92eb',
+        projectId: null,
         createdByApiKeyId: null,
         clientTaskId: null,
         status: 'COMPLETED',
