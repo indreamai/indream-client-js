@@ -1,8 +1,8 @@
 # @indreamai/client
 
-Official JavaScript/TypeScript client for the Indream Open API.
+Official JavaScript/TypeScript client for the [Indream](https://indream.ai/) Open API.
 
-- API docs: https://docs.indream.ai
+- API docs: [Video Editor API](https://docs.indream.ai)
 - Supports Node.js 18+ and Edge runtimes
 
 ## Installation
