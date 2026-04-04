@@ -1,8 +1,22 @@
 import { createApiError, type APIError } from './errors'
+import { AssetsResource } from './resources/assets'
 import { ExportsResource } from './resources/exports'
 import { EditorResource } from './resources/editor'
+import { ProjectsResource } from './resources/projects'
+import { UploadsResource } from './resources/uploads'
 import { shouldRetryStatus, withRetry } from './retry'
 import type { IApiEnvelope, IClientOptions } from './types'
+
+const isBodyInit = (value: unknown): value is BodyInit => {
+  if (typeof value === 'string') return true
+  if (value instanceof URLSearchParams) return true
+  if (value instanceof ArrayBuffer) return true
+  if (ArrayBuffer.isView(value)) return true
+  if (typeof Blob !== 'undefined' && value instanceof Blob) return true
+  if (typeof FormData !== 'undefined' && value instanceof FormData) return true
+  if (typeof ReadableStream !== 'undefined' && value instanceof ReadableStream) return true
+  return false
+}
 
 export class IndreamClient {
   readonly apiKey: string
@@ -14,6 +28,9 @@ export class IndreamClient {
 
   readonly exports: ExportsResource
   readonly editor: EditorResource
+  readonly projects: ProjectsResource
+  readonly uploads: UploadsResource
+  readonly assets: AssetsResource
 
   constructor(options: IClientOptions) {
     if (!options.apiKey) {
@@ -29,12 +46,15 @@ export class IndreamClient {
 
     this.exports = new ExportsResource(this)
     this.editor = new EditorResource(this)
+    this.projects = new ProjectsResource(this)
+    this.uploads = new UploadsResource(this)
+    this.assets = new AssetsResource(this)
   }
 
   async request<T>(
     path: string,
     init: {
-      method: 'GET' | 'POST'
+      method: 'GET' | 'POST' | 'PATCH' | 'DELETE'
       body?: unknown
       headers?: Record<string, string>
       idempotencyKey?: string
@@ -49,7 +69,7 @@ export class IndreamClient {
   async requestEnvelope<T>(
     path: string,
     init: {
-      method: 'GET' | 'POST'
+      method: 'GET' | 'POST' | 'PATCH' | 'DELETE'
       body?: unknown
       headers?: Record<string, string>
       idempotencyKey?: string
@@ -58,7 +78,15 @@ export class IndreamClient {
     }
   ): Promise<IApiEnvelope<T>> {
     const url = `${this.baseURL}${path.startsWith('/') ? path : `/${path}`}`
-    const payload = init.body === undefined ? undefined : JSON.stringify(init.body)
+    const isJsonPayload = init.body !== undefined && !isBodyInit(init.body)
+    let payload: BodyInit | undefined
+    if (init.body !== undefined) {
+      if (isJsonPayload) {
+        payload = JSON.stringify(init.body)
+      } else if (isBodyInit(init.body)) {
+        payload = init.body
+      }
+    }
 
     const execute = async (): Promise<IApiEnvelope<T>> => {
       const controller = new AbortController()
@@ -82,7 +110,7 @@ export class IndreamClient {
         ...init.headers,
       }
 
-      if (payload !== undefined) {
+      if (isJsonPayload && payload !== undefined) {
         headers['Content-Type'] = 'application/json'
       }
 
@@ -90,13 +118,19 @@ export class IndreamClient {
         headers['Idempotency-Key'] = init.idempotencyKey
       }
 
+      const requestInit: RequestInit & { duplex?: 'half' } = {
+        method: init.method,
+        body: payload,
+        headers,
+        signal: controller.signal,
+      }
+
+      if (typeof ReadableStream !== 'undefined' && payload instanceof ReadableStream) {
+        requestInit.duplex = 'half'
+      }
+
       try {
-        const response = await this.fetchImpl(url, {
-          method: init.method,
-          body: payload,
-          headers,
-          signal: controller.signal,
-        })
+        const response = await this.fetchImpl(url, requestInit)
 
         const text = await response.text()
         const parsed = text ? JSON.parse(text) : null

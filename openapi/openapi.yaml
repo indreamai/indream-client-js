@@ -6,18 +6,427 @@ info:
     name: Proprietary
     identifier: LicenseRef-Indream-Proprietary
   description: |
-    Public API for editor export workflow.
+    Public API for editor project persistence, uploads, assets, and export workflow.
+    Use `/v1/exports` for stateless export, or persist projects first and export from `/v1/projects/{projectId}/exports`.
 servers:
   - url: https://api.indream.ai
 security:
   - ApiKeyAuth: []
 tags:
+  - name: Projects
+    description: Persistent editor project APIs.
+  - name: Uploads
+    description: Direct upload APIs for creating reusable assets.
+  - name: Assets
+    description: Asset detail and project asset binding APIs.
   - name: Exports
     description: Export task lifecycle APIs.
   - name: Editor
     description: Editor capabilities and state validation APIs.
 
 paths:
+  /v1/projects:
+    post:
+      tags: [Projects]
+      summary: Create project
+      description: |
+        Create a persistent editor project.
+        `editorState` is required.
+        `Idempotency-Key` is optional.
+        This endpoint requires eligible OpenAPI resource access.
+      operationId: createProject
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProjectRequest'
+            example:
+              title: Product launch draft
+              description: First persistent draft
+              editorState:
+                timebaseTicksPerSecond: 240000
+                compositionWidth: 1920
+                compositionHeight: 1080
+                outputRatio: '16:9'
+                tracks: []
+                assets: {}
+                items: {}
+                transitions: {}
+                globalBackground:
+                  type: none
+                deletedAssets: []
+      responses:
+        '201':
+          description: Project created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectSummaryEnvelope'
+        '400':
+          $ref: '#/components/responses/Problem'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '409':
+          $ref: '#/components/responses/Problem'
+        '422':
+          $ref: '#/components/responses/Problem'
+    get:
+      tags: [Projects]
+      summary: List projects
+      description: |
+        List persistent editor projects for the current API key owner.
+        Response items are summaries only and do not include `editorState`.
+      operationId: listProjects
+      parameters:
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/PageCursor'
+      responses:
+        '200':
+          description: Project summaries
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListProjectsResponseEnvelope'
+        '400':
+          $ref: '#/components/responses/Problem'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+
+  /v1/projects/{projectId}:
+    get:
+      tags: [Projects]
+      summary: Get project detail
+      description: |
+        Return project metadata together with the latest persisted `editorState`.
+      operationId: getProject
+      parameters:
+        - $ref: '#/components/parameters/ProjectId'
+      responses:
+        '200':
+          description: Project detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectDetailEnvelope'
+        '400':
+          $ref: '#/components/responses/Problem'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+        '422':
+          $ref: '#/components/responses/Problem'
+    patch:
+      tags: [Projects]
+      summary: Patch project metadata
+      description: |
+        Update only `title` and `description`.
+        Use `/v1/projects/{projectId}/sync` to replace `editorState`.
+      operationId: patchProject
+      parameters:
+        - $ref: '#/components/parameters/ProjectId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchProjectRequest'
+      responses:
+        '200':
+          description: Project metadata updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectMetadataEnvelope'
+        '400':
+          $ref: '#/components/responses/Problem'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+        '422':
+          $ref: '#/components/responses/Problem'
+    delete:
+      tags: [Projects]
+      summary: Delete project
+      description: Delete a persistent project.
+      operationId: deleteProject
+      parameters:
+        - $ref: '#/components/parameters/ProjectId'
+      responses:
+        '200':
+          description: Project deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteProjectEnvelope'
+        '400':
+          $ref: '#/components/responses/Problem'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+        '422':
+          $ref: '#/components/responses/Problem'
+
+  /v1/projects/{projectId}/sync:
+    post:
+      tags: [Projects]
+      summary: Sync editor state
+      description: |
+        Replace the persisted editor state for the project.
+        This endpoint is designed for autosave.
+        Use a moderate sync frequency and back off when the API returns `429 OPEN_API_PROJECT_SYNC_RATE_LIMITED`.
+      operationId: syncProject
+      parameters:
+        - $ref: '#/components/parameters/ProjectId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SyncProjectRequest'
+      responses:
+        '200':
+          description: Project state synced
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncProjectEnvelope'
+        '400':
+          $ref: '#/components/responses/Problem'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+        '422':
+          $ref: '#/components/responses/Problem'
+        '429':
+          $ref: '#/components/responses/Problem'
+
+  /v1/projects/{projectId}/assets:
+    get:
+      tags: [Assets]
+      summary: List project assets
+      description: List assets currently bound to the project.
+      operationId: listProjectAssets
+      parameters:
+        - $ref: '#/components/parameters/ProjectId'
+        - $ref: '#/components/parameters/PageSizeAssets'
+        - $ref: '#/components/parameters/PageCursor'
+      responses:
+        '200':
+          description: Project asset list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListAssetsResponseEnvelope'
+        '400':
+          $ref: '#/components/responses/Problem'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+        '422':
+          $ref: '#/components/responses/Problem'
+    post:
+      tags: [Assets]
+      summary: Add asset to project
+      description: Bind an existing asset to the project without changing the asset itself.
+      operationId: addProjectAsset
+      parameters:
+        - $ref: '#/components/parameters/ProjectId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddProjectAssetRequest'
+      responses:
+        '201':
+          description: Asset bound to project
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectAssetBindingEnvelope'
+        '400':
+          $ref: '#/components/responses/Problem'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+        '422':
+          $ref: '#/components/responses/Problem'
+
+  /v1/projects/{projectId}/assets/{assetId}:
+    delete:
+      tags: [Assets]
+      summary: Remove asset from project
+      description: Remove only the project binding. The asset itself remains available for reuse.
+      operationId: deleteProjectAsset
+      parameters:
+        - $ref: '#/components/parameters/ProjectId'
+        - $ref: '#/components/parameters/AssetId'
+      responses:
+        '200':
+          description: Asset binding removed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteProjectAssetEnvelope'
+        '400':
+          $ref: '#/components/responses/Problem'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+        '422':
+          $ref: '#/components/responses/Problem'
+
+  /v1/projects/{projectId}/exports:
+    post:
+      tags: [Exports]
+      summary: Create export task from project
+      description: |
+        Create a cloud export task from the latest persisted project state.
+        `Idempotency-Key` is optional.
+        If header is omitted but `clientTaskId` is provided, task deduplication uses `clientTaskId`.
+        The created task may include `projectId` for downstream tracking, webhook correlation, and task listing.
+      operationId: createProjectExport
+      parameters:
+        - $ref: '#/components/parameters/ProjectId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProjectExportRequest'
+      responses:
+        '201':
+          description: Export task created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateExportResponseEnvelope'
+        '400':
+          $ref: '#/components/responses/Problem'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '409':
+          $ref: '#/components/responses/Problem'
+        '422':
+          $ref: '#/components/responses/Problem'
+
+  /v1/uploads:
+    post:
+      tags: [Uploads]
+      summary: Upload a file
+      description: |
+        Upload a file with a single request and create an asset immediately.
+        Send the file bytes as the raw request body.
+        Set `Content-Type` to the file MIME type and `x-file-name` to the original filename.
+        When `x-project-id` is provided, the created asset is also bound to that project.
+      operationId: uploadAsset
+      parameters:
+        - $ref: '#/components/parameters/UploadFileName'
+        - $ref: '#/components/parameters/UploadProjectId'
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '201':
+          description: Asset created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssetEnvelope'
+        '400':
+          $ref: '#/components/responses/Problem'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '422':
+          $ref: '#/components/responses/Problem'
+
+  /v1/assets/{assetId}:
+    get:
+      tags: [Assets]
+      summary: Get asset detail
+      description: Return the core fields needed to reuse an uploaded file in editor JSON.
+      operationId: getAsset
+      parameters:
+        - $ref: '#/components/parameters/AssetId'
+      responses:
+        '200':
+          description: Asset detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssetEnvelope'
+        '400':
+          $ref: '#/components/responses/Problem'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+    delete:
+      tags: [Assets]
+      summary: Delete asset
+      description: |
+        Soft-delete the asset after reference checks pass.
+        If the asset is still referenced by active records, the request fails with `ASSET_REFERENCED`.
+      operationId: deleteAsset
+      parameters:
+        - $ref: '#/components/parameters/AssetId'
+      responses:
+        '200':
+          description: Asset deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteAssetEnvelope'
+        '400':
+          $ref: '#/components/responses/Problem'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+        '409':
+          $ref: '#/components/responses/Problem'
+
   /v1/exports:
     post:
       tags: [Exports]
@@ -28,13 +437,10 @@ paths:
         - If header is omitted but `clientTaskId` is provided, task deduplication uses `clientTaskId`.
         - If both are omitted, every request creates a new task.
         - Active Open API export tasks are limited to 2 per user. When exceeded, API returns `422 OPEN_API_EXPORT_CONCURRENCY_LIMIT_EXCEEDED`.
+        - Use this route for one-off export. Use `/v1/projects` and `/v1/projects/{projectId}/exports` when you need persistence.
       operationId: createExport
       parameters:
-        - name: Idempotency-Key
-          in: header
-          required: false
-          schema:
-            type: string
+        - $ref: '#/components/parameters/IdempotencyKey'
       requestBody:
         required: true
         content:
@@ -52,6 +458,8 @@ paths:
           $ref: '#/components/responses/Problem'
         '401':
           $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
         '409':
           $ref: '#/components/responses/Problem'
         '422':
@@ -59,21 +467,11 @@ paths:
     get:
       tags: [Exports]
       summary: List export tasks
+      description: List export tasks for the current API key owner. Tasks created from projects include a nullable `projectId`.
       operationId: listExports
       parameters:
-        - name: pageSize
-          in: query
-          required: false
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 50
-            default: 20
-        - name: pageCursor
-          in: query
-          required: false
-          schema:
-            type: string
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/PageCursor'
         - name: createdByApiKeyId
           in: query
           required: false
@@ -91,11 +489,14 @@ paths:
           $ref: '#/components/responses/Problem'
         '401':
           $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
 
   /v1/exports/{taskId}:
     get:
       tags: [Exports]
       summary: Get export task
+      description: Return one export task snapshot. Project-based exports include a nullable `projectId`.
       operationId: getExport
       parameters:
         - name: taskId
@@ -114,6 +515,8 @@ paths:
           $ref: '#/components/responses/Problem'
         '401':
           $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
         '404':
           $ref: '#/components/responses/Problem'
 
@@ -121,6 +524,9 @@ paths:
     get:
       tags: [Editor]
       summary: Get editor capabilities
+      description: |
+        Return editor capability enums and presets.
+        Unlike persistence and export routes, this endpoint does not require paid runtime access.
       operationId: getEditorCapabilities
       responses:
         '200':
@@ -136,6 +542,9 @@ paths:
     post:
       tags: [Editor]
       summary: Validate editor state
+      description: |
+        Validate editor JSON schema and semantic rules before persistence or export.
+        Unlike persistence and export routes, this endpoint does not require paid runtime access.
       operationId: validateEditorState
       requestBody:
         required: true
@@ -166,6 +575,72 @@ components:
       in: header
       name: x-api-key
 
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: false
+      description: |
+        Optional idempotency key for create/finalize style POST requests.
+        When provided, the server replays the first completed response for the same request payload.
+      schema:
+        type: string
+    ProjectId:
+      name: projectId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    AssetId:
+      name: assetId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    UploadFileName:
+      name: x-file-name
+      in: header
+      required: true
+      description: Original filename for the uploaded file.
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 512
+    UploadProjectId:
+      name: x-project-id
+      in: header
+      required: false
+      description: Optional project to bind the created asset to.
+      schema:
+        type: string
+        format: uuid
+    PageSize:
+      name: pageSize
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 50
+        default: 20
+    PageSizeAssets:
+      name: pageSize
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 80
+    PageCursor:
+      name: pageCursor
+      in: query
+      required: false
+      schema:
+        type: string
+
   responses:
     Problem:
       description: Error response
@@ -173,11 +648,21 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Problem'
+          examples:
+            runtimeAccessForbidden:
+              summary: Runtime entitlement required
+              value:
+                type: FORBIDDEN
+                title: Forbidden
+                status: 403
+                detail: The current account is not eligible for this Open API route
+                errorCode: OPEN_API_RUNTIME_ACCESS_FORBIDDEN
 
   schemas:
     Problem:
       type: object
       required: [type, title, status, detail]
+      description: Problem-details style error payload with a stable `errorCode`.
       properties:
         type:
           type: string
@@ -190,9 +675,48 @@ components:
         errorCode:
           type: string
 
+    CreateProjectRequest:
+      type: object
+      required: [editorState]
+      description: Request body for creating a persistent editor project.
+      properties:
+        title:
+          type: string
+          maxLength: 120
+        description:
+          type: [string, 'null']
+          maxLength: 500
+        editorState:
+          $ref: './schemas/editor-state.v1.schema.json'
+        stateVersion:
+          type: string
+          maxLength: 32
+
+    PatchProjectRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          maxLength: 120
+        description:
+          type: [string, 'null']
+          maxLength: 500
+
+    SyncProjectRequest:
+      type: object
+      required: [editorState]
+      description: Request body for autosave-style editor state sync.
+      properties:
+        editorState:
+          $ref: './schemas/editor-state.v1.schema.json'
+        stateVersion:
+          type: string
+          maxLength: 32
+
     CreateExportRequest:
       type: object
       required: [editorState, ratio, scale, fps, format]
+      description: Request body for stateless export creation.
       properties:
         clientTaskId:
           type: string
@@ -231,12 +755,153 @@ components:
           additionalProperties:
             type: string
 
+    CreateProjectExportRequest:
+      type: object
+      required: [ratio, scale, fps, format]
+      description: Request body for project-based export creation.
+      properties:
+        clientTaskId:
+          type: string
+          maxLength: 128
+        fps:
+          type: integer
+          enum: [30, 60]
+        ratio:
+          type: string
+          enum: ['16:9', '9:16', '1:1', '4:3', '3:4', 'custom']
+        scale:
+          type: number
+          minimum: 0.6
+          maximum: 8.0
+        format:
+          type: string
+          enum: [mp4, webm]
+        callbackUrl:
+          type: string
+          maxLength: 1024
+        callbackHeaders:
+          type: object
+          additionalProperties:
+            type: string
+
+    AddProjectAssetRequest:
+      type: object
+      required: [assetId]
+      properties:
+        assetId:
+          type: string
+          format: uuid
+
+    ProjectSummary:
+      type: object
+      required: [projectId, title, description, createdAt, updatedAt]
+      properties:
+        projectId:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: [string, 'null']
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    ProjectDetail:
+      allOf:
+        - $ref: '#/components/schemas/ProjectSummary'
+        - type: object
+          required: [editorState, stateVersion]
+          properties:
+            editorState:
+              $ref: './schemas/editor-state.v1.schema.json'
+            stateVersion:
+              type: string
+      description: Project detail response, including the latest persisted editor state.
+
+    ProjectMetadata:
+      type: object
+      required: [projectId, title, description, updatedAt]
+      properties:
+        projectId:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: [string, 'null']
+        updatedAt:
+          type: string
+          format: date-time
+
+    SyncProjectResponseData:
+      type: object
+      required: [projectId, stateVersion, updatedAt]
+      properties:
+        projectId:
+          type: string
+          format: uuid
+        stateVersion:
+          type: string
+        updatedAt:
+          type: string
+          format: date-time
+
+    Asset:
+      type: object
+      description: |
+        Core asset fields returned by OpenAPI.
+        To reference uploaded files in editor JSON, map `fileUrl` to `assets[*].remoteUrl` and `fileKey` to `assets[*].remoteKey`.
+      required:
+        - assetId
+        - type
+        - source
+        - filename
+        - mimetype
+        - size
+        - fileUrl
+        - fileKey
+        - width
+        - height
+        - duration
+      properties:
+        assetId:
+          type: string
+          format: uuid
+        type:
+          type: string
+        source:
+          type: [string, 'null']
+        filename:
+          type: string
+        mimetype:
+          type: string
+        size:
+          type: [integer, 'null']
+        fileUrl:
+          type: string
+        fileKey:
+          type: string
+        width:
+          type: [number, 'null']
+        height:
+          type: [number, 'null']
+        duration:
+          type: [number, 'null']
+
     CreateExportResponseData:
       type: object
       required: [taskId, createdAt, durationSeconds, billedStandardSeconds, chargedCredits]
+      description: Export creation response shared by stateless and project-based export routes.
       properties:
         taskId:
           type: string
+        projectId:
+          type: [string, 'null']
+          format: uuid
         createdAt:
           type: string
           format: date-time
@@ -246,11 +911,15 @@ components:
           type: integer
         chargedCredits:
           type: string
+        chargedCreditPool:
+          type: string
 
     ExportTask:
       type: object
+      description: Export task snapshot returned by task detail, list, and webhook payloads.
       required:
         - taskId
+        - projectId
         - createdByApiKeyId
         - clientTaskId
         - status
@@ -266,6 +935,9 @@ components:
       properties:
         taskId:
           type: string
+        projectId:
+          type: [string, 'null']
+          format: uuid
         createdByApiKeyId:
           type: [string, 'null']
         clientTaskId:
@@ -489,6 +1161,144 @@ components:
             $ref: '#/components/schemas/EditorValidationError'
       additionalProperties: false
 
+    ProjectSummaryEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          $ref: '#/components/schemas/ProjectSummary'
+        meta:
+          type: object
+          additionalProperties: true
+
+    ProjectDetailEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          $ref: '#/components/schemas/ProjectDetail'
+        meta:
+          type: object
+          additionalProperties: true
+
+    ProjectMetadataEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          $ref: '#/components/schemas/ProjectMetadata'
+        meta:
+          type: object
+          additionalProperties: true
+
+    SyncProjectEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          $ref: '#/components/schemas/SyncProjectResponseData'
+        meta:
+          type: object
+          additionalProperties: true
+
+    DeleteProjectEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: object
+          required: [projectId, deleted]
+          properties:
+            projectId:
+              type: string
+              format: uuid
+            deleted:
+              type: boolean
+        meta:
+          type: object
+          additionalProperties: true
+
+    AssetEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          $ref: '#/components/schemas/Asset'
+        meta:
+          type: object
+          additionalProperties: true
+
+    ListAssetsResponseEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Asset'
+        meta:
+          type: object
+          properties:
+            nextPageCursor:
+              type: [string, 'null']
+          additionalProperties: true
+
+    ProjectAssetBindingEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: object
+          required: [projectId, assetId]
+          properties:
+            projectId:
+              type: string
+              format: uuid
+            assetId:
+              type: string
+              format: uuid
+        meta:
+          type: object
+          additionalProperties: true
+
+    DeleteProjectAssetEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: object
+          required: [projectId, assetId, deleted]
+          properties:
+            projectId:
+              type: string
+              format: uuid
+            assetId:
+              type: string
+              format: uuid
+            deleted:
+              type: boolean
+        meta:
+          type: object
+          additionalProperties: true
+
+    DeleteAssetEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: object
+          required: [assetId, deleted]
+          properties:
+            assetId:
+              type: string
+              format: uuid
+            deleted:
+              type: boolean
+        meta:
+          type: object
+          additionalProperties: true
+
+
     CreateExportResponseEnvelope:
       type: object
       required: [data, meta]
@@ -517,6 +1327,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ExportTask'
+        meta:
+          type: object
+          properties:
+            nextPageCursor:
+              type: [string, 'null']
+          additionalProperties: true
+
+    ListProjectsResponseEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectSummary'
         meta:
           type: object
           properties:

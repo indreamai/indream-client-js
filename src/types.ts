@@ -35,14 +35,17 @@ export interface ICreateExportRequest {
 
 export interface ICreateExportResponse {
   taskId: string
+  projectId?: string | null
   createdAt: string
   durationSeconds: number
   billedStandardSeconds: number
   chargedCredits: string
+  chargedCreditPool?: string
 }
 
 export interface IExportTask {
   taskId: string
+  projectId?: string | null
   createdByApiKeyId: string | null
   clientTaskId: string | null
   status: TTaskStatus
@@ -152,4 +155,108 @@ export interface IWaitOptions {
   timeoutMs?: number
   pollIntervalMs?: number
   signal?: AbortSignal
+}
+
+export interface IProjectSummary {
+  projectId: string
+  title: string
+  description: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+export interface IProjectDetail extends IProjectSummary {
+  editorState: TEditorStateV1
+  stateVersion: string
+}
+
+export interface ICreateProjectRequest {
+  title?: string
+  description?: string | null
+  editorState: TEditorStateV1
+  stateVersion?: string
+}
+
+export interface IUpdateProjectRequest {
+  title?: string
+  description?: string | null
+}
+
+export interface ISyncProjectRequest {
+  editorState: TEditorStateV1
+  stateVersion?: string
+}
+
+export interface IProjectMetadataResponse {
+  projectId: string
+  title: string
+  description: string | null
+  updatedAt: string
+}
+
+export interface IProjectSyncResponse {
+  projectId: string
+  stateVersion: string
+  updatedAt: string
+}
+
+export interface IDeleteProjectResponse {
+  projectId: string
+  deleted: boolean
+}
+
+export interface IListProjectsResponse {
+  items: IProjectSummary[]
+  nextPageCursor: string | null
+}
+
+export interface IAsset {
+  assetId: string
+  type: string
+  source: string | null
+  filename: string
+  mimetype: string
+  size: number | null
+  fileUrl: string
+  fileKey: string
+  width: number | null
+  height: number | null
+  duration: number | null
+}
+
+export interface IListAssetsResponse {
+  items: IAsset[]
+  nextPageCursor: string | null
+}
+
+export type TUploadBody = Blob | ArrayBuffer | ArrayBufferView | ReadableStream<Uint8Array>
+
+export interface IUploadOptions extends IRequestOptions {
+  filename?: string
+  contentType?: string
+  projectId?: string
+}
+
+export interface IProjectAssetBindingResponse {
+  projectId: string
+  assetId: string
+}
+
+export interface IDeleteProjectAssetResponse extends IProjectAssetBindingResponse {
+  deleted: boolean
+}
+
+export interface IDeleteAssetResponse {
+  assetId: string
+  deleted: boolean
+}
+
+export interface ICreateProjectExportRequest {
+  clientTaskId?: string
+  fps: 30 | 60
+  ratio: TExportRatio
+  scale: number
+  format: TExportFormat
+  callbackUrl?: string
+  callbackHeaders?: Record<string, string>
 }

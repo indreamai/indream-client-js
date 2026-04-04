@@ -4,6 +4,200 @@
  */
 
 export interface paths {
+    "/v1/projects": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List projects
+         * @description List persistent editor projects for the current API key owner.
+         *     Response items are summaries only and do not include `editorState`.
+         */
+        get: operations["listProjects"];
+        put?: never;
+        /**
+         * Create project
+         * @description Create a persistent editor project.
+         *     `editorState` is required.
+         *     `Idempotency-Key` is optional.
+         *     This endpoint requires eligible OpenAPI resource access.
+         */
+        post: operations["createProject"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/projects/{projectId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get project detail
+         * @description Return project metadata together with the latest persisted `editorState`.
+         */
+        get: operations["getProject"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete project
+         * @description Delete a persistent project.
+         */
+        delete: operations["deleteProject"];
+        options?: never;
+        head?: never;
+        /**
+         * Patch project metadata
+         * @description Update only `title` and `description`.
+         *     Use `/v1/projects/{projectId}/sync` to replace `editorState`.
+         */
+        patch: operations["patchProject"];
+        trace?: never;
+    };
+    "/v1/projects/{projectId}/sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Sync editor state
+         * @description Replace the persisted editor state for the project.
+         *     This endpoint is designed for autosave.
+         *     Use a moderate sync frequency and back off when the API returns `429 OPEN_API_PROJECT_SYNC_RATE_LIMITED`.
+         */
+        post: operations["syncProject"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/projects/{projectId}/assets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List project assets
+         * @description List assets currently bound to the project.
+         */
+        get: operations["listProjectAssets"];
+        put?: never;
+        /**
+         * Add asset to project
+         * @description Bind an existing asset to the project without changing the asset itself.
+         */
+        post: operations["addProjectAsset"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/projects/{projectId}/assets/{assetId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Remove asset from project
+         * @description Remove only the project binding. The asset itself remains available for reuse.
+         */
+        delete: operations["deleteProjectAsset"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/projects/{projectId}/exports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create export task from project
+         * @description Create a cloud export task from the latest persisted project state.
+         *     `Idempotency-Key` is optional.
+         *     If header is omitted but `clientTaskId` is provided, task deduplication uses `clientTaskId`.
+         *     The created task may include `projectId` for downstream tracking, webhook correlation, and task listing.
+         */
+        post: operations["createProjectExport"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/uploads": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Upload a file
+         * @description Upload a file with a single request and create an asset immediately.
+         *     Send the file bytes as the raw request body.
+         *     Set `Content-Type` to the file MIME type and `x-file-name` to the original filename.
+         *     When `x-project-id` is provided, the created asset is also bound to that project.
+         */
+        post: operations["uploadAsset"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/assets/{assetId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get asset detail
+         * @description Return the core fields needed to reuse an uploaded file in editor JSON.
+         */
+        get: operations["getAsset"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete asset
+         * @description Soft-delete the asset after reference checks pass.
+         *     If the asset is still referenced by active records, the request fails with `ASSET_REFERENCED`.
+         */
+        delete: operations["deleteAsset"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/exports": {
         parameters: {
             query?: never;
@@ -11,7 +205,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** List export tasks */
+        /**
+         * List export tasks
+         * @description List export tasks for the current API key owner. Tasks created from projects include a nullable `projectId`.
+         */
         get: operations["listExports"];
         put?: never;
         /**
@@ -21,6 +218,7 @@ export interface paths {
          *     - If header is omitted but `clientTaskId` is provided, task deduplication uses `clientTaskId`.
          *     - If both are omitted, every request creates a new task.
          *     - Active Open API export tasks are limited to 2 per user. When exceeded, API returns `422 OPEN_API_EXPORT_CONCURRENCY_LIMIT_EXCEEDED`.
+         *     - Use this route for one-off export. Use `/v1/projects` and `/v1/projects/{projectId}/exports` when you need persistence.
          */
         post: operations["createExport"];
         delete?: never;
@@ -36,7 +234,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get export task */
+        /**
+         * Get export task
+         * @description Return one export task snapshot. Project-based exports include a nullable `projectId`.
+         */
         get: operations["getExport"];
         put?: never;
         post?: never;
@@ -53,7 +254,11 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get editor capabilities */
+        /**
+         * Get editor capabilities
+         * @description Return editor capability enums and presets.
+         *     Unlike persistence and export routes, this endpoint does not require paid runtime access.
+         */
         get: operations["getEditorCapabilities"];
         put?: never;
         post?: never;
@@ -72,7 +277,11 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Validate editor state */
+        /**
+         * Validate editor state
+         * @description Validate editor JSON schema and semantic rules before persistence or export.
+         *     Unlike persistence and export routes, this endpoint does not require paid runtime access.
+         */
         post: operations["validateEditorState"];
         delete?: never;
         options?: never;
@@ -84,6 +293,7 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** @description Problem-details style error payload with a stable `errorCode`. */
         Problem: {
             type: string;
             title: string;
@@ -91,6 +301,23 @@ export interface components {
             detail: string;
             errorCode?: string;
         };
+        /** @description Request body for creating a persistent editor project. */
+        CreateProjectRequest: {
+            title?: string;
+            description?: string | null;
+            editorState: components["schemas"]["editor-state.v1.schema"];
+            stateVersion?: string;
+        };
+        PatchProjectRequest: {
+            title?: string;
+            description?: string | null;
+        };
+        /** @description Request body for autosave-style editor state sync. */
+        SyncProjectRequest: {
+            editorState: components["schemas"]["editor-state.v1.schema"];
+            stateVersion?: string;
+        };
+        /** @description Request body for stateless export creation. */
         CreateExportRequest: {
             clientTaskId?: string;
             editorState: components["schemas"]["editor-state.v1.schema"];
@@ -109,16 +336,90 @@ export interface components {
                 [key: string]: string;
             };
         };
+        /** @description Request body for project-based export creation. */
+        CreateProjectExportRequest: {
+            clientTaskId?: string;
+            /** @enum {integer} */
+            fps: 30 | 60;
+            /** @enum {string} */
+            ratio: "16:9" | "9:16" | "1:1" | "4:3" | "3:4" | "custom";
+            scale: number;
+            /** @enum {string} */
+            format: "mp4" | "webm";
+            callbackUrl?: string;
+            callbackHeaders?: {
+                [key: string]: string;
+            };
+        };
+        AddProjectAssetRequest: {
+            /** Format: uuid */
+            assetId: string;
+        };
+        ProjectSummary: {
+            /** Format: uuid */
+            projectId: string;
+            title: string;
+            description: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        /** @description Project detail response, including the latest persisted editor state. */
+        ProjectDetail: components["schemas"]["ProjectSummary"] & {
+            editorState: components["schemas"]["editor-state.v1.schema"];
+            stateVersion: string;
+        };
+        ProjectMetadata: {
+            /** Format: uuid */
+            projectId: string;
+            title: string;
+            description: string | null;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        SyncProjectResponseData: {
+            /** Format: uuid */
+            projectId: string;
+            stateVersion: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        /**
+         * @description Core asset fields returned by OpenAPI.
+         *     To reference uploaded files in editor JSON, map `fileUrl` to `assets[*].remoteUrl` and `fileKey` to `assets[*].remoteKey`.
+         */
+        Asset: {
+            /** Format: uuid */
+            assetId: string;
+            type: string;
+            source: string | null;
+            filename: string;
+            mimetype: string;
+            size: number | null;
+            fileUrl: string;
+            fileKey: string;
+            width: number | null;
+            height: number | null;
+            duration: number | null;
+        };
+        /** @description Export creation response shared by stateless and project-based export routes. */
         CreateExportResponseData: {
             taskId: string;
+            /** Format: uuid */
+            projectId?: string | null;
             /** Format: date-time */
             createdAt: string;
             durationSeconds: number;
             billedStandardSeconds: number;
             chargedCredits: string;
+            chargedCreditPool?: string;
         };
+        /** @description Export task snapshot returned by task detail, list, and webhook payloads. */
         ExportTask: {
             taskId: string;
+            /** Format: uuid */
+            projectId: string | null;
             createdByApiKeyId: string | null;
             clientTaskId: string | null;
             /** @enum {string} */
@@ -207,6 +508,87 @@ export interface components {
             valid: boolean;
             errors: components["schemas"]["EditorValidationError"][];
         };
+        ProjectSummaryEnvelope: {
+            data: components["schemas"]["ProjectSummary"];
+            meta: {
+                [key: string]: unknown;
+            };
+        };
+        ProjectDetailEnvelope: {
+            data: components["schemas"]["ProjectDetail"];
+            meta: {
+                [key: string]: unknown;
+            };
+        };
+        ProjectMetadataEnvelope: {
+            data: components["schemas"]["ProjectMetadata"];
+            meta: {
+                [key: string]: unknown;
+            };
+        };
+        SyncProjectEnvelope: {
+            data: components["schemas"]["SyncProjectResponseData"];
+            meta: {
+                [key: string]: unknown;
+            };
+        };
+        DeleteProjectEnvelope: {
+            data: {
+                /** Format: uuid */
+                projectId: string;
+                deleted: boolean;
+            };
+            meta: {
+                [key: string]: unknown;
+            };
+        };
+        AssetEnvelope: {
+            data: components["schemas"]["Asset"];
+            meta: {
+                [key: string]: unknown;
+            };
+        };
+        ListAssetsResponseEnvelope: {
+            data: components["schemas"]["Asset"][];
+            meta: {
+                nextPageCursor?: string | null;
+            } & {
+                [key: string]: unknown;
+            };
+        };
+        ProjectAssetBindingEnvelope: {
+            data: {
+                /** Format: uuid */
+                projectId: string;
+                /** Format: uuid */
+                assetId: string;
+            };
+            meta: {
+                [key: string]: unknown;
+            };
+        };
+        DeleteProjectAssetEnvelope: {
+            data: {
+                /** Format: uuid */
+                projectId: string;
+                /** Format: uuid */
+                assetId: string;
+                deleted: boolean;
+            };
+            meta: {
+                [key: string]: unknown;
+            };
+        };
+        DeleteAssetEnvelope: {
+            data: {
+                /** Format: uuid */
+                assetId: string;
+                deleted: boolean;
+            };
+            meta: {
+                [key: string]: unknown;
+            };
+        };
         CreateExportResponseEnvelope: {
             data: components["schemas"]["CreateExportResponseData"];
             meta: {
@@ -221,6 +603,14 @@ export interface components {
         };
         ListExportsResponseEnvelope: {
             data: components["schemas"]["ExportTask"][];
+            meta: {
+                nextPageCursor?: string | null;
+            } & {
+                [key: string]: unknown;
+            };
+        };
+        ListProjectsResponseEnvelope: {
+            data: components["schemas"]["ProjectSummary"][];
             meta: {
                 nextPageCursor?: string | null;
             } & {
@@ -676,18 +1066,443 @@ export interface components {
             };
         };
     };
-    parameters: never;
+    parameters: {
+        /**
+         * @description Optional idempotency key for create/finalize style POST requests.
+         *     When provided, the server replays the first completed response for the same request payload.
+         */
+        IdempotencyKey: string;
+        ProjectId: string;
+        AssetId: string;
+        /** @description Original filename for the uploaded file. */
+        UploadFileName: string;
+        /** @description Optional project to bind the created asset to. */
+        UploadProjectId: string;
+        PageSize: number;
+        PageSizeAssets: number;
+        PageCursor: string;
+    };
     requestBodies: never;
     headers: never;
     pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    listProjects: {
+        parameters: {
+            query?: {
+                pageSize?: components["parameters"]["PageSize"];
+                pageCursor?: components["parameters"]["PageCursor"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Project summaries */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListProjectsResponseEnvelope"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    createProject: {
+        parameters: {
+            query?: never;
+            header?: {
+                /**
+                 * @description Optional idempotency key for create/finalize style POST requests.
+                 *     When provided, the server replays the first completed response for the same request payload.
+                 */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                /**
+                 * @example {
+                 *       "title": "Product launch draft",
+                 *       "description": "First persistent draft",
+                 *       "editorState": {
+                 *         "timebaseTicksPerSecond": 240000,
+                 *         "compositionWidth": 1920,
+                 *         "compositionHeight": 1080,
+                 *         "outputRatio": "16:9",
+                 *         "tracks": [],
+                 *         "assets": {},
+                 *         "items": {},
+                 *         "transitions": {},
+                 *         "globalBackground": {
+                 *           "type": "none"
+                 *         },
+                 *         "deletedAssets": []
+                 *       }
+                 *     }
+                 */
+                "application/json": components["schemas"]["CreateProjectRequest"];
+            };
+        };
+        responses: {
+            /** @description Project created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectSummaryEnvelope"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+            422: components["responses"]["Problem"];
+        };
+    };
+    getProject: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: components["parameters"]["ProjectId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Project detail */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectDetailEnvelope"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            422: components["responses"]["Problem"];
+        };
+    };
+    deleteProject: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: components["parameters"]["ProjectId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Project deleted */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteProjectEnvelope"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            422: components["responses"]["Problem"];
+        };
+    };
+    patchProject: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: components["parameters"]["ProjectId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PatchProjectRequest"];
+            };
+        };
+        responses: {
+            /** @description Project metadata updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectMetadataEnvelope"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            422: components["responses"]["Problem"];
+        };
+    };
+    syncProject: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: components["parameters"]["ProjectId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SyncProjectRequest"];
+            };
+        };
+        responses: {
+            /** @description Project state synced */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SyncProjectEnvelope"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            422: components["responses"]["Problem"];
+            429: components["responses"]["Problem"];
+        };
+    };
+    listProjectAssets: {
+        parameters: {
+            query?: {
+                pageSize?: components["parameters"]["PageSizeAssets"];
+                pageCursor?: components["parameters"]["PageCursor"];
+            };
+            header?: never;
+            path: {
+                projectId: components["parameters"]["ProjectId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Project asset list */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListAssetsResponseEnvelope"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            422: components["responses"]["Problem"];
+        };
+    };
+    addProjectAsset: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: components["parameters"]["ProjectId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AddProjectAssetRequest"];
+            };
+        };
+        responses: {
+            /** @description Asset bound to project */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectAssetBindingEnvelope"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            422: components["responses"]["Problem"];
+        };
+    };
+    deleteProjectAsset: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: components["parameters"]["ProjectId"];
+                assetId: components["parameters"]["AssetId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Asset binding removed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteProjectAssetEnvelope"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            422: components["responses"]["Problem"];
+        };
+    };
+    createProjectExport: {
+        parameters: {
+            query?: never;
+            header?: {
+                /**
+                 * @description Optional idempotency key for create/finalize style POST requests.
+                 *     When provided, the server replays the first completed response for the same request payload.
+                 */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                projectId: components["parameters"]["ProjectId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateProjectExportRequest"];
+            };
+        };
+        responses: {
+            /** @description Export task created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateExportResponseEnvelope"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+            422: components["responses"]["Problem"];
+        };
+    };
+    uploadAsset: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Original filename for the uploaded file. */
+                "x-file-name": components["parameters"]["UploadFileName"];
+                /** @description Optional project to bind the created asset to. */
+                "x-project-id"?: components["parameters"]["UploadProjectId"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/octet-stream": string;
+            };
+        };
+        responses: {
+            /** @description Asset created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssetEnvelope"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            422: components["responses"]["Problem"];
+        };
+    };
+    getAsset: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                assetId: components["parameters"]["AssetId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Asset detail */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssetEnvelope"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    deleteAsset: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                assetId: components["parameters"]["AssetId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Asset deleted */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteAssetEnvelope"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+        };
+    };
     listExports: {
         parameters: {
             query?: {
-                pageSize?: number;
-                pageCursor?: string;
+                pageSize?: components["parameters"]["PageSize"];
+                pageCursor?: components["parameters"]["PageCursor"];
                 createdByApiKeyId?: string;
             };
             header?: never;
@@ -707,13 +1522,18 @@ export interface operations {
             };
             400: components["responses"]["Problem"];
             401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
         };
     };
     createExport: {
         parameters: {
             query?: never;
             header?: {
-                "Idempotency-Key"?: string;
+                /**
+                 * @description Optional idempotency key for create/finalize style POST requests.
+                 *     When provided, the server replays the first completed response for the same request payload.
+                 */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path?: never;
             cookie?: never;
@@ -735,6 +1555,7 @@ export interface operations {
             };
             400: components["responses"]["Problem"];
             401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
             409: components["responses"]["Problem"];
             422: components["responses"]["Problem"];
         };
@@ -761,6 +1582,7 @@ export interface operations {
             };
             400: components["responses"]["Problem"];
             401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
             404: components["responses"]["Problem"];
         };
     };
