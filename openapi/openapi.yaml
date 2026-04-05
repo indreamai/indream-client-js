@@ -574,6 +574,9 @@ components:
       type: apiKey
       in: header
       name: x-api-key
+      description: |
+        Enter your API key manually in the interactive docs playground.
+        The value is stored only in the current browser and is not injected from server environment variables.
 
   parameters:
     IdempotencyKey:
