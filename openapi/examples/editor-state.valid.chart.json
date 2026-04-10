@@ -1,0 +1,96 @@
+{
+  "compositionWidth": 1280,
+  "compositionHeight": 720,
+  "timebaseTicksPerSecond": 240000,
+  "tracks": [
+    {
+      "id": "track-chart",
+      "hidden": false,
+      "muted": false,
+      "items": [
+        "item-chart-1"
+      ]
+    }
+  ],
+  "assets": {},
+  "items": {
+    "item-chart-1": {
+      "id": "item-chart-1",
+      "type": "chart",
+      "chartType": "scatter",
+      "themeColor": "#3B82F6",
+      "data": {
+        "series": [
+          {
+            "key": "seriesA",
+            "label": "Series A"
+          },
+          {
+            "key": "seriesB",
+            "label": "Series B"
+          }
+        ],
+        "points": [
+          {
+            "seriesKey": "seriesA",
+            "x": 12,
+            "y": 22
+          },
+          {
+            "seriesKey": "seriesA",
+            "x": 26,
+            "y": 38
+          },
+          {
+            "seriesKey": "seriesB",
+            "x": 18,
+            "y": 16
+          }
+        ]
+      },
+      "startTicks": 0,
+      "durationTicks": 360000,
+      "top": {
+        "value": 100,
+        "keyframes": []
+      },
+      "left": {
+        "value": 160,
+        "keyframes": []
+      },
+      "width": {
+        "value": 960,
+        "keyframes": []
+      },
+      "height": {
+        "value": 520,
+        "keyframes": []
+      },
+      "scaleX": {
+        "value": 1,
+        "keyframes": []
+      },
+      "scaleY": {
+        "value": 1,
+        "keyframes": []
+      },
+      "opacity": {
+        "value": 1,
+        "keyframes": []
+      },
+      "isDraggingInTimeline": false,
+      "keepAspectRatio": false,
+      "rotation": {
+        "value": 0,
+        "keyframes": []
+      },
+      "animationDurationTicks": 120000
+    }
+  },
+  "transitions": {},
+  "globalBackground": {
+    "type": "none"
+  },
+  "brandRuntime": null,
+  "deletedAssets": []
+}

@@ -188,7 +188,19 @@ export const optionalFieldValidCases: TEditorStateFixtureCase[] = [
   },
   {
     name: 'deletedAssets array is valid',
-    build: () => buildMinimalValidEditorState({ deletedAssets: [{ id: 'asset-old-1' }] }),
+    build: () =>
+      buildMinimalValidEditorState({
+        deletedAssets: [
+          {
+            assetId: 'asset-old-1',
+            remoteUrl: null,
+            remoteKey: null,
+            statusAtDeletion: {
+              type: 'uploaded',
+            },
+          },
+        ],
+      }),
   },
 ]
 

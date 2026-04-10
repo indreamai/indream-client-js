@@ -544,6 +544,7 @@ paths:
       summary: Validate editor state
       description: |
         Validate editor JSON schema and semantic rules before persistence or export.
+        Semantic checks include keyframe local-time bounds and no-overlap rules within the same track.
         Unlike persistence and export routes, this endpoint does not require paid runtime access.
       operationId: validateEditorState
       requestBody:

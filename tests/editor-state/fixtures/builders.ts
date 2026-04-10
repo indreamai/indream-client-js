@@ -118,9 +118,11 @@ export const createAssetByType = (
       timingGranularity: 'line',
       captions: [
         {
-          startInSeconds: 0,
-          endInSeconds: 1,
           text: 'hello world',
+          startMs: 0,
+          endMs: 1000,
+          timestampMs: 0,
+          confidence: null,
         },
       ],
     }
@@ -252,13 +254,39 @@ export const createItemByType = (
       templateCategory: 'cover',
       nodes: [
         {
+          id: 'template-node-image-1',
           type: 'image',
-          key: 'image-1',
+          imageType: 'svg',
+          imageComponentId: null,
+          imageLottieJson: null,
+          x: 0,
+          y: 0,
+          width: 320,
+          height: 180,
+          opacity: 1,
         },
         {
+          id: 'template-node-text-1',
           type: 'text',
-          key: 'text-1',
+          x: 24,
+          y: 24,
+          width: 272,
+          height: 96,
           text: 'template title',
+          color: '#ffffff',
+          align: 'left',
+          fontFamily: 'Inter',
+          fontStyle: {
+            variant: 'normal',
+            weight: '400',
+          },
+          fontSize: 32,
+          lineHeight: 1.2,
+          letterSpacing: 0,
+          direction: 'ltr',
+          strokeWidth: 0,
+          strokeColor: '#000000',
+          background: null,
         },
       ],
       rotation: staticTrack(0),
@@ -284,8 +312,8 @@ export const createItemByType = (
       strokeColor: '#000000',
       direction: 'ltr',
       pageDurationInMilliseconds: 1000,
-      captionStartInSeconds: 0,
       maxLines: 2,
+      contentStartOffsetMs: 0,
       source: 'manual',
       captionGroupId: null,
       background: {
@@ -347,8 +375,16 @@ export const createItemByType = (
     data: {
       series: [
         {
-          label: 'A',
-          value: 42,
+          key: 'seriesA',
+          label: 'Series A',
+        },
+      ],
+      rows: [
+        {
+          label: 'Row 1',
+          values: {
+            seriesA: 42,
+          },
         },
       ],
     },

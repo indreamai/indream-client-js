@@ -1,0 +1,102 @@
+{
+  "compositionWidth": 1280,
+  "compositionHeight": 720,
+  "timebaseTicksPerSecond": 240000,
+  "tracks": [
+    {
+      "id": "track-template",
+      "hidden": false,
+      "muted": false,
+      "items": [
+        "item-template-1"
+      ]
+    }
+  ],
+  "assets": {},
+  "items": {
+    "item-template-1": {
+      "id": "item-template-1",
+      "type": "text-template",
+      "schemaVersion": 2,
+      "templateId": "template-bad",
+      "templateCategory": "promo",
+      "nodes": [
+        {
+          "type": "image",
+          "imageType": "svg",
+          "imageComponentId": null,
+          "imageLottieJson": null,
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 720,
+          "opacity": 1
+        },
+        {
+          "id": "template-node-text-1",
+          "type": "text",
+          "x": 120,
+          "y": 140,
+          "width": 1040,
+          "height": 180,
+          "text": "Launch in minutes",
+          "color": "#FFFFFF",
+          "align": "left",
+          "fontFamily": "TikTok Sans",
+          "fontStyle": {
+            "variant": "normal",
+            "weight": "700"
+          },
+          "fontSize": 72,
+          "lineHeight": 1.1,
+          "letterSpacing": 0,
+          "direction": "ltr",
+          "strokeWidth": 0,
+          "strokeColor": "#000000",
+          "background": null
+        }
+      ],
+      "startTicks": 0,
+      "durationTicks": 480000,
+      "top": {
+        "value": 0,
+        "keyframes": []
+      },
+      "left": {
+        "value": 0,
+        "keyframes": []
+      },
+      "width": {
+        "value": 1280,
+        "keyframes": []
+      },
+      "height": {
+        "value": 720,
+        "keyframes": []
+      },
+      "scaleX": {
+        "value": 1,
+        "keyframes": []
+      },
+      "scaleY": {
+        "value": 1,
+        "keyframes": []
+      },
+      "opacity": {
+        "value": 1,
+        "keyframes": []
+      },
+      "isDraggingInTimeline": false,
+      "rotation": {
+        "value": 0,
+        "keyframes": []
+      }
+    }
+  },
+  "transitions": {},
+  "globalBackground": {
+    "type": "none"
+  },
+  "brandRuntime": null,
+  "deletedAssets": []
+}

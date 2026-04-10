@@ -4,10 +4,28 @@
   "timebaseTicksPerSecond": 240000,
   "tracks": [
     {
-      "id": "track-1",
+      "id": "track-main",
       "hidden": false,
       "muted": false,
-      "items": ["item-image-1", "item-solid-1", "item-effect-1", "item-filter-1", "item-text-1"]
+      "items": ["item-image-1", "item-solid-1"]
+    },
+    {
+      "id": "track-effect",
+      "hidden": false,
+      "muted": false,
+      "items": ["item-effect-1"]
+    },
+    {
+      "id": "track-filter",
+      "hidden": false,
+      "muted": false,
+      "items": ["item-filter-1"]
+    },
+    {
+      "id": "track-text",
+      "hidden": false,
+      "muted": false,
+      "items": ["item-text-1"]
     }
   ],
   "assets": {
@@ -159,7 +177,7 @@
   "transitions": {
     "transition-1": {
       "id": "transition-1",
-      "trackId": "track-1",
+      "trackId": "track-main",
       "fromClipId": "item-image-1",
       "toClipId": "item-solid-1",
       "type": "fade",

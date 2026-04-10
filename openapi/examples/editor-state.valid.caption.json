@@ -1,0 +1,111 @@
+{
+  "compositionWidth": 1280,
+  "compositionHeight": 720,
+  "timebaseTicksPerSecond": 240000,
+  "tracks": [
+    {
+      "id": "track-caption",
+      "hidden": false,
+      "muted": false,
+      "items": [
+        "item-caption-1"
+      ]
+    }
+  ],
+  "assets": {
+    "asset-caption-1": {
+      "id": "asset-caption-1",
+      "type": "caption",
+      "filename": "captions.json",
+      "size": 256,
+      "remoteUrl": null,
+      "remoteKey": null,
+      "mimeType": "application/json",
+      "timingGranularity": "word",
+      "captions": [
+        {
+          "text": "Hello ",
+          "startMs": 0,
+          "endMs": 420,
+          "timestampMs": 0,
+          "confidence": 0.98
+        },
+        {
+          "text": "world",
+          "startMs": 420,
+          "endMs": 900,
+          "timestampMs": 420,
+          "confidence": 0.96
+        }
+      ]
+    }
+  },
+  "items": {
+    "item-caption-1": {
+      "id": "item-caption-1",
+      "type": "captions",
+      "assetId": "asset-caption-1",
+      "startTicks": 0,
+      "durationTicks": 480000,
+      "top": {
+        "value": 480,
+        "keyframes": []
+      },
+      "left": {
+        "value": 120,
+        "keyframes": []
+      },
+      "width": {
+        "value": 1040,
+        "keyframes": []
+      },
+      "height": {
+        "value": 160,
+        "keyframes": []
+      },
+      "scaleX": {
+        "value": 1,
+        "keyframes": []
+      },
+      "scaleY": {
+        "value": 1,
+        "keyframes": []
+      },
+      "opacity": {
+        "value": 1,
+        "keyframes": []
+      },
+      "isDraggingInTimeline": false,
+      "rotation": {
+        "value": 0,
+        "keyframes": []
+      },
+      "fontFamily": "TikTok Sans",
+      "fontStyle": {
+        "variant": "normal",
+        "weight": "600"
+      },
+      "lineHeight": 1.2,
+      "letterSpacing": 0,
+      "fontSize": 54,
+      "align": "center",
+      "color": "#FFFFFF",
+      "highlightColor": "#39E508",
+      "strokeWidth": 0,
+      "strokeColor": "#000000",
+      "direction": "ltr",
+      "pageDurationInMilliseconds": 1800,
+      "maxLines": 2,
+      "contentStartOffsetMs": 0,
+      "source": "auto",
+      "captionGroupId": "caption-group-1",
+      "background": null
+    }
+  },
+  "transitions": {},
+  "globalBackground": {
+    "type": "none"
+  },
+  "brandRuntime": null,
+  "deletedAssets": []
+}

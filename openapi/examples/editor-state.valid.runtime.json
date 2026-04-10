@@ -1,0 +1,91 @@
+{
+  "compositionWidth": 1280,
+  "compositionHeight": 720,
+  "timebaseTicksPerSecond": 240000,
+  "tracks": [
+    {
+      "id": "track-solid",
+      "hidden": false,
+      "muted": false,
+      "items": [
+        "item-solid-1"
+      ]
+    }
+  ],
+  "assets": {},
+  "items": {
+    "item-solid-1": {
+      "id": "item-solid-1",
+      "type": "solid",
+      "color": "#111827",
+      "shape": "rectangle",
+      "startTicks": 0,
+      "durationTicks": 240000,
+      "top": {
+        "value": 0,
+        "keyframes": []
+      },
+      "left": {
+        "value": 0,
+        "keyframes": []
+      },
+      "width": {
+        "value": 1280,
+        "keyframes": []
+      },
+      "height": {
+        "value": 720,
+        "keyframes": []
+      },
+      "scaleX": {
+        "value": 1,
+        "keyframes": []
+      },
+      "scaleY": {
+        "value": 1,
+        "keyframes": []
+      },
+      "opacity": {
+        "value": 1,
+        "keyframes": []
+      },
+      "isDraggingInTimeline": false,
+      "keepAspectRatio": false,
+      "borderRadius": {
+        "value": 0,
+        "keyframes": []
+      },
+      "rotation": {
+        "value": 0,
+        "keyframes": []
+      }
+    }
+  },
+  "transitions": {},
+  "globalBackground": {
+    "type": "image",
+    "imageAssetId": null,
+    "imageUrl": "https://example.com/background.jpg",
+    "source": "preset"
+  },
+  "brandRuntime": {
+    "brandId": null,
+    "logoX": 48,
+    "logoY": 36,
+    "managedItemIds": [],
+    "managedAssetIds": [],
+    "introShiftInFrames": 0,
+    "overlayTrackId": null,
+    "underlayTrackId": null
+  },
+  "deletedAssets": [
+    {
+      "assetId": "asset-deleted-1",
+      "remoteUrl": "https://example.com/deleted.png",
+      "remoteKey": "deleted.png",
+      "statusAtDeletion": {
+        "type": "uploaded"
+      }
+    }
+  ]
+}
