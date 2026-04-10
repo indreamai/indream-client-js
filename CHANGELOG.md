@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.3.1 - 2026-04-10
+
+### Added
+
+- Added bundled editor state example fixtures for captions, caption offsets, charts, runtime snapshots, deleted assets, and text templates.
+- Added schema example coverage that validates the full bundled valid and invalid editor state fixture set.
+
+### Changed
+
+- Updated generated OpenAPI types and bundled editor state schema to cover caption offset validation, deleted asset status snapshots, text template node contracts, and expanded chart payload shapes.
+- `editor.validate(...)` type metadata now reflects additional semantic validation guidance for keyframe local-time bounds and same-track overlap checks.
+
 ## 0.3.0 - 2026-04-04
 
 ### Added
