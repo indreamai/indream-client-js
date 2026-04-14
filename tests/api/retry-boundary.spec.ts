@@ -79,7 +79,6 @@ describe('retry boundary', () => {
                 images: [],
                 blurLevels: [],
               },
-              illustrations: [],
             },
             meta: {},
           }),

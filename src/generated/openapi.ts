@@ -257,6 +257,7 @@ export interface paths {
     /**
      * Get editor capabilities
      * @description Return editor capability enums and presets.
+     *     Illustration list is provided by `/v1/illustrations`.
      *     Unlike persistence and export routes, this endpoint does not require paid runtime access.
      */
     get: operations['getEditorCapabilities']
@@ -284,6 +285,27 @@ export interface paths {
      *     Unlike persistence and export routes, this endpoint does not require paid runtime access.
      */
     post: operations['validateEditorState']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/v1/illustrations': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Search illustrations
+     * @description Search supported built-in illustration names with an optional fuzzy keyword.
+     *     When `q` is omitted, the endpoint returns the full supported list.
+     */
+    get: operations['searchIllustrations']
+    put?: never
+    post?: never
     delete?: never
     options?: never
     head?: never
@@ -498,7 +520,6 @@ export interface components {
         images: string[]
         blurLevels: number[]
       }
-      illustrations: string[]
     }
     EditorValidationError: {
       code: string
@@ -620,6 +641,12 @@ export interface components {
     }
     EditorCapabilitiesResponseEnvelope: {
       data: components['schemas']['EditorCapabilities']
+      meta: {
+        [key: string]: unknown
+      }
+    }
+    IllustrationSearchResponseEnvelope: {
+      data: string[]
       meta: {
         [key: string]: unknown
       }
@@ -1830,6 +1857,31 @@ export interface operations {
       }
       400: components['responses']['Problem']
       401: components['responses']['Problem']
+    }
+  }
+  searchIllustrations: {
+    parameters: {
+      query?: {
+        q?: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Matching illustration names */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['IllustrationSearchResponseEnvelope']
+        }
+      }
+      400: components['responses']['Problem']
+      401: components['responses']['Problem']
+      403: components['responses']['Problem']
     }
   }
 }

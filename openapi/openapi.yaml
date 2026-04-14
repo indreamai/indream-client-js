@@ -23,6 +23,8 @@ tags:
     description: Export task lifecycle APIs.
   - name: Editor
     description: Editor capabilities and state validation APIs.
+  - name: Materials
+    description: Illustration discovery API for workflow authoring.
 
 paths:
   /v1/projects:
@@ -526,6 +528,7 @@ paths:
       summary: Get editor capabilities
       description: |
         Return editor capability enums and presets.
+        Illustration list is provided by `/v1/illustrations`.
         Unlike persistence and export routes, this endpoint does not require paid runtime access.
       operationId: getEditorCapabilities
       responses:
@@ -567,6 +570,35 @@ paths:
         '400':
           $ref: '#/components/responses/Problem'
         '401':
+          $ref: '#/components/responses/Problem'
+
+  /v1/illustrations:
+    get:
+      tags: [Materials]
+      summary: Search illustrations
+      description: |
+        Search supported built-in illustration names with an optional fuzzy keyword.
+        When `q` is omitted, the endpoint returns the full supported list.
+      operationId: searchIllustrations
+      parameters:
+        - name: q
+          in: query
+          required: false
+          schema:
+            type: string
+            maxLength: 200
+      responses:
+        '200':
+          description: Matching illustration names
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IllustrationSearchResponseEnvelope'
+        '400':
+          $ref: '#/components/responses/Problem'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
           $ref: '#/components/responses/Problem'
 
 components:
@@ -984,7 +1016,6 @@ components:
         - filterPresets
         - shapes
         - backgroundPresets
-        - illustrations
       properties:
         version:
           type: string
@@ -1135,10 +1166,6 @@ components:
               items:
                 type: integer
           additionalProperties: false
-        illustrations:
-          type: array
-          items:
-            type: string
       additionalProperties: false
 
     EditorValidationError:
@@ -1359,6 +1386,18 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/EditorCapabilities'
+        meta:
+          type: object
+          additionalProperties: true
+
+    IllustrationSearchResponseEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items:
+            type: string
         meta:
           type: object
           additionalProperties: true

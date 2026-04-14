@@ -2,6 +2,7 @@ import { createApiError, type APIError } from './errors'
 import { AssetsResource } from './resources/assets'
 import { ExportsResource } from './resources/exports'
 import { EditorResource } from './resources/editor'
+import { IllustrationsResource } from './resources/illustrations'
 import { ProjectsResource } from './resources/projects'
 import { UploadsResource } from './resources/uploads'
 import { shouldRetryStatus, withRetry } from './retry'
@@ -28,6 +29,7 @@ export class IndreamClient {
 
   readonly exports: ExportsResource
   readonly editor: EditorResource
+  readonly illustrations: IllustrationsResource
   readonly projects: ProjectsResource
   readonly uploads: UploadsResource
   readonly assets: AssetsResource
@@ -46,6 +48,7 @@ export class IndreamClient {
 
     this.exports = new ExportsResource(this)
     this.editor = new EditorResource(this)
+    this.illustrations = new IllustrationsResource(this)
     this.projects = new ProjectsResource(this)
     this.uploads = new UploadsResource(this)
     this.assets = new AssetsResource(this)
@@ -77,7 +80,7 @@ export class IndreamClient {
       skipRetry?: boolean
     }
   ): Promise<IApiEnvelope<T>> {
-    const url = `${this.baseURL}${path.startsWith('/') ? path : `/${path}`}`
+    const url = this.baseURL + (path.startsWith('/') ? path : '/' + path)
     const isJsonPayload = init.body !== undefined && !isBodyInit(init.body)
     let payload: BodyInit | undefined
     if (init.body !== undefined) {

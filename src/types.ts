@@ -120,7 +120,6 @@ export interface IEditorCapabilities {
     images: string[]
     blurLevels: number[]
   }
-  illustrations: string[]
 }
 
 export interface IEditorValidationError {
