@@ -2,6 +2,10 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import { extname, resolve } from 'node:path'
 import { randomUUID } from 'node:crypto'
 import { describe, expect, it } from 'vitest'
+
+const RUN_LIVE_INTEGRATION = process.env.INDREAM_RUN_LIVE_TESTS === '1'
+const describeLive = RUN_LIVE_INTEGRATION ? describe : describe.skip
+
 import { IndreamClient } from '../../src/client'
 import type { TEditorStateV1 } from '../../src/types'
 import { getIndreamApiKey, getIndreamApiUrl } from '../utils/env'
@@ -89,7 +93,7 @@ const saveOutputArtifact = async (taskId: string, outputUrl: string): Promise<st
   return artifactPath
 }
 
-describe('live open api export flow', () => {
+describeLive('live open api export flow', () => {
   it(
     'runs validate -> create -> wait -> get and saves output artifact',
     async () => {

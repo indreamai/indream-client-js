@@ -1,4 +1,8 @@
 import { describe, expect, it } from 'vitest'
+
+const RUN_LIVE_INTEGRATION = process.env.INDREAM_RUN_LIVE_TESTS === '1'
+const describeLive = RUN_LIVE_INTEGRATION ? describe : describe.skip
+
 import { ValidationError } from '../../src/errors'
 import { IndreamClient } from '../../src/client'
 import type { TEditorStateV1 } from '../../src/types'
@@ -312,7 +316,7 @@ const buildTextTemplateState = (): TEditorStateV1 => {
   }
 }
 
-describe('live editor-state validation scenarios', () => {
+describeLive('live editor-state validation scenarios', () => {
   it('validates image + transition + color background state', async () => {
     const client = createLiveClient()
     const result = await client.editor.validate(buildImageTransitionState())

@@ -1,6 +1,10 @@
 import { randomUUID } from 'node:crypto'
 import { readFile } from 'node:fs/promises'
 import { describe, expect, it } from 'vitest'
+
+const RUN_LIVE_INTEGRATION = process.env.INDREAM_RUN_LIVE_TESTS === '1'
+const describeLive = RUN_LIVE_INTEGRATION ? describe : describe.skip
+
 import { IndreamClient } from '../../src/client'
 import { APIError } from '../../src/errors'
 import type { IAsset, TEditorStateV1 } from '../../src/types'
@@ -98,7 +102,7 @@ const waitForProjectAsset = async (params: {
   throw new Error(`Asset ${params.assetId} did not appear in project ${params.projectId}`)
 }
 
-describe('live projects and assets flow', () => {
+describeLive('live projects and assets flow', () => {
   it(
     'creates a project, uploads an asset, exports from the project, and cleans up',
     async () => {
