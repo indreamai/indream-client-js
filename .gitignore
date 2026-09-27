@@ -7,3 +7,4 @@ tsconfig.tsbuildinfo
 tests/artifacts/*
 .npmrc
 .tmp
+/tmp/

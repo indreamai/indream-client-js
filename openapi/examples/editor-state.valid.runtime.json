@@ -1,4 +1,5 @@
 {
+  "stateSchemaVersion": "v1",
   "compositionWidth": 1280,
   "compositionHeight": 720,
   "timebaseTicksPerSecond": 240000,
@@ -74,7 +75,7 @@
     "logoY": 36,
     "managedItemIds": [],
     "managedAssetIds": [],
-    "introShiftInFrames": 0,
+    "introShiftTicks": 0,
     "overlayTrackId": null,
     "underlayTrackId": null
   },

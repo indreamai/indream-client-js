@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { IndreamClient } from '../../src/client'
 import type { TEditorStateV1 } from '../../src/types'
 import { buildMinimalValidEditorState } from '../editor-state/fixtures/builders'
-import { getIndreamApiUrl, getMockApiKey } from '../utils/env'
+import { getIndreamApiUrl, getMockApiKey } from '../utils/mock'
 
 const apiKey = getMockApiKey()
 const baseURL = getIndreamApiUrl()
@@ -44,6 +44,7 @@ describe('projects resource', () => {
     const project = await client.projects.create(
       {
         title: 'Launch draft',
+        stateSchemaVersion: 'v1',
         editorState: createEditorState(),
       },
       { idempotencyKey: 'project-create-1' }
@@ -70,7 +71,7 @@ describe('projects resource', () => {
           JSON.stringify({
             data: {
               projectId: '93fb8aa8-c301-441d-bb8d-ea733cd72a7e',
-              stateVersion: 'v1',
+              stateSchemaVersion: 'v1',
               updatedAt: '2026-04-04T00:01:00.000Z',
             },
             meta: {},
@@ -81,12 +82,13 @@ describe('projects resource', () => {
     })
 
     const result = await client.projects.sync('93fb8aa8-c301-441d-bb8d-ea733cd72a7e', {
+      stateSchemaVersion: 'v1',
       editorState: createEditorState(),
     })
 
     expect(captured.url).toBe(`${baseURL}/v1/projects/93fb8aa8-c301-441d-bb8d-ea733cd72a7e/sync`)
     expect(captured.method).toBe('POST')
-    expect(result.stateVersion).toBe('v1')
+    expect(result.stateSchemaVersion).toBe('v1')
   })
 
   it('creates export from persisted project and keeps projectId in task response', async () => {
@@ -103,7 +105,6 @@ describe('projects resource', () => {
               durationSeconds: 6,
               billedStandardSeconds: 6,
               chargedCredits: '1.000000000000',
-              chargedCreditPool: 'OPEN_API',
             },
             meta: {},
           }),

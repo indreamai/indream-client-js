@@ -2,7 +2,7 @@
 
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { IndreamClient } from '../../src/client'
-import { getIndreamApiUrl, getMockApiKey } from '../utils/env'
+import { getIndreamApiUrl, getMockApiKey } from '../utils/mock'
 
 const apiKey = getMockApiKey()
 const baseURL = getIndreamApiUrl()
@@ -18,6 +18,9 @@ describe('edge runtime compatibility', () => {
         JSON.stringify({
           data: {
             taskId: 'd7b6f9a3-2eb3-4bcb-86a0-26fc4f0d8d5d',
+            projectId: null,
+            createdByApiKeyId: null,
+            filename: null,
             clientTaskId: null,
             status: 'COMPLETED',
             progress: 100,
@@ -68,6 +71,7 @@ describe('edge runtime compatibility', () => {
       apiKey,
       baseURL,
       timeout: 20,
+      maxRetries: 0,
       fetch: fetchMock as typeof fetch,
     })
 
@@ -76,7 +80,37 @@ describe('edge runtime compatibility', () => {
         signal: externalController.signal,
       })
     ).rejects.toMatchObject({
-      name: 'AbortError',
+      name: 'TimeoutError',
     })
   }, 1000)
+  it('sends an exact upload byte size in the Edge runtime', async () => {
+    const file = new Blob(['demo'], { type: 'image/png' })
+    const client = new IndreamClient({
+      apiKey,
+      baseURL,
+      fetch: async (_input, init) => {
+        const headers = new Headers(init?.headers)
+        expect(headers.get('Authorization')).toBe(`Bearer ${apiKey}`)
+        expect(headers.get('Content-Length')).toBe('4')
+        expect(init?.body).toBe(file)
+        return Response.json({
+          data: {
+            assetId: 'asset-1',
+            type: 'IMAGE',
+            source: 'UPLOAD',
+            filename: 'demo.png',
+            mimetype: 'image/png',
+            size: 4,
+            fileUrl: 'https://assets.example.com/demo.png',
+            fileKey: 'demo.png',
+            width: 10,
+            height: 10,
+            duration: null,
+          },
+          meta: {},
+        })
+      },
+    })
+    await client.uploads.upload(file, { filename: 'demo.png' })
+  })
 })

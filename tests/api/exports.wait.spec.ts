@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { IndreamClient } from '../../src/client'
-import { APIError } from '../../src/errors'
-import { getIndreamApiUrl, getMockApiKey } from '../utils/env'
+import { getIndreamApiUrl, getMockApiKey } from '../utils/mock'
 
 const apiKey = getMockApiKey()
 const baseURL = getIndreamApiUrl()
@@ -22,6 +21,9 @@ describe('exports.wait', () => {
           JSON.stringify({
             data: {
               taskId: '4aa67b9c-acd0-446c-9c8e-4ea5d2ed584d',
+              projectId: null,
+              createdByApiKeyId: null,
+              filename: null,
               clientTaskId: null,
               status,
               progress: status === 'COMPLETED' ? 100 : 50,
@@ -62,6 +64,9 @@ describe('exports.wait', () => {
           JSON.stringify({
             data: {
               taskId: '4e01bff5-0a5f-4326-b6ce-4c811f0b6f6f',
+              projectId: null,
+              createdByApiKeyId: null,
+              filename: null,
               clientTaskId: null,
               status: 'FAILED',
               progress: 100,
@@ -80,8 +85,8 @@ describe('exports.wait', () => {
         ),
     })
 
-    await expect(
-      client.exports.wait('4e01bff5-0a5f-4326-b6ce-4c811f0b6f6f')
-    ).rejects.toBeInstanceOf(APIError)
+    await expect(client.exports.wait('4e01bff5-0a5f-4326-b6ce-4c811f0b6f6f')).rejects.toMatchObject(
+      { errorCode: 'TASK_TERMINAL_FAILURE' }
+    )
   })
 })

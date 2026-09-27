@@ -1,63 +1,38 @@
 import type { components } from './generated/openapi'
 
-export type TExportRatio = '16:9' | '9:16' | '1:1' | '4:3' | '3:4' | 'custom'
-export type TExportFormat = 'mp4' | 'webm'
-export type TTaskStatus = 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED' | 'PAUSED' | 'CANCELED'
+type TSchemas = components['schemas']
+export type TEditorStateV1 = TSchemas['editor-state.v1.schema']
+export type TExportRatio = TSchemas['CreateExportRequest']['ratio']
+export type TExportFormat = TSchemas['CreateExportRequest']['format']
+export type TTaskStatus = TSchemas['ExportTask']['status']
+export type TExportPhase = NonNullable<TSchemas['ExportTask']['exportPhase']>
 export type TExportWebhookEventType = 'EXPORT_STARTED' | 'EXPORT_COMPLETED' | 'EXPORT_FAILED'
-export type TEditorStateV1 = components['schemas']['editor-state.v1.schema']
-
-export interface IApiProblem {
-  type: string
-  title: string
-  status: number
-  detail: string
-  errorCode?: string
-}
+export type IApiProblem = TSchemas['Problem']
+export type ICreateExportRequest = TSchemas['CreateExportRequest']
+export type ICreateExportResponse = TSchemas['CreateExportResponseData']
+export type IExportTask = TSchemas['ExportTask']
+export type IEditorCapabilities = TSchemas['EditorCapabilities']
+export type ICaptionAnimationPresetGroups = IEditorCapabilities['captionAnimations']
+export type ICaptionAnimationPresetItem = ICaptionAnimationPresetGroups['in'][number]
+export type IEditorValidationError = TSchemas['EditorValidationError']
+export type IEditorValidationResult = TSchemas['EditorValidationResult']
+export type IProjectSummary = TSchemas['ProjectSummary']
+export type IProjectDetail = TSchemas['ProjectDetail']
+export type ICreateProjectRequest = TSchemas['CreateProjectRequest']
+export type IUpdateProjectRequest = TSchemas['PatchProjectRequest']
+export type ISyncProjectRequest = TSchemas['SyncProjectRequest']
+export type IProjectMetadataResponse = TSchemas['ProjectMetadata']
+export type IProjectSyncResponse = TSchemas['SyncProjectResponseData']
+export type IDeleteProjectResponse = TSchemas['DeleteProjectEnvelope']['data']
+export type IAsset = TSchemas['Asset']
+export type IProjectAssetBindingResponse = TSchemas['ProjectAssetBindingEnvelope']['data']
+export type IDeleteProjectAssetResponse = TSchemas['DeleteProjectAssetEnvelope']['data']
+export type IDeleteAssetResponse = TSchemas['DeleteAssetEnvelope']['data']
+export type ICreateProjectExportRequest = TSchemas['CreateProjectExportRequest']
 
 export interface IApiEnvelope<T> {
   data: T
   meta: Record<string, unknown>
-}
-
-export interface ICreateExportRequest {
-  clientTaskId?: string
-  editorState: TEditorStateV1
-  stateVersion?: string
-  fps: 30 | 60
-  compositionWidth?: number
-  compositionHeight?: number
-  ratio: TExportRatio
-  scale: number
-  format: TExportFormat
-  callbackUrl?: string
-  callbackHeaders?: Record<string, string>
-}
-
-export interface ICreateExportResponse {
-  taskId: string
-  projectId?: string | null
-  createdAt: string
-  durationSeconds: number
-  billedStandardSeconds: number
-  chargedCredits: string
-  chargedCreditPool?: string
-}
-
-export interface IExportTask {
-  taskId: string
-  projectId?: string | null
-  createdByApiKeyId: string | null
-  clientTaskId: string | null
-  status: TTaskStatus
-  progress: number
-  error: string | null
-  outputUrl: string | null
-  durationSeconds: number
-  billedStandardSeconds: number
-  chargedCredits: string
-  callbackUrl: string | null
-  createdAt: string
-  completedAt: string | null
 }
 
 export interface IListExportsResponse {
@@ -71,66 +46,14 @@ export interface IExportWebhookEvent {
   task: IExportTask
 }
 
-export interface ICaptionAnimationPresetItem {
-  id: string
-  type: string
-  label: string
-  preview: string
+export interface IListProjectsResponse {
+  items: IProjectSummary[]
+  nextPageCursor: string | null
 }
 
-export interface ICaptionAnimationPresetGroups {
-  in: ICaptionAnimationPresetItem[]
-  out: ICaptionAnimationPresetItem[]
-  loop: ICaptionAnimationPresetItem[]
-}
-
-export interface IEditorCapabilities {
-  version: string
-  animations: string[]
-  captionAnimations: ICaptionAnimationPresetGroups
-  transitions: string[]
-  transitionPresets: Array<{
-    id: string
-    type: string
-    label: string
-    params?: Record<string, string | number | boolean>
-  }>
-  effects: string[]
-  effectPresets: Array<{
-    id: string
-    type: string
-    label: string
-    defaultDurationInSeconds?: number
-    defaultIntensity?: number
-    params?: Record<string, string | number | boolean>
-  }>
-  filters: string[]
-  filterPresets: Array<{
-    id: string
-    type: string
-    label: string
-    defaultDurationInSeconds?: number
-    defaultIntensity?: number
-    params?: Record<string, string | number | boolean>
-  }>
-  shapes: string[]
-  backgroundPresets: {
-    colors: string[]
-    gradients: string[]
-    images: string[]
-    blurLevels: number[]
-  }
-}
-
-export interface IEditorValidationError {
-  code: string
-  path: string
-  message: string
-}
-
-export interface IEditorValidationResult {
-  valid: boolean
-  errors: IEditorValidationError[]
+export interface IListAssetsResponse {
+  items: IAsset[]
+  nextPageCursor: string | null
 }
 
 export interface IClientOptions {
@@ -156,106 +79,12 @@ export interface IWaitOptions {
   signal?: AbortSignal
 }
 
-export interface IProjectSummary {
-  projectId: string
-  title: string
-  description: string | null
-  createdAt: string
-  updatedAt: string
-}
-
-export interface IProjectDetail extends IProjectSummary {
-  editorState: TEditorStateV1
-  stateVersion: string
-}
-
-export interface ICreateProjectRequest {
-  title?: string
-  description?: string | null
-  editorState: TEditorStateV1
-  stateVersion?: string
-}
-
-export interface IUpdateProjectRequest {
-  title?: string
-  description?: string | null
-}
-
-export interface ISyncProjectRequest {
-  editorState: TEditorStateV1
-  stateVersion?: string
-}
-
-export interface IProjectMetadataResponse {
-  projectId: string
-  title: string
-  description: string | null
-  updatedAt: string
-}
-
-export interface IProjectSyncResponse {
-  projectId: string
-  stateVersion: string
-  updatedAt: string
-}
-
-export interface IDeleteProjectResponse {
-  projectId: string
-  deleted: boolean
-}
-
-export interface IListProjectsResponse {
-  items: IProjectSummary[]
-  nextPageCursor: string | null
-}
-
-export interface IAsset {
-  assetId: string
-  type: string
-  source: string | null
-  filename: string
-  mimetype: string
-  size: number | null
-  fileUrl: string
-  fileKey: string
-  width: number | null
-  height: number | null
-  duration: number | null
-}
-
-export interface IListAssetsResponse {
-  items: IAsset[]
-  nextPageCursor: string | null
-}
-
 export type TUploadBody = Blob | ArrayBuffer | ArrayBufferView | ReadableStream<Uint8Array>
 
 export interface IUploadOptions extends IRequestOptions {
   filename?: string
   contentType?: string
   projectId?: string
-}
-
-export interface IProjectAssetBindingResponse {
-  projectId: string
-  assetId: string
-}
-
-export interface IDeleteProjectAssetResponse extends IProjectAssetBindingResponse {
-  deleted: boolean
-}
-
-export interface IDeleteAssetResponse {
-  assetId: string
-  deleted: boolean
-}
-
-export interface ICreateProjectExportRequest {
-  clientTaskId?: string
-  fps: 30 | 60
-  ratio: TExportRatio
-  scale: number
-  format: TExportFormat
-  callbackUrl?: string
-  callbackHeaders?: Record<string, string>
+  /** Exact byte size. Required for streams; inferred for buffers and blobs. */
+  contentLength?: number
 }

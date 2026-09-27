@@ -1,4 +1,5 @@
 import Ajv from 'ajv'
+import addFormats from 'ajv-formats'
 import type { ErrorObject } from 'ajv'
 import { editorStateSchema } from './schema-loader'
 
@@ -7,6 +8,7 @@ const ajv = new Ajv({
   strict: false,
 })
 
+addFormats(ajv)
 const validate = ajv.compile(editorStateSchema)
 
 const formatSchemaErrors = (errors: ErrorObject[] | null | undefined): string => {

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { buildEditorStateWithSingleItem } from '../fixtures/builders'
 import { editorStateExamples } from '../fixtures/examples'
 import { assertInvalidState, assertValidState } from '../utils/schema-validator'
 
@@ -7,7 +8,7 @@ const invalidExamples = editorStateExamples.allInvalid
 
 describe('editor-state examples contract', () => {
   it('keyframe track with timeTicks points passes schema validation', () => {
-    const valid = editorStateExamples.valid
+    const valid = buildEditorStateWithSingleItem('image')
     const image = (valid.items as Record<string, any>)['item-image-1']
 
     image.left = {

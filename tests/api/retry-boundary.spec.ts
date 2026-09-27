@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { IndreamClient } from '../../src/client'
 import { RateLimitError } from '../../src/errors'
-import { getIndreamApiUrl, getMockApiKey } from '../utils/env'
+import { getIndreamApiUrl, getMockApiKey } from '../utils/mock'
 
 const apiKey = getMockApiKey()
 const baseURL = getIndreamApiUrl()

@@ -30,9 +30,6 @@ const isObject = (value: unknown): value is Record<string, unknown> =>
 const isNullableString = (value: unknown): value is string | null =>
   typeof value === 'string' || value === null
 
-const isOptionalNullableString = (value: unknown): value is string | null | undefined =>
-  value === undefined || isNullableString(value)
-
 type TWebhookHeaderValue = string | string[] | null | undefined
 
 export type TWebhookHeaders = Headers | Record<string, TWebhookHeaderValue>
@@ -130,13 +127,16 @@ export const isExportTaskSnapshot = (value: unknown): value is IExportTask => {
 
   return (
     typeof value.taskId === 'string' &&
-    isOptionalNullableString(value.projectId) &&
+    isNullableString(value.projectId) &&
     isNullableString(value.createdByApiKeyId) &&
     isNullableString(value.clientTaskId) &&
     isTaskStatus(value.status) &&
     typeof value.progress === 'number' &&
     isNullableString(value.error) &&
     isNullableString(value.outputUrl) &&
+    isNullableString(value.filename) &&
+    (value.exportPhase === undefined ||
+      ['rendering', 'saving', 'finishing'].includes(String(value.exportPhase))) &&
     typeof value.durationSeconds === 'number' &&
     typeof value.billedStandardSeconds === 'number' &&
     typeof value.chargedCredits === 'string' &&

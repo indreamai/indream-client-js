@@ -1,4 +1,6 @@
+import { readPage } from '../pagination'
 import { APIError } from '../errors'
+import { sleep } from '../retry'
 import type {
   ICreateExportRequest,
   ICreateRequestOptions,
@@ -11,10 +13,6 @@ import type {
 import type { IndreamClient } from '../client'
 
 const TERMINAL_STATUSES = new Set<TTaskStatus>(['COMPLETED', 'FAILED', 'CANCELED'])
-
-const sleep = async (ms: number) => {
-  await new Promise((resolve) => setTimeout(resolve, ms))
-}
 
 export class ExportsResource {
   private readonly client: IndreamClient
@@ -38,8 +36,15 @@ export class ExportsResource {
   }
 
   async get(taskId: string, options: { signal?: AbortSignal } = {}): Promise<IExportTask> {
-    return await this.client.request<IExportTask>(`/v1/exports/${taskId}`, {
+    return await this.client.request<IExportTask>(`/v1/exports/${encodeURIComponent(taskId)}`, {
       method: 'GET',
+      signal: options.signal,
+    })
+  }
+
+  async cancel(taskId: string, options: { signal?: AbortSignal } = {}): Promise<IExportTask> {
+    return this.client.request<IExportTask>(`/v1/exports/${encodeURIComponent(taskId)}`, {
+      method: 'DELETE',
       signal: options.signal,
     })
   }
@@ -70,11 +75,7 @@ export class ExportsResource {
       }
     )
 
-    return {
-      items: envelope.data || [],
-      nextPageCursor:
-        typeof envelope.meta?.nextPageCursor === 'string' ? envelope.meta.nextPageCursor : null,
-    }
+    return readPage(envelope)
   }
 
   async wait(taskId: string, options: IWaitOptions = {}): Promise<IExportTask> {
@@ -85,7 +86,7 @@ export class ExportsResource {
     // The polling helper only advances client-side observation and does not change server semantics.
     while (true) {
       if (options.signal?.aborted) {
-        throw new Error('wait aborted by caller signal')
+        throw options.signal.reason ?? new DOMException('Wait aborted', 'AbortError')
       }
 
       if (Date.now() - startedAt > timeoutMs) {
@@ -110,7 +111,7 @@ export class ExportsResource {
         return task
       }
 
-      await sleep(pollIntervalMs)
+      await sleep(pollIntervalMs, options.signal)
     }
   }
 }

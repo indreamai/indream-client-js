@@ -1,4 +1,5 @@
 {
+  "stateSchemaVersion": "v1",
   "compositionWidth": 1280,
   "compositionHeight": 720,
   "timebaseTicksPerSecond": 240000,
@@ -18,7 +19,7 @@
       "id": "item-template-1",
       "type": "text-template",
       "schemaVersion": 2,
-      "templateId": "template-launch-card",
+      "templateId": "22222222-2222-4222-8222-222222222222",
       "templateCategory": "promo",
       "nodes": [
         {

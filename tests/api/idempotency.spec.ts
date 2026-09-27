@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { IndreamClient } from '../../src/client'
 import type { TEditorStateV1 } from '../../src/types'
 import { buildMinimalValidEditorState } from '../editor-state/fixtures/builders'
-import { getIndreamApiUrl, getMockApiKey } from '../utils/env'
+import { getIndreamApiUrl, getMockApiKey } from '../utils/mock'
 
 const apiKey = getMockApiKey()
 const baseURL = getIndreamApiUrl()
@@ -43,6 +43,7 @@ describe('idempotency header', () => {
     })
 
     await client.exports.create({
+      stateSchemaVersion: 'v1',
       editorState: createEditorState(),
       ratio: '9:16',
       scale: 0.6,

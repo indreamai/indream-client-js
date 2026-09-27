@@ -1,0 +1,71 @@
+{
+  "apiKey": "shared-test-key",
+  "exportRequest": {
+    "stateSchemaVersion": "v1",
+    "fps": 30,
+    "ratio": "16:9",
+    "scale": 1,
+    "format": "mp4",
+    "filename": "first-video.mp4",
+    "clientTaskId": "shared-export-1"
+  },
+  "createResponse": {
+    "data": {
+      "taskId": "07f64f26-3d43-4d2e-9954-1ea9482bcc79",
+      "projectId": null,
+      "createdAt": "2026-09-25T00:00:00.000Z",
+      "durationSeconds": 5,
+      "billedStandardSeconds": 5,
+      "chargedCredits": "0.5"
+    },
+    "meta": {}
+  },
+  "taskResponse": {
+    "data": {
+      "taskId": "07f64f26-3d43-4d2e-9954-1ea9482bcc79",
+      "projectId": null,
+      "createdByApiKeyId": null,
+      "clientTaskId": "shared-export-1",
+      "status": "COMPLETED",
+      "progress": 100,
+      "error": null,
+      "filename": "first-video.mp4",
+      "exportPhase": "finishing",
+      "outputUrl": "https://assets.example.com/first-video.mp4",
+      "durationSeconds": 5,
+      "billedStandardSeconds": 5,
+      "chargedCredits": "0.5",
+      "callbackUrl": null,
+      "createdAt": "2026-09-25T00:00:00.000Z",
+      "completedAt": "2026-09-25T00:00:05.000Z"
+    },
+    "meta": {}
+  },
+  "cancelResponse": {
+    "data": {
+      "taskId": "07f64f26-3d43-4d2e-9954-1ea9482bcc79",
+      "projectId": null,
+      "createdByApiKeyId": null,
+      "clientTaskId": "shared-export-1",
+      "status": "CANCELED",
+      "progress": 0,
+      "error": null,
+      "filename": "first-video.mp4",
+      "outputUrl": null,
+      "durationSeconds": 5,
+      "billedStandardSeconds": 5,
+      "chargedCredits": "0.5",
+      "callbackUrl": null,
+      "createdAt": "2026-09-25T00:00:00.000Z",
+      "completedAt": "2026-09-25T00:00:05.000Z"
+    },
+    "meta": {}
+  },
+  "quotaProblem": {
+    "type": "https://indream.ai/problems/open-api-export-standard-second-limit-exceeded",
+    "title": "API key usage limit exceeded",
+    "status": 429,
+    "detail": "The API key export usage limit has been reached.",
+    "errorCode": "OPEN_API_EXPORT_STANDARD_SECOND_LIMIT_EXCEEDED"
+  }
+}

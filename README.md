@@ -20,14 +20,18 @@ const client = new IndreamClient({
   apiKey: process.env.INDREAM_API_KEY!,
 })
 
-const created = await client.exports.create({
-  editorState,
-  ratio: '9:16',
-  scale: 0.6,
-  fps: 30,
-  format: 'mp4',
-})
+const created = await client.exports.create(
+  {
+    editorState,
+    stateSchemaVersion: 'v1',
+    ratio: '9:16',
+    scale: 0.6,
+    fps: 30,
+    format: 'mp4',
+  },
+  { idempotencyKey: 'example-export-1' }
+)
 
 const task = await client.exports.wait(created.taskId)
-console.log(task.status, task.outputUrl, task.durationSeconds, task.billedStandardSeconds)
+console.log(task.status, task.outputUrl)
 ```

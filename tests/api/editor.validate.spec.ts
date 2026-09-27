@@ -3,7 +3,7 @@ import { IndreamClient } from '../../src/client'
 import { RateLimitError } from '../../src/errors'
 import type { TEditorStateV1 } from '../../src/types'
 import { buildMinimalValidEditorState } from '../editor-state/fixtures/builders'
-import { getIndreamApiUrl, getMockApiKey } from '../utils/env'
+import { getIndreamApiUrl, getMockApiKey } from '../utils/mock'
 
 const apiKey = getMockApiKey()
 const baseURL = getIndreamApiUrl()

@@ -1,0 +1,3612 @@
+{
+  "routes": [
+    {
+      "method": "POST",
+      "path": "/v1/projects",
+      "schema": {
+        "$ref": "#/components/schemas/ProjectSummaryEnvelope"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/projects",
+      "schema": {
+        "$ref": "#/components/schemas/ListProjectsResponseEnvelope"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/projects/{projectId}",
+      "schema": {
+        "$ref": "#/components/schemas/ProjectDetailEnvelope"
+      }
+    },
+    {
+      "method": "PATCH",
+      "path": "/v1/projects/{projectId}",
+      "schema": {
+        "$ref": "#/components/schemas/ProjectMetadataEnvelope"
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/projects/{projectId}",
+      "schema": {
+        "$ref": "#/components/schemas/DeleteProjectEnvelope"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/projects/{projectId}/sync",
+      "schema": {
+        "$ref": "#/components/schemas/SyncProjectEnvelope"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/projects/{projectId}/assets",
+      "schema": {
+        "$ref": "#/components/schemas/ListAssetsResponseEnvelope"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/projects/{projectId}/assets",
+      "schema": {
+        "$ref": "#/components/schemas/ProjectAssetBindingEnvelope"
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/projects/{projectId}/assets/{assetId}",
+      "schema": {
+        "$ref": "#/components/schemas/DeleteProjectAssetEnvelope"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/projects/{projectId}/exports",
+      "schema": {
+        "$ref": "#/components/schemas/CreateExportResponseEnvelope"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/uploads",
+      "schema": {
+        "$ref": "#/components/schemas/AssetEnvelope"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/assets/{assetId}",
+      "schema": {
+        "$ref": "#/components/schemas/AssetEnvelope"
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/assets/{assetId}",
+      "schema": {
+        "$ref": "#/components/schemas/DeleteAssetEnvelope"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/exports",
+      "schema": {
+        "$ref": "#/components/schemas/CreateExportResponseEnvelope"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/exports",
+      "schema": {
+        "$ref": "#/components/schemas/ListExportsResponseEnvelope"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/exports/{taskId}",
+      "schema": {
+        "$ref": "#/components/schemas/GetExportResponseEnvelope"
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/exports/{taskId}",
+      "schema": {
+        "$ref": "#/components/schemas/GetExportResponseEnvelope"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/editor/capabilities",
+      "schema": {
+        "$ref": "#/components/schemas/EditorCapabilitiesResponseEnvelope"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/v1/editor/validate",
+      "schema": {
+        "$ref": "#/components/schemas/EditorValidateResponseEnvelope"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/v1/illustrations",
+      "schema": {
+        "$ref": "#/components/schemas/IllustrationSearchResponseEnvelope"
+      }
+    }
+  ],
+  "schemas": {
+    "ProjectSummaryEnvelope": {
+      "type": "object",
+      "required": [
+        "data",
+        "meta"
+      ],
+      "properties": {
+        "data": {
+          "$ref": "#/components/schemas/ProjectSummary"
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "ListProjectsResponseEnvelope": {
+      "type": "object",
+      "required": [
+        "data",
+        "meta"
+      ],
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/ProjectSummary"
+          }
+        },
+        "meta": {
+          "type": "object",
+          "properties": {
+            "nextPageCursor": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": true
+        }
+      }
+    },
+    "ProjectDetailEnvelope": {
+      "type": "object",
+      "required": [
+        "data",
+        "meta"
+      ],
+      "properties": {
+        "data": {
+          "$ref": "#/components/schemas/ProjectDetail"
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "ProjectMetadataEnvelope": {
+      "type": "object",
+      "required": [
+        "data",
+        "meta"
+      ],
+      "properties": {
+        "data": {
+          "$ref": "#/components/schemas/ProjectMetadata"
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "DeleteProjectEnvelope": {
+      "type": "object",
+      "required": [
+        "data",
+        "meta"
+      ],
+      "properties": {
+        "data": {
+          "type": "object",
+          "required": [
+            "projectId",
+            "deleted"
+          ],
+          "properties": {
+            "projectId": {
+              "type": "string"
+            },
+            "deleted": {
+              "type": "boolean"
+            }
+          }
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "SyncProjectEnvelope": {
+      "type": "object",
+      "required": [
+        "data",
+        "meta"
+      ],
+      "properties": {
+        "data": {
+          "$ref": "#/components/schemas/SyncProjectResponseData"
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "ListAssetsResponseEnvelope": {
+      "type": "object",
+      "required": [
+        "data",
+        "meta"
+      ],
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Asset"
+          }
+        },
+        "meta": {
+          "type": "object",
+          "properties": {
+            "nextPageCursor": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": true
+        }
+      }
+    },
+    "ProjectAssetBindingEnvelope": {
+      "type": "object",
+      "required": [
+        "data",
+        "meta"
+      ],
+      "properties": {
+        "data": {
+          "type": "object",
+          "required": [
+            "projectId",
+            "assetId"
+          ],
+          "properties": {
+            "projectId": {
+              "type": "string"
+            },
+            "assetId": {
+              "type": "string"
+            }
+          }
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "DeleteProjectAssetEnvelope": {
+      "type": "object",
+      "required": [
+        "data",
+        "meta"
+      ],
+      "properties": {
+        "data": {
+          "type": "object",
+          "required": [
+            "projectId",
+            "assetId",
+            "deleted"
+          ],
+          "properties": {
+            "projectId": {
+              "type": "string"
+            },
+            "assetId": {
+              "type": "string"
+            },
+            "deleted": {
+              "type": "boolean"
+            }
+          }
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "CreateExportResponseEnvelope": {
+      "type": "object",
+      "required": [
+        "data",
+        "meta"
+      ],
+      "properties": {
+        "data": {
+          "$ref": "#/components/schemas/CreateExportResponseData"
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "AssetEnvelope": {
+      "type": "object",
+      "required": [
+        "data",
+        "meta"
+      ],
+      "properties": {
+        "data": {
+          "$ref": "#/components/schemas/Asset"
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "DeleteAssetEnvelope": {
+      "type": "object",
+      "required": [
+        "data",
+        "meta"
+      ],
+      "properties": {
+        "data": {
+          "type": "object",
+          "required": [
+            "assetId",
+            "deleted"
+          ],
+          "properties": {
+            "assetId": {
+              "type": "string"
+            },
+            "deleted": {
+              "type": "boolean"
+            }
+          }
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "ListExportsResponseEnvelope": {
+      "type": "object",
+      "required": [
+        "data",
+        "meta"
+      ],
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/ExportTask"
+          }
+        },
+        "meta": {
+          "type": "object",
+          "properties": {
+            "nextPageCursor": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": true
+        }
+      }
+    },
+    "GetExportResponseEnvelope": {
+      "type": "object",
+      "required": [
+        "data",
+        "meta"
+      ],
+      "properties": {
+        "data": {
+          "$ref": "#/components/schemas/ExportTask"
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "EditorCapabilitiesResponseEnvelope": {
+      "type": "object",
+      "required": [
+        "data",
+        "meta"
+      ],
+      "properties": {
+        "data": {
+          "$ref": "#/components/schemas/EditorCapabilities"
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "EditorValidateResponseEnvelope": {
+      "type": "object",
+      "required": [
+        "data",
+        "meta"
+      ],
+      "properties": {
+        "data": {
+          "$ref": "#/components/schemas/EditorValidationResult"
+        },
+        "meta": {
+          "type": "object",
+          "properties": {
+            "capabilitiesVersion": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": true
+        }
+      }
+    },
+    "IllustrationSearchResponseEnvelope": {
+      "type": "object",
+      "required": [
+        "data",
+        "meta"
+      ],
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "ProjectSummary": {
+      "type": "object",
+      "required": [
+        "projectId",
+        "title",
+        "description",
+        "createdAt",
+        "updatedAt"
+      ],
+      "properties": {
+        "projectId": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
+        }
+      }
+    },
+    "ProjectDetail": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ProjectSummary"
+        },
+        {
+          "type": "object",
+          "required": [
+            "editorState",
+            "stateSchemaVersion"
+          ],
+          "properties": {
+            "editorState": {
+              "$ref": "#/components/schemas/editor-state.v1.schema"
+            },
+            "stateSchemaVersion": {
+              "type": "string",
+              "const": "v1"
+            }
+          }
+        }
+      ]
+    },
+    "ProjectMetadata": {
+      "type": "object",
+      "required": [
+        "projectId",
+        "title",
+        "description",
+        "updatedAt"
+      ],
+      "properties": {
+        "projectId": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "updatedAt": {
+          "type": "string"
+        }
+      }
+    },
+    "SyncProjectResponseData": {
+      "type": "object",
+      "required": [
+        "projectId",
+        "stateSchemaVersion",
+        "updatedAt"
+      ],
+      "properties": {
+        "projectId": {
+          "type": "string"
+        },
+        "stateSchemaVersion": {
+          "type": "string",
+          "const": "v1"
+        },
+        "updatedAt": {
+          "type": "string"
+        }
+      }
+    },
+    "Asset": {
+      "type": "object",
+      "required": [
+        "assetId",
+        "type",
+        "source",
+        "filename",
+        "mimetype",
+        "size",
+        "fileUrl",
+        "fileKey",
+        "width",
+        "height",
+        "duration"
+      ],
+      "properties": {
+        "assetId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "source": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "filename": {
+          "type": "string"
+        },
+        "mimetype": {
+          "type": "string"
+        },
+        "size": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "fileUrl": {
+          "type": "string"
+        },
+        "fileKey": {
+          "type": "string"
+        },
+        "width": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "height": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "duration": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      }
+    },
+    "CreateExportResponseData": {
+      "type": "object",
+      "required": [
+        "taskId",
+        "createdAt",
+        "durationSeconds",
+        "billedStandardSeconds",
+        "chargedCredits"
+      ],
+      "properties": {
+        "taskId": {
+          "type": "string"
+        },
+        "projectId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "durationSeconds": {
+          "type": "number"
+        },
+        "billedStandardSeconds": {
+          "type": "integer"
+        },
+        "chargedCredits": {
+          "type": "string"
+        }
+      }
+    },
+    "ExportTask": {
+      "type": "object",
+      "required": [
+        "taskId",
+        "projectId",
+        "createdByApiKeyId",
+        "clientTaskId",
+        "status",
+        "progress",
+        "error",
+        "outputUrl",
+        "filename",
+        "durationSeconds",
+        "billedStandardSeconds",
+        "chargedCredits",
+        "callbackUrl",
+        "createdAt",
+        "completedAt"
+      ],
+      "properties": {
+        "taskId": {
+          "type": "string"
+        },
+        "projectId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "createdByApiKeyId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "clientTaskId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "PENDING",
+            "PROCESSING",
+            "COMPLETED",
+            "FAILED",
+            "PAUSED",
+            "CANCELED"
+          ]
+        },
+        "progress": {
+          "type": "number"
+        },
+        "exportPhase": {
+          "type": "string",
+          "enum": [
+            "rendering",
+            "saving",
+            "finishing"
+          ]
+        },
+        "error": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "outputUrl": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "filename": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "durationSeconds": {
+          "type": "number"
+        },
+        "billedStandardSeconds": {
+          "type": "integer"
+        },
+        "chargedCredits": {
+          "type": "string"
+        },
+        "callbackUrl": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "completedAt": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "EditorCapabilities": {
+      "type": "object",
+      "required": [
+        "version",
+        "animations",
+        "captionAnimations",
+        "transitions",
+        "transitionPresets",
+        "effects",
+        "effectPresets",
+        "filters",
+        "filterPresets",
+        "shapes",
+        "backgroundPresets"
+      ],
+      "properties": {
+        "version": {
+          "type": "string"
+        },
+        "animations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "captionAnimations": {
+          "type": "object",
+          "required": [
+            "in",
+            "out",
+            "loop"
+          ],
+          "properties": {
+            "in": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "id",
+                  "type",
+                  "label",
+                  "preview"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string"
+                  },
+                  "label": {
+                    "type": "string"
+                  },
+                  "preview": {
+                    "type": "string"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "out": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "id",
+                  "type",
+                  "label",
+                  "preview"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string"
+                  },
+                  "label": {
+                    "type": "string"
+                  },
+                  "preview": {
+                    "type": "string"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "loop": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "id",
+                  "type",
+                  "label",
+                  "preview"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string"
+                  },
+                  "label": {
+                    "type": "string"
+                  },
+                  "preview": {
+                    "type": "string"
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "transitions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "transitionPresets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "type",
+              "label"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "params": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "effects": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "effectPresets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "type",
+              "label"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "defaultDurationInSeconds": {
+                "type": "number"
+              },
+              "defaultIntensity": {
+                "type": "number"
+              },
+              "params": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "filters": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "filterPresets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "type",
+              "label"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "defaultDurationInSeconds": {
+                "type": "number"
+              },
+              "defaultIntensity": {
+                "type": "number"
+              },
+              "params": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "shapes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "backgroundPresets": {
+          "type": "object",
+          "required": [
+            "colors",
+            "gradients",
+            "images",
+            "blurLevels"
+          ],
+          "properties": {
+            "colors": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "gradients": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "images": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "blurLevels": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "EditorValidationResult": {
+      "type": "object",
+      "required": [
+        "valid",
+        "errors"
+      ],
+      "properties": {
+        "valid": {
+          "type": "boolean"
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/EditorValidationError"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "editor-state.v1.schema": {
+      "type": "object",
+      "required": [
+        "stateSchemaVersion",
+        "compositionWidth",
+        "compositionHeight",
+        "timebaseTicksPerSecond",
+        "tracks",
+        "assets",
+        "items",
+        "transitions"
+      ],
+      "properties": {
+        "stateSchemaVersion": {
+          "type": "string",
+          "const": "v1"
+        },
+        "compositionWidth": {
+          "type": "integer",
+          "minimum": 50,
+          "maximum": 1920
+        },
+        "compositionHeight": {
+          "type": "integer",
+          "minimum": 50,
+          "maximum": 1920
+        },
+        "timebaseTicksPerSecond": {
+          "type": "integer",
+          "const": 240000
+        },
+        "outputRatio": {
+          "type": "string",
+          "enum": [
+            "16:9",
+            "9:16",
+            "1:1",
+            "4:3",
+            "3:4",
+            "custom"
+          ]
+        },
+        "tracks": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/components/schemas/track"
+          }
+        },
+        "assets": {
+          "type": "object",
+          "additionalProperties": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/imageAsset"
+              },
+              {
+                "$ref": "#/components/schemas/videoAsset"
+              },
+              {
+                "$ref": "#/components/schemas/gifAsset"
+              },
+              {
+                "$ref": "#/components/schemas/audioAsset"
+              },
+              {
+                "$ref": "#/components/schemas/captionAsset"
+              },
+              {
+                "$ref": "#/components/schemas/lottieAsset"
+              }
+            ]
+          }
+        },
+        "items": {
+          "type": "object",
+          "additionalProperties": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/imageItem"
+              },
+              {
+                "$ref": "#/components/schemas/motionGraphicItem"
+              },
+              {
+                "$ref": "#/components/schemas/videoItem"
+              },
+              {
+                "$ref": "#/components/schemas/gifItem"
+              },
+              {
+                "$ref": "#/components/schemas/lottieItem"
+              },
+              {
+                "$ref": "#/components/schemas/audioItem"
+              },
+              {
+                "$ref": "#/components/schemas/textItem"
+              },
+              {
+                "$ref": "#/components/schemas/textTemplateItem"
+              },
+              {
+                "$ref": "#/components/schemas/captionsItem"
+              },
+              {
+                "$ref": "#/components/schemas/solidItem"
+              },
+              {
+                "$ref": "#/components/schemas/illustrationItem"
+              },
+              {
+                "$ref": "#/components/schemas/effectItem"
+              },
+              {
+                "$ref": "#/components/schemas/filterItem"
+              },
+              {
+                "$ref": "#/components/schemas/chartItem"
+              }
+            ]
+          }
+        },
+        "transitions": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/components/schemas/transition"
+          }
+        },
+        "globalBackground": {
+          "$ref": "#/components/schemas/globalBackground"
+        },
+        "brandRuntime": {
+          "$ref": "#/components/schemas/brandRuntime"
+        },
+        "deletedAssets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/deletedAssetEntry"
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "EditorValidationError": {
+      "type": "object",
+      "required": [
+        "code",
+        "path",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "track": {
+      "type": "object",
+      "required": [
+        "id",
+        "items",
+        "hidden",
+        "muted"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "hidden": {
+          "type": "boolean"
+        },
+        "muted": {
+          "type": "boolean"
+        },
+        "syncLocked": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "imageAsset": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/baseAsset"
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "width",
+            "height"
+          ],
+          "properties": {
+            "type": {
+              "const": "image"
+            },
+            "width": {
+              "type": "number",
+              "minimum": 1
+            },
+            "height": {
+              "type": "number",
+              "minimum": 1
+            }
+          }
+        }
+      ]
+    },
+    "videoAsset": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/baseAsset"
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "durationInSeconds",
+            "hasAudioTrack",
+            "width",
+            "height"
+          ],
+          "properties": {
+            "type": {
+              "const": "video"
+            },
+            "durationInSeconds": {
+              "type": "number",
+              "minimum": 0
+            },
+            "hasAudioTrack": {
+              "type": "boolean"
+            },
+            "width": {
+              "type": "number",
+              "minimum": 1
+            },
+            "height": {
+              "type": "number",
+              "minimum": 1
+            }
+          }
+        }
+      ]
+    },
+    "gifAsset": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/baseAsset"
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "durationInSeconds",
+            "width",
+            "height",
+            "loopBehavior"
+          ],
+          "properties": {
+            "type": {
+              "const": "gif"
+            },
+            "durationInSeconds": {
+              "type": "number",
+              "minimum": 0
+            },
+            "width": {
+              "type": "number",
+              "minimum": 1
+            },
+            "height": {
+              "type": "number",
+              "minimum": 1
+            },
+            "loopBehavior": {
+              "type": "string",
+              "enum": [
+                "finite",
+                "loop"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "audioAsset": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/baseAsset"
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "durationInSeconds"
+          ],
+          "properties": {
+            "type": {
+              "const": "audio"
+            },
+            "durationInSeconds": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        }
+      ]
+    },
+    "captionAsset": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/baseAsset"
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "captions",
+            "timingGranularity"
+          ],
+          "properties": {
+            "type": {
+              "const": "caption"
+            },
+            "captions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/captionEntry"
+              }
+            },
+            "timingGranularity": {
+              "type": "string",
+              "enum": [
+                "word",
+                "line"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "lottieAsset": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/baseAsset"
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "durationInSeconds",
+            "width",
+            "height",
+            "resourceType"
+          ],
+          "properties": {
+            "type": {
+              "const": "lottie"
+            },
+            "durationInSeconds": {
+              "type": "number",
+              "minimum": 0
+            },
+            "width": {
+              "type": "number",
+              "minimum": 1
+            },
+            "height": {
+              "type": "number",
+              "minimum": 1
+            },
+            "resourceType": {
+              "type": "string",
+              "enum": [
+                "lottie",
+                "svg"
+              ]
+            },
+            "resourceJson": {
+              "type": [
+                "object",
+                "null"
+              ],
+              "additionalProperties": true
+            },
+            "resourceComponentId": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "materialConfig": {
+              "type": [
+                "object",
+                "null"
+              ],
+              "additionalProperties": true
+            }
+          }
+        }
+      ]
+    },
+    "imageItem": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/baseItem"
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "assetId",
+            "keepAspectRatio",
+            "borderRadius",
+            "rotation"
+          ],
+          "properties": {
+            "type": {
+              "const": "image"
+            },
+            "assetId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "stickerId": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            },
+            "stickerVersion": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 1
+            },
+            "keepAspectRatio": {
+              "type": "boolean"
+            },
+            "borderRadius": {
+              "$ref": "#/components/schemas/animatedNumberTrack"
+            },
+            "rotation": {
+              "$ref": "#/components/schemas/animatedNumberTrack"
+            },
+            "cropLeft": {
+              "$ref": "#/components/schemas/animatedNumberTrack"
+            },
+            "cropTop": {
+              "$ref": "#/components/schemas/animatedNumberTrack"
+            },
+            "cropRight": {
+              "$ref": "#/components/schemas/animatedNumberTrack"
+            },
+            "cropBottom": {
+              "$ref": "#/components/schemas/animatedNumberTrack"
+            },
+            "animations": {
+              "$ref": "#/components/schemas/clipAnimations"
+            }
+          }
+        }
+      ]
+    },
+    "motionGraphicItem": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/baseItem"
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "motionGraphicId",
+            "motionGraphicVersion",
+            "props",
+            "slots",
+            "rotation"
+          ],
+          "properties": {
+            "type": {
+              "const": "motion-graphic"
+            },
+            "motionGraphicId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "motionGraphicVersion": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "props": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/components/schemas/primitive"
+              }
+            },
+            "slots": {
+              "type": "object",
+              "additionalProperties": {
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "rotation": {
+              "$ref": "#/components/schemas/animatedNumberTrack"
+            },
+            "animations": {
+              "$ref": "#/components/schemas/clipAnimations"
+            }
+          }
+        }
+      ]
+    },
+    "videoItem": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/baseItem"
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "assetId",
+            "keepAspectRatio",
+            "borderRadius",
+            "rotation",
+            "sourceStartTicks",
+            "decibelAdjustment",
+            "playbackRate",
+            "audioFadeInDurationTicks",
+            "audioFadeOutDurationTicks"
+          ],
+          "properties": {
+            "type": {
+              "const": "video"
+            },
+            "assetId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "keepAspectRatio": {
+              "type": "boolean"
+            },
+            "borderRadius": {
+              "$ref": "#/components/schemas/animatedNumberTrack"
+            },
+            "rotation": {
+              "$ref": "#/components/schemas/animatedNumberTrack"
+            },
+            "sourceStartTicks": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "decibelAdjustment": {
+              "$ref": "#/components/schemas/animatedNumberTrack"
+            },
+            "playbackRate": {
+              "type": "number",
+              "minimum": 0.01
+            },
+            "audioFadeInDurationTicks": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "audioFadeOutDurationTicks": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "cropLeft": {
+              "$ref": "#/components/schemas/animatedNumberTrack"
+            },
+            "cropTop": {
+              "$ref": "#/components/schemas/animatedNumberTrack"
+            },
+            "cropRight": {
+              "$ref": "#/components/schemas/animatedNumberTrack"
+            },
+            "cropBottom": {
+              "$ref": "#/components/schemas/animatedNumberTrack"
+            },
+            "animations": {
+              "$ref": "#/components/schemas/clipAnimations"
+            }
+          }
+        }
+      ]
+    },
+    "gifItem": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/baseItem"
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "assetId",
+            "keepAspectRatio",
+            "borderRadius",
+            "rotation",
+            "sourceStartTicks",
+            "playbackRate"
+          ],
+          "properties": {
+            "type": {
+              "const": "gif"
+            },
+            "assetId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "keepAspectRatio": {
+              "type": "boolean"
+            },
+            "borderRadius": {
+              "$ref": "#/components/schemas/animatedNumberTrack"
+            },
+            "rotation": {
+              "$ref": "#/components/schemas/animatedNumberTrack"
+            },
+            "sourceStartTicks": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "playbackRate": {
+              "type": "number",
+              "minimum": 0.01
+            },
+            "cropLeft": {
+              "$ref": "#/components/schemas/animatedNumberTrack"
+            },
+            "cropTop": {
+              "$ref": "#/components/schemas/animatedNumberTrack"
+            },
+            "cropRight": {
+              "$ref": "#/components/schemas/animatedNumberTrack"
+            },
+            "cropBottom": {
+              "$ref": "#/components/schemas/animatedNumberTrack"
+            },
+            "animations": {
+              "$ref": "#/components/schemas/clipAnimations"
+            }
+          }
+        }
+      ]
+    },
+    "lottieItem": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/baseItem"
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "assetId",
+            "keepAspectRatio",
+            "rotation",
+            "sourceStartTicks",
+            "playbackRate"
+          ],
+          "properties": {
+            "type": {
+              "const": "lottie"
+            },
+            "assetId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "stickerId": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            },
+            "stickerVersion": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 1
+            },
+            "keepAspectRatio": {
+              "type": "boolean"
+            },
+            "rotation": {
+              "$ref": "#/components/schemas/animatedNumberTrack"
+            },
+            "sourceStartTicks": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "playbackRate": {
+              "type": "number",
+              "minimum": 0.01
+            },
+            "animations": {
+              "$ref": "#/components/schemas/clipAnimations"
+            }
+          }
+        }
+      ]
+    },
+    "audioItem": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/baseItem"
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "assetId",
+            "sourceStartTicks",
+            "decibelAdjustment",
+            "playbackRate",
+            "audioFadeInDurationTicks",
+            "audioFadeOutDurationTicks"
+          ],
+          "properties": {
+            "type": {
+              "const": "audio"
+            },
+            "assetId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sourceStartTicks": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "decibelAdjustment": {
+              "$ref": "#/components/schemas/animatedNumberTrack"
+            },
+            "playbackRate": {
+              "type": "number",
+              "minimum": 0.01
+            },
+            "audioFadeInDurationTicks": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "audioFadeOutDurationTicks": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      ]
+    },
+    "textItem": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/baseItem"
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "text",
+            "color",
+            "align",
+            "fontFamily",
+            "fontStyle",
+            "fontSize",
+            "lineHeight",
+            "letterSpacing",
+            "resizeOnEdit",
+            "direction",
+            "strokeWidth",
+            "strokeColor"
+          ],
+          "properties": {
+            "type": {
+              "const": "text"
+            },
+            "text": {
+              "type": "string"
+            },
+            "color": {
+              "type": "string"
+            },
+            "align": {
+              "type": "string",
+              "enum": [
+                "left",
+                "center",
+                "right"
+              ]
+            },
+            "fontFamily": {
+              "type": "string"
+            },
+            "fontStyle": {
+              "$ref": "#/components/schemas/fontStyle"
+            },
+            "fontSize": {
+              "type": "number",
+              "minimum": 1
+            },
+            "lineHeight": {
+              "type": "number",
+              "minimum": 0
+            },
+            "letterSpacing": {
+              "type": "number"
+            },
+            "resizeOnEdit": {
+              "type": "boolean"
+            },
+            "direction": {
+              "type": "string",
+              "enum": [
+                "ltr",
+                "rtl"
+              ]
+            },
+            "strokeWidth": {
+              "type": "number",
+              "minimum": 0
+            },
+            "strokeColor": {
+              "type": "string"
+            },
+            "background": {
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "$ref": "#/components/schemas/textBackground"
+                }
+              ]
+            },
+            "rotation": {
+              "$ref": "#/components/schemas/animatedNumberTrack"
+            },
+            "animations": {
+              "$ref": "#/components/schemas/clipAnimations"
+            },
+            "captionAnimations": {
+              "$ref": "#/components/schemas/captionClipAnimations"
+            }
+          }
+        }
+      ]
+    },
+    "textTemplateItem": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/baseItem"
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "schemaVersion",
+            "templateId",
+            "templateCategory",
+            "nodes"
+          ],
+          "properties": {
+            "type": {
+              "const": "text-template"
+            },
+            "schemaVersion": {
+              "type": "integer",
+              "const": 2
+            },
+            "templateId": {
+              "type": "string"
+            },
+            "templateCategory": {
+              "type": "string"
+            },
+            "nodes": {
+              "type": "array",
+              "minItems": 2,
+              "items": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/textTemplateImageNode"
+                  },
+                  {
+                    "$ref": "#/components/schemas/textTemplateTextNode"
+                  }
+                ]
+              }
+            },
+            "rotation": {
+              "$ref": "#/components/schemas/animatedNumberTrack"
+            },
+            "animations": {
+              "$ref": "#/components/schemas/clipAnimations"
+            }
+          }
+        }
+      ]
+    },
+    "captionsItem": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/baseItem"
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "assetId",
+            "fontFamily",
+            "fontStyle",
+            "lineHeight",
+            "letterSpacing",
+            "fontSize",
+            "align",
+            "color",
+            "highlightColor",
+            "strokeWidth",
+            "strokeColor",
+            "direction",
+            "pageDurationTicks",
+            "maxLines",
+            "contentStartOffsetTicks",
+            "source",
+            "captionGroupId",
+            "background"
+          ],
+          "properties": {
+            "type": {
+              "const": "captions"
+            },
+            "assetId": {
+              "type": "string"
+            },
+            "fontFamily": {
+              "type": "string"
+            },
+            "fontStyle": {
+              "$ref": "#/components/schemas/fontStyle"
+            },
+            "lineHeight": {
+              "type": "number",
+              "minimum": 0
+            },
+            "letterSpacing": {
+              "type": "number"
+            },
+            "fontSize": {
+              "type": "number",
+              "minimum": 1
+            },
+            "align": {
+              "type": "string",
+              "enum": [
+                "left",
+                "center",
+                "right"
+              ]
+            },
+            "color": {
+              "type": "string"
+            },
+            "highlightColor": {
+              "type": "string"
+            },
+            "strokeWidth": {
+              "type": "number",
+              "minimum": 0
+            },
+            "strokeColor": {
+              "type": "string"
+            },
+            "direction": {
+              "type": "string",
+              "enum": [
+                "ltr",
+                "rtl"
+              ]
+            },
+            "pageDurationTicks": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "maxLines": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "contentStartOffsetTicks": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "source": {
+              "type": "string",
+              "enum": [
+                "manual",
+                "auto",
+                "upload"
+              ]
+            },
+            "captionGroupId": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "background": {
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "$ref": "#/components/schemas/textBackground"
+                }
+              ]
+            },
+            "rotation": {
+              "$ref": "#/components/schemas/animatedNumberTrack"
+            },
+            "animations": {
+              "$ref": "#/components/schemas/clipAnimations"
+            },
+            "captionAnimations": {
+              "$ref": "#/components/schemas/captionClipAnimations"
+            }
+          }
+        }
+      ]
+    },
+    "solidItem": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/baseItem"
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "color",
+            "shape",
+            "keepAspectRatio",
+            "borderRadius",
+            "rotation"
+          ],
+          "properties": {
+            "type": {
+              "const": "solid"
+            },
+            "color": {
+              "type": "string"
+            },
+            "shape": {
+              "type": "string",
+              "enum": [
+                "rectangle",
+                "circle",
+                "triangle",
+                "star"
+              ]
+            },
+            "keepAspectRatio": {
+              "type": "boolean"
+            },
+            "borderRadius": {
+              "$ref": "#/components/schemas/animatedNumberTrack"
+            },
+            "rotation": {
+              "$ref": "#/components/schemas/animatedNumberTrack"
+            },
+            "animations": {
+              "$ref": "#/components/schemas/clipAnimations"
+            }
+          }
+        }
+      ]
+    },
+    "illustrationItem": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/baseItem"
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "illustrationName",
+            "color",
+            "keepAspectRatio",
+            "rotation"
+          ],
+          "properties": {
+            "type": {
+              "const": "illustration"
+            },
+            "illustrationName": {
+              "type": "string",
+              "minLength": 1
+            },
+            "color": {
+              "type": "string"
+            },
+            "keepAspectRatio": {
+              "type": "boolean"
+            },
+            "rotation": {
+              "$ref": "#/components/schemas/animatedNumberTrack"
+            },
+            "animations": {
+              "$ref": "#/components/schemas/clipAnimations"
+            }
+          }
+        }
+      ]
+    },
+    "effectItem": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/timelineItemBase"
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "effectType",
+            "intensity"
+          ],
+          "properties": {
+            "type": {
+              "const": "effect"
+            },
+            "effectType": {
+              "type": "string",
+              "enum": [
+                "flash-to-black",
+                "blur",
+                "blurred-opening",
+                "fade-in",
+                "fade-out"
+              ]
+            },
+            "intensity": {
+              "type": "number",
+              "minimum": 0
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/components/schemas/primitive"
+              }
+            }
+          },
+          "allOf": [
+            {}
+          ]
+        }
+      ]
+    },
+    "filterItem": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/timelineItemBase"
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "filterType",
+            "intensity"
+          ],
+          "properties": {
+            "type": {
+              "const": "filter"
+            },
+            "filterType": {
+              "type": "string",
+              "enum": [
+                "verdant-glow",
+                "cyberpunk-neon",
+                "vaporwave-blue",
+                "sunset-orange",
+                "lemon-cyan",
+                "absolute-red",
+                "sakura-pink",
+                "twilight-dusk"
+              ]
+            },
+            "intensity": {
+              "type": "number",
+              "minimum": 0
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/components/schemas/primitive"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "chartItem": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/baseItem"
+        },
+        {
+          "oneOf": [
+            {
+              "type": "object",
+              "required": [
+                "type",
+                "chartType",
+                "themeColor",
+                "data",
+                "animationDurationTicks",
+                "keepAspectRatio",
+                "rotation"
+              ],
+              "properties": {
+                "type": {
+                  "const": "chart"
+                },
+                "chartType": {
+                  "const": "line"
+                },
+                "themeColor": {
+                  "type": "string"
+                },
+                "data": {
+                  "$ref": "#/components/schemas/chartXYData"
+                },
+                "animationDurationTicks": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "keepAspectRatio": {
+                  "type": "boolean"
+                },
+                "rotation": {
+                  "$ref": "#/components/schemas/animatedNumberTrack"
+                },
+                "animations": {
+                  "$ref": "#/components/schemas/clipAnimations"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "required": [
+                "type",
+                "chartType",
+                "themeColor",
+                "data",
+                "animationDurationTicks",
+                "keepAspectRatio",
+                "rotation"
+              ],
+              "properties": {
+                "type": {
+                  "const": "chart"
+                },
+                "chartType": {
+                  "const": "bar"
+                },
+                "themeColor": {
+                  "type": "string"
+                },
+                "data": {
+                  "$ref": "#/components/schemas/chartXYData"
+                },
+                "animationDurationTicks": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "keepAspectRatio": {
+                  "type": "boolean"
+                },
+                "rotation": {
+                  "$ref": "#/components/schemas/animatedNumberTrack"
+                },
+                "animations": {
+                  "$ref": "#/components/schemas/clipAnimations"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "required": [
+                "type",
+                "chartType",
+                "themeColor",
+                "data",
+                "animationDurationTicks",
+                "keepAspectRatio",
+                "rotation"
+              ],
+              "properties": {
+                "type": {
+                  "const": "chart"
+                },
+                "chartType": {
+                  "const": "area"
+                },
+                "themeColor": {
+                  "type": "string"
+                },
+                "data": {
+                  "$ref": "#/components/schemas/chartXYData"
+                },
+                "animationDurationTicks": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "keepAspectRatio": {
+                  "type": "boolean"
+                },
+                "rotation": {
+                  "$ref": "#/components/schemas/animatedNumberTrack"
+                },
+                "animations": {
+                  "$ref": "#/components/schemas/clipAnimations"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "required": [
+                "type",
+                "chartType",
+                "themeColor",
+                "data",
+                "animationDurationTicks",
+                "keepAspectRatio",
+                "rotation"
+              ],
+              "properties": {
+                "type": {
+                  "const": "chart"
+                },
+                "chartType": {
+                  "const": "pie"
+                },
+                "themeColor": {
+                  "type": "string"
+                },
+                "data": {
+                  "$ref": "#/components/schemas/chartPieData"
+                },
+                "animationDurationTicks": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "keepAspectRatio": {
+                  "type": "boolean"
+                },
+                "rotation": {
+                  "$ref": "#/components/schemas/animatedNumberTrack"
+                },
+                "animations": {
+                  "$ref": "#/components/schemas/clipAnimations"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "required": [
+                "type",
+                "chartType",
+                "themeColor",
+                "data",
+                "animationDurationTicks",
+                "keepAspectRatio",
+                "rotation"
+              ],
+              "properties": {
+                "type": {
+                  "const": "chart"
+                },
+                "chartType": {
+                  "const": "radar"
+                },
+                "themeColor": {
+                  "type": "string"
+                },
+                "data": {
+                  "$ref": "#/components/schemas/chartXYData"
+                },
+                "animationDurationTicks": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "keepAspectRatio": {
+                  "type": "boolean"
+                },
+                "rotation": {
+                  "$ref": "#/components/schemas/animatedNumberTrack"
+                },
+                "animations": {
+                  "$ref": "#/components/schemas/clipAnimations"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "required": [
+                "type",
+                "chartType",
+                "themeColor",
+                "data",
+                "animationDurationTicks",
+                "keepAspectRatio",
+                "rotation"
+              ],
+              "properties": {
+                "type": {
+                  "const": "chart"
+                },
+                "chartType": {
+                  "const": "scatter"
+                },
+                "themeColor": {
+                  "type": "string"
+                },
+                "data": {
+                  "$ref": "#/components/schemas/chartScatterData"
+                },
+                "animationDurationTicks": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "keepAspectRatio": {
+                  "type": "boolean"
+                },
+                "rotation": {
+                  "$ref": "#/components/schemas/animatedNumberTrack"
+                },
+                "animations": {
+                  "$ref": "#/components/schemas/clipAnimations"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "transition": {
+      "type": "object",
+      "required": [
+        "id",
+        "trackId",
+        "fromClipId",
+        "toClipId",
+        "type",
+        "durationTicks"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "trackId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "fromClipId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "toClipId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "fade",
+            "slide",
+            "wipe",
+            "flip",
+            "clock-wipe",
+            "iris"
+          ]
+        },
+        "durationTicks": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "easing": {
+          "type": "string",
+          "enum": [
+            "linear",
+            "ease-in",
+            "ease-out",
+            "ease-in-out"
+          ]
+        },
+        "params": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/components/schemas/primitive"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "globalBackground": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "type"
+          ],
+          "properties": {
+            "type": {
+              "const": "none"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "color",
+            "gradient"
+          ],
+          "properties": {
+            "type": {
+              "const": "color"
+            },
+            "color": {
+              "type": "string"
+            },
+            "gradient": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "level"
+          ],
+          "properties": {
+            "type": {
+              "const": "blur"
+            },
+            "level": {
+              "type": "integer",
+              "enum": [
+                0,
+                1,
+                2,
+                3,
+                4
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "imageAssetId",
+            "imageUrl",
+            "source"
+          ],
+          "properties": {
+            "type": {
+              "const": "image"
+            },
+            "imageAssetId": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "imageUrl": {
+              "type": "string",
+              "minLength": 1
+            },
+            "source": {
+              "type": "string",
+              "enum": [
+                "preset",
+                "custom"
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "brandRuntime": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "required": [
+            "brandId",
+            "logoX",
+            "logoY",
+            "managedItemIds",
+            "managedAssetIds",
+            "introShiftTicks",
+            "overlayTrackId",
+            "underlayTrackId"
+          ],
+          "properties": {
+            "brandId": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "logoX": {
+              "type": "number"
+            },
+            "logoY": {
+              "type": "number"
+            },
+            "managedItemIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "managedAssetIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "introShiftTicks": {
+              "type": "integer"
+            },
+            "overlayTrackId": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "underlayTrackId": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "deletedAssetEntry": {
+      "type": "object",
+      "required": [
+        "assetId",
+        "remoteUrl",
+        "remoteKey",
+        "statusAtDeletion"
+      ],
+      "properties": {
+        "assetId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "remoteUrl": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "remoteKey": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "remoteAssetId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "statusAtDeletion": {
+          "$ref": "#/components/schemas/assetUploadState"
+        }
+      },
+      "additionalProperties": false
+    },
+    "baseAsset": {
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "filename",
+        "size",
+        "mimeType"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "type": "string"
+        },
+        "filename": {
+          "type": "string",
+          "minLength": 1
+        },
+        "size": {
+          "type": "number",
+          "minimum": 0
+        },
+        "remoteUrl": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "remoteKey": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "mimeType": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": true
+    },
+    "captionEntry": {
+      "type": "object",
+      "required": [
+        "text",
+        "startMs",
+        "endMs"
+      ],
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "startMs": {
+          "type": "number",
+          "minimum": 0
+        },
+        "endMs": {
+          "type": "number",
+          "minimum": 0
+        },
+        "timestampMs": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "confidence": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "baseItem": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/timelineItemBase"
+        },
+        {
+          "$ref": "#/components/schemas/geometryItemBase"
+        }
+      ]
+    },
+    "animatedNumberTrack": {
+      "type": "object",
+      "required": [
+        "value",
+        "keyframes"
+      ],
+      "properties": {
+        "value": {
+          "type": "number"
+        },
+        "keyframes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/keyframePoint"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "clipAnimations": {
+      "type": "object",
+      "properties": {
+        "in": {
+          "$ref": "#/components/schemas/animationSpec"
+        },
+        "out": {
+          "$ref": "#/components/schemas/animationSpec"
+        }
+      },
+      "additionalProperties": false
+    },
+    "primitive": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "boolean"
+        }
+      ]
+    },
+    "fontStyle": {
+      "type": "object",
+      "required": [
+        "variant",
+        "weight"
+      ],
+      "properties": {
+        "variant": {
+          "type": "string"
+        },
+        "weight": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "textBackground": {
+      "type": "object",
+      "required": [
+        "color",
+        "horizontalPadding",
+        "borderRadius"
+      ],
+      "properties": {
+        "color": {
+          "type": "string"
+        },
+        "horizontalPadding": {
+          "type": "number",
+          "minimum": 0
+        },
+        "borderRadius": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "captionClipAnimations": {
+      "type": "object",
+      "properties": {
+        "in": {
+          "$ref": "#/components/schemas/captionAnimationSpec"
+        },
+        "out": {
+          "$ref": "#/components/schemas/captionAnimationSpec"
+        },
+        "loop": {
+          "$ref": "#/components/schemas/captionAnimationSpec"
+        }
+      },
+      "additionalProperties": false
+    },
+    "textTemplateImageNode": {
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "imageType",
+        "imageComponentId",
+        "imageLottieJson",
+        "x",
+        "y",
+        "width",
+        "height",
+        "opacity"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "const": "image"
+        },
+        "imageType": {
+          "type": "string",
+          "enum": [
+            "svg",
+            "lottie"
+          ]
+        },
+        "imageComponentId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "imageLottieJson": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": true
+        },
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        },
+        "width": {
+          "type": "number"
+        },
+        "height": {
+          "type": "number"
+        },
+        "opacity": {
+          "type": "number"
+        },
+        "animations": {
+          "$ref": "#/components/schemas/clipAnimations"
+        }
+      },
+      "additionalProperties": false
+    },
+    "textTemplateTextNode": {
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "x",
+        "y",
+        "width",
+        "height",
+        "text",
+        "color",
+        "align",
+        "fontFamily",
+        "fontStyle",
+        "fontSize",
+        "lineHeight",
+        "letterSpacing",
+        "direction",
+        "strokeWidth",
+        "strokeColor",
+        "background"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "const": "text"
+        },
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        },
+        "width": {
+          "type": "number"
+        },
+        "height": {
+          "type": "number"
+        },
+        "text": {
+          "type": "string"
+        },
+        "color": {
+          "type": "string"
+        },
+        "align": {
+          "type": "string",
+          "enum": [
+            "left",
+            "center",
+            "right"
+          ]
+        },
+        "fontFamily": {
+          "type": "string"
+        },
+        "fontStyle": {
+          "$ref": "#/components/schemas/fontStyle"
+        },
+        "fontSize": {
+          "type": "number",
+          "minimum": 1
+        },
+        "lineHeight": {
+          "type": "number",
+          "minimum": 0
+        },
+        "letterSpacing": {
+          "type": "number"
+        },
+        "direction": {
+          "type": "string",
+          "enum": [
+            "ltr",
+            "rtl"
+          ]
+        },
+        "strokeWidth": {
+          "type": "number",
+          "minimum": 0
+        },
+        "strokeColor": {
+          "type": "string"
+        },
+        "background": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/components/schemas/textBackground"
+            }
+          ]
+        },
+        "animations": {
+          "$ref": "#/components/schemas/clipAnimations"
+        },
+        "captionAnimations": {
+          "$ref": "#/components/schemas/captionClipAnimations"
+        }
+      },
+      "additionalProperties": false
+    },
+    "timelineItemBase": {
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "durationTicks",
+        "startTicks",
+        "isDraggingInTimeline"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "type": "string"
+        },
+        "durationTicks": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "startTicks": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "isDraggingInTimeline": {
+          "type": "boolean"
+        },
+        "linkGroupId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        }
+      },
+      "additionalProperties": true
+    },
+    "chartXYData": {
+      "type": "object",
+      "required": [
+        "series",
+        "rows"
+      ],
+      "properties": {
+        "series": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/components/schemas/chartSeries"
+          }
+        },
+        "rows": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/components/schemas/chartXYRow"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "chartPieData": {
+      "type": "object",
+      "required": [
+        "slices"
+      ],
+      "properties": {
+        "slices": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/components/schemas/chartPieSlice"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "chartScatterData": {
+      "type": "object",
+      "required": [
+        "series",
+        "points"
+      ],
+      "properties": {
+        "series": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/components/schemas/chartSeries"
+          }
+        },
+        "points": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/components/schemas/chartScatterPoint"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "assetUploadState": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "type"
+          ],
+          "properties": {
+            "type": {
+              "const": "pending-upload"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "progress"
+          ],
+          "properties": {
+            "type": {
+              "const": "in-progress"
+            },
+            "progress": {
+              "$ref": "#/components/schemas/assetUploadProgress"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type"
+          ],
+          "properties": {
+            "type": {
+              "const": "uploaded"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "error",
+            "canRetry"
+          ],
+          "properties": {
+            "type": {
+              "const": "error"
+            },
+            "error": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              ]
+            },
+            "canRetry": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "geometryItemBase": {
+      "type": "object",
+      "required": [
+        "top",
+        "left",
+        "width",
+        "height",
+        "scaleX",
+        "scaleY",
+        "opacity"
+      ],
+      "properties": {
+        "top": {
+          "$ref": "#/components/schemas/animatedNumberTrack"
+        },
+        "left": {
+          "$ref": "#/components/schemas/animatedNumberTrack"
+        },
+        "width": {
+          "$ref": "#/components/schemas/animatedNumberTrack"
+        },
+        "height": {
+          "$ref": "#/components/schemas/animatedNumberTrack"
+        },
+        "scaleX": {
+          "$ref": "#/components/schemas/animatedNumberTrack"
+        },
+        "scaleY": {
+          "$ref": "#/components/schemas/animatedNumberTrack"
+        },
+        "opacity": {
+          "$ref": "#/components/schemas/animatedNumberTrack"
+        }
+      },
+      "additionalProperties": true
+    },
+    "keyframePoint": {
+      "type": "object",
+      "required": [
+        "timeTicks",
+        "value"
+      ],
+      "properties": {
+        "timeTicks": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "value": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "animationSpec": {
+      "type": "object",
+      "required": [
+        "type",
+        "durationTicks"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "fade",
+            "slide-up",
+            "slide-down",
+            "slide-left",
+            "slide-right",
+            "zoom-in",
+            "zoom-out"
+          ]
+        },
+        "durationTicks": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "easing": {
+          "type": "string",
+          "enum": [
+            "linear",
+            "ease-in",
+            "ease-out",
+            "ease-in-out"
+          ]
+        },
+        "params": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/components/schemas/primitive"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "captionAnimationSpec": {
+      "type": "object",
+      "required": [
+        "type",
+        "durationTicks"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "converge",
+            "elastic-pop",
+            "typewriter",
+            "lay-down",
+            "center-type-out",
+            "curtain-close",
+            "jitter",
+            "rainbow",
+            "sweep-shine"
+          ]
+        },
+        "durationTicks": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "easing": {
+          "type": "string",
+          "enum": [
+            "linear",
+            "ease-in",
+            "ease-out",
+            "ease-in-out"
+          ]
+        },
+        "params": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/components/schemas/primitive"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "chartSeries": {
+      "type": "object",
+      "required": [
+        "key",
+        "label"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "chartXYRow": {
+      "type": "object",
+      "required": [
+        "label",
+        "values"
+      ],
+      "properties": {
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "values": {
+          "$ref": "#/components/schemas/chartRowValues"
+        }
+      },
+      "additionalProperties": false
+    },
+    "chartPieSlice": {
+      "type": "object",
+      "required": [
+        "label",
+        "value"
+      ],
+      "properties": {
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "value": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "chartScatterPoint": {
+      "type": "object",
+      "required": [
+        "seriesKey",
+        "x",
+        "y"
+      ],
+      "properties": {
+        "seriesKey": {
+          "type": "string",
+          "minLength": 1
+        },
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "assetUploadProgress": {
+      "type": "object",
+      "required": [
+        "progress",
+        "loadedBytes",
+        "totalBytes"
+      ],
+      "properties": {
+        "progress": {
+          "type": "number"
+        },
+        "loadedBytes": {
+          "type": "number",
+          "minimum": 0
+        },
+        "totalBytes": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "chartRowValues": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "number"
+      }
+    }
+  }
+}

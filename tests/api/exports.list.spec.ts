@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { IndreamClient } from '../../src/client'
-import { getIndreamApiUrl, getMockApiKey } from '../utils/env'
+import { getIndreamApiUrl, getMockApiKey } from '../utils/mock'
 
 const apiKey = getMockApiKey()
 const baseURL = getIndreamApiUrl()
@@ -19,6 +19,8 @@ describe('exports.list', () => {
             data: [
               {
                 taskId: '8c1d9ff0-4212-43f5-9258-6eb42a05b56e',
+                projectId: null,
+                filename: null,
                 createdByApiKeyId: '30edf957-a26b-4591-9df2-22976ea1416a',
                 clientTaskId: null,
                 status: 'PENDING',

@@ -1,4 +1,5 @@
 {
+  "stateSchemaVersion": "v1",
   "compositionWidth": 1280,
   "compositionHeight": 720,
   "timebaseTicksPerSecond": 240000,

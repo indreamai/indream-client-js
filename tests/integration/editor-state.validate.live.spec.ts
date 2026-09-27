@@ -25,6 +25,7 @@ const buildImageTransitionState = (): TEditorStateV1 => {
   return {
     compositionWidth: 1280,
     compositionHeight: 720,
+    stateSchemaVersion: 'v1',
     timebaseTicksPerSecond: 240000,
     outputRatio: '16:9',
     tracks: [
@@ -69,9 +70,8 @@ const buildImageTransitionState = (): TEditorStateV1 => {
       },
       'item-solid-1': {
         id: 'item-solid-1',
-        type: 'solid',
-        color: '#111827',
-        shape: 'rectangle',
+        type: 'image',
+        assetId: 'asset-image-1',
         startTicks: 120,
         durationTicks: 120,
         top: staticTrack(0),
@@ -82,7 +82,7 @@ const buildImageTransitionState = (): TEditorStateV1 => {
         scaleY: staticTrack(1),
         opacity: staticTrack(1),
         isDraggingInTimeline: false,
-        keepAspectRatio: false,
+        keepAspectRatio: true,
         borderRadius: staticTrack(0),
         rotation: staticTrack(0),
       },
@@ -110,6 +110,7 @@ const buildVideoState = (): TEditorStateV1 => {
   return {
     compositionWidth: 1280,
     compositionHeight: 720,
+    stateSchemaVersion: 'v1',
     timebaseTicksPerSecond: 240000,
     outputRatio: '16:9',
     tracks: [
@@ -157,11 +158,11 @@ const buildVideoState = (): TEditorStateV1 => {
         cropTop: staticTrack(0),
         cropRight: staticTrack(0),
         cropBottom: staticTrack(0),
-        videoStartFromInSeconds: 0,
+        sourceStartTicks: 0,
         decibelAdjustment: staticTrack(0),
         playbackRate: 1,
-        audioFadeInDurationInSeconds: 0,
-        audioFadeOutDurationInSeconds: 0,
+        audioFadeInDurationTicks: 0,
+        audioFadeOutDurationTicks: 0,
       },
     },
     transitions: {},
@@ -174,7 +175,7 @@ const buildVideoState = (): TEditorStateV1 => {
       logoY: 50,
       managedItemIds: [],
       managedAssetIds: [],
-      introShiftInFrames: 0,
+      introShiftTicks: 0,
       overlayTrackId: null,
       underlayTrackId: null,
     },
@@ -186,6 +187,7 @@ const buildInvalidEffectState = () => {
   return {
     compositionWidth: 1280,
     compositionHeight: 720,
+    stateSchemaVersion: 'v1',
     timebaseTicksPerSecond: 240000,
     outputRatio: '16:9',
     tracks: [
@@ -218,7 +220,7 @@ const buildInvalidEffectState = () => {
       logoY: 50,
       managedItemIds: [],
       managedAssetIds: [],
-      introShiftInFrames: 0,
+      introShiftTicks: 0,
       overlayTrackId: null,
       underlayTrackId: null,
     },
@@ -230,6 +232,7 @@ const buildTextTemplateState = (): TEditorStateV1 => {
   return {
     compositionWidth: 1280,
     compositionHeight: 720,
+    stateSchemaVersion: 'v1',
     timebaseTicksPerSecond: 240000,
     outputRatio: '16:9',
     tracks: [
@@ -308,7 +311,7 @@ const buildTextTemplateState = (): TEditorStateV1 => {
       logoY: 50,
       managedItemIds: [],
       managedAssetIds: [],
-      introShiftInFrames: 0,
+      introShiftTicks: 0,
       overlayTrackId: null,
       underlayTrackId: null,
     },

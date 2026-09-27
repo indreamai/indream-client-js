@@ -29,10 +29,11 @@ const removeRootField = (fieldName: string): Record<string, unknown> => {
 
 const itemMissingFieldMapping: Record<string, string> = {
   image: 'assetId',
-  video: 'videoStartFromInSeconds',
-  gif: 'gifStartFromInSeconds',
-  lottie: 'lottieStartFromInSeconds',
-  audio: 'audioStartFromInSeconds',
+  'motion-graphic': 'motionGraphicId',
+  video: 'sourceStartTicks',
+  gif: 'sourceStartTicks',
+  lottie: 'sourceStartTicks',
+  audio: 'sourceStartTicks',
   text: 'fontFamily',
   'text-template': 'templateId',
   captions: 'source',
@@ -180,7 +181,7 @@ export const optionalFieldValidCases: TEditorStateFixtureCase[] = [
           logoY: 120,
           managedItemIds: ['item-solid-1'],
           managedAssetIds: [],
-          introShiftInFrames: 3,
+          introShiftTicks: 3,
           overlayTrackId: 'track-1',
           underlayTrackId: null,
         },
@@ -421,6 +422,14 @@ export const effectTypeValidCases: TEditorStateFixtureCase[] = EFFECT_TYPES.map(
     build: () => {
       const state = buildEditorStateWithSingleItem('effect')
       ;((state as any).items['item-effect-1'] as any).effectType = effectType
+      if (effectType === 'flash-to-black') {
+        ;((state as any).items['item-effect-1'] as any).params = {
+          brightTicks: 24000,
+          darkTicks: 24000,
+          tailDarkTicks: 24000,
+          maxOpacity: 1,
+        }
+      }
       return state
     },
   }

@@ -14,6 +14,7 @@ const staticTrack = (value: number) => ({ value, keyframes: [] })
 
 const buildLiveEditorState = (): TEditorStateV1 => {
   return {
+    stateSchemaVersion: 'v1',
     timebaseTicksPerSecond: 240000,
     compositionWidth: 1280,
     compositionHeight: 720,
@@ -111,6 +112,7 @@ describeLive('live open api export flow', () => {
 
       const created = await client.exports.create(
         {
+          stateSchemaVersion: 'v1',
           editorState,
           ratio: '16:9',
           scale: 0.6,

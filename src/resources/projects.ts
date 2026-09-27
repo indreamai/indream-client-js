@@ -1,3 +1,4 @@
+import { readPage } from '../pagination'
 import type {
   ICreateProjectExportRequest,
   ICreateProjectRequest,
@@ -59,18 +60,17 @@ export class ProjectsResource {
       }
     )
 
-    return {
-      items: envelope.data || [],
-      nextPageCursor:
-        typeof envelope.meta?.nextPageCursor === 'string' ? envelope.meta.nextPageCursor : null,
-    }
+    return readPage(envelope)
   }
 
   async get(projectId: string, options: IRequestOptions = {}): Promise<IProjectDetail> {
-    return await this.client.request<IProjectDetail>(`/v1/projects/${projectId}`, {
-      method: 'GET',
-      signal: options.signal,
-    })
+    return await this.client.request<IProjectDetail>(
+      `/v1/projects/${encodeURIComponent(projectId)}`,
+      {
+        method: 'GET',
+        signal: options.signal,
+      }
+    )
   }
 
   async update(
@@ -78,11 +78,14 @@ export class ProjectsResource {
     payload: IUpdateProjectRequest,
     options: IRequestOptions = {}
   ): Promise<IProjectMetadataResponse> {
-    return await this.client.request<IProjectMetadataResponse>(`/v1/projects/${projectId}`, {
-      method: 'PATCH',
-      body: payload,
-      signal: options.signal,
-    })
+    return await this.client.request<IProjectMetadataResponse>(
+      `/v1/projects/${encodeURIComponent(projectId)}`,
+      {
+        method: 'PATCH',
+        body: payload,
+        signal: options.signal,
+      }
+    )
   }
 
   async sync(
@@ -90,18 +93,24 @@ export class ProjectsResource {
     payload: ISyncProjectRequest,
     options: IRequestOptions = {}
   ): Promise<IProjectSyncResponse> {
-    return await this.client.request<IProjectSyncResponse>(`/v1/projects/${projectId}/sync`, {
-      method: 'POST',
-      body: payload,
-      signal: options.signal,
-    })
+    return await this.client.request<IProjectSyncResponse>(
+      `/v1/projects/${encodeURIComponent(projectId)}/sync`,
+      {
+        method: 'POST',
+        body: payload,
+        signal: options.signal,
+      }
+    )
   }
 
   async delete(projectId: string, options: IRequestOptions = {}): Promise<IDeleteProjectResponse> {
-    return await this.client.request<IDeleteProjectResponse>(`/v1/projects/${projectId}`, {
-      method: 'DELETE',
-      signal: options.signal,
-    })
+    return await this.client.request<IDeleteProjectResponse>(
+      `/v1/projects/${encodeURIComponent(projectId)}`,
+      {
+        method: 'DELETE',
+        signal: options.signal,
+      }
+    )
   }
 
   async listAssets(params: {
@@ -120,18 +129,14 @@ export class ProjectsResource {
 
     const query = search.toString()
     const envelope = await this.client.requestEnvelope<IListAssetsResponse['items']>(
-      `/v1/projects/${params.projectId}/assets${query ? `?${query}` : ''}`,
+      `/v1/projects/${encodeURIComponent(params.projectId)}/assets${query ? `?${query}` : ''}`,
       {
         method: 'GET',
         signal: params.signal,
       }
     )
 
-    return {
-      items: envelope.data || [],
-      nextPageCursor:
-        typeof envelope.meta?.nextPageCursor === 'string' ? envelope.meta.nextPageCursor : null,
-    }
+    return readPage(envelope)
   }
 
   async addAsset(
@@ -140,7 +145,7 @@ export class ProjectsResource {
     options: IRequestOptions = {}
   ): Promise<IProjectAssetBindingResponse> {
     return await this.client.request<IProjectAssetBindingResponse>(
-      `/v1/projects/${projectId}/assets`,
+      `/v1/projects/${encodeURIComponent(projectId)}/assets`,
       {
         method: 'POST',
         body: { assetId },
@@ -155,7 +160,7 @@ export class ProjectsResource {
     options: IRequestOptions = {}
   ): Promise<IDeleteProjectAssetResponse> {
     return await this.client.request<IDeleteProjectAssetResponse>(
-      `/v1/projects/${projectId}/assets/${assetId}`,
+      `/v1/projects/${encodeURIComponent(projectId)}/assets/${encodeURIComponent(assetId)}`,
       {
         method: 'DELETE',
         signal: options.signal,
@@ -168,11 +173,14 @@ export class ProjectsResource {
     payload: ICreateProjectExportRequest,
     options: ICreateRequestOptions = {}
   ): Promise<ICreateExportResponse> {
-    return await this.client.request<ICreateExportResponse>(`/v1/projects/${projectId}/exports`, {
-      method: 'POST',
-      body: payload,
-      idempotencyKey: options.idempotencyKey?.trim() || undefined,
-      signal: options.signal,
-    })
+    return await this.client.request<ICreateExportResponse>(
+      `/v1/projects/${encodeURIComponent(projectId)}/exports`,
+      {
+        method: 'POST',
+        body: payload,
+        idempotencyKey: options.idempotencyKey?.trim() || undefined,
+        signal: options.signal,
+      }
+    )
   }
 }

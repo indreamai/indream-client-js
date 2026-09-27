@@ -9,16 +9,19 @@ export class AssetsResource {
   }
 
   async get(assetId: string, options: IRequestOptions = {}): Promise<IAsset> {
-    return await this.client.request<IAsset>(`/v1/assets/${assetId}`, {
+    return await this.client.request<IAsset>(`/v1/assets/${encodeURIComponent(assetId)}`, {
       method: 'GET',
       signal: options.signal,
     })
   }
 
   async delete(assetId: string, options: IRequestOptions = {}): Promise<IDeleteAssetResponse> {
-    return await this.client.request<IDeleteAssetResponse>(`/v1/assets/${assetId}`, {
-      method: 'DELETE',
-      signal: options.signal,
-    })
+    return await this.client.request<IDeleteAssetResponse>(
+      `/v1/assets/${encodeURIComponent(assetId)}`,
+      {
+        method: 'DELETE',
+        signal: options.signal,
+      }
+    )
   }
 }

@@ -8,7 +8,7 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 export default defineConfig([
-  globalIgnores(['node_modules/**', 'dist/**', 'openapi/**']),
+  globalIgnores(['node_modules/**', 'dist/**', 'openapi/**', '**/misc/**', 'tmp/**']),
 
   {
     name: 'project:overrides',

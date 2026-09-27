@@ -2,6 +2,7 @@ export type TAssetType = 'image' | 'video' | 'gif' | 'audio' | 'caption' | 'lott
 
 export type TItemType =
   | 'image'
+  | 'motion-graphic'
   | 'video'
   | 'gif'
   | 'lottie'
@@ -165,6 +166,17 @@ export const createItemByType = (
     }
   }
 
+  if (type === 'motion-graphic') {
+    return {
+      ...baseItem(id, type),
+      motionGraphicId: 'example-title',
+      motionGraphicVersion: 1,
+      props: { title: 'Example' },
+      slots: {},
+      rotation: staticTrack(0),
+    }
+  }
+
   if (type === 'video') {
     return {
       ...baseItem(id, type),
@@ -172,11 +184,11 @@ export const createItemByType = (
       keepAspectRatio: true,
       borderRadius: staticTrack(0),
       rotation: staticTrack(0),
-      videoStartFromInSeconds: 0,
+      sourceStartTicks: 0,
       decibelAdjustment: staticTrack(0),
       playbackRate: 1,
-      audioFadeInDurationInSeconds: 0,
-      audioFadeOutDurationInSeconds: 0,
+      audioFadeInDurationTicks: 0,
+      audioFadeOutDurationTicks: 0,
       cropLeft: staticTrack(0),
       cropTop: staticTrack(0),
       cropRight: staticTrack(0),
@@ -191,7 +203,7 @@ export const createItemByType = (
       keepAspectRatio: true,
       borderRadius: staticTrack(0),
       rotation: staticTrack(0),
-      gifStartFromInSeconds: 0,
+      sourceStartTicks: 0,
       playbackRate: 1,
       cropLeft: staticTrack(0),
       cropTop: staticTrack(0),
@@ -206,7 +218,7 @@ export const createItemByType = (
       assetId,
       keepAspectRatio: true,
       rotation: staticTrack(0),
-      lottieStartFromInSeconds: 0,
+      sourceStartTicks: 0,
       playbackRate: 1,
     }
   }
@@ -215,11 +227,11 @@ export const createItemByType = (
     return {
       ...baseItem(id, type),
       assetId,
-      audioStartFromInSeconds: 0,
+      sourceStartTicks: 0,
       decibelAdjustment: staticTrack(0),
       playbackRate: 1,
-      audioFadeInDurationInSeconds: 0,
-      audioFadeOutDurationInSeconds: 0,
+      audioFadeInDurationTicks: 0,
+      audioFadeOutDurationTicks: 0,
     }
   }
 
@@ -250,7 +262,7 @@ export const createItemByType = (
     return {
       ...baseItem(id, type),
       schemaVersion: 2,
-      templateId: 'tpl-1',
+      templateId: '22222222-2222-4222-8222-222222222222',
       templateCategory: 'cover',
       nodes: [
         {
@@ -311,9 +323,9 @@ export const createItemByType = (
       strokeWidth: 0,
       strokeColor: '#000000',
       direction: 'ltr',
-      pageDurationInMilliseconds: 1000,
+      pageDurationTicks: 240000,
       maxLines: 2,
-      contentStartOffsetMs: 0,
+      contentStartOffsetTicks: 0,
       source: 'manual',
       captionGroupId: null,
       background: {
@@ -401,6 +413,7 @@ export const buildMinimalValidEditorState = (
   const state: Record<string, any> = {
     compositionWidth: 1920,
     compositionHeight: 1080,
+    stateSchemaVersion: 'v1',
     timebaseTicksPerSecond: 240000,
     tracks: [baseTrack()],
     assets: {},

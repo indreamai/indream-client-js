@@ -8,7 +8,7 @@ export const getRequiredEnv = (key: string): string => {
   const value = process.env[key]?.trim()
   if (!value) {
     throw new Error(
-      `Missing required environment variable ${key}. Add it to .env.local before running tests.`
+      `Missing required environment variable ${key}. Supply it explicitly when running live tests.`
     )
   }
   return value

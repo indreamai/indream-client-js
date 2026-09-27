@@ -14,6 +14,7 @@ const staticTrack = (value: number) => ({ value, keyframes: [] })
 
 const buildLiveProjectState = (params?: { color?: string }): TEditorStateV1 => {
   return {
+    stateSchemaVersion: 'v1',
     timebaseTicksPerSecond: 240000,
     compositionWidth: 1280,
     compositionHeight: 720,
@@ -119,6 +120,7 @@ describeLive('live projects and assets flow', () => {
           {
             title: `Live SDK Project ${suffix}`,
             description: 'Real environment project/assets integration test',
+            stateSchemaVersion: 'v1',
             editorState: buildLiveProjectState(),
           },
           {
@@ -141,6 +143,7 @@ describeLive('live projects and assets flow', () => {
         expect(updatedProject.title).toContain('Updated')
 
         const syncedProject = await client.projects.sync(projectId, {
+          stateSchemaVersion: 'v1',
           editorState: buildLiveProjectState({ color: '#22c55e' }),
         })
         expect(syncedProject.projectId).toBe(projectId)

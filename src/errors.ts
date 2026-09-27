@@ -5,34 +5,36 @@ export class APIError extends Error {
   readonly type: string
   readonly detail: string
   readonly errorCode?: string
+  readonly retryAfterMs?: number
 
-  constructor(problem: IApiProblem) {
+  constructor(problem: IApiProblem, retryAfterMs?: number) {
     super(problem.detail || problem.title)
     this.name = 'APIError'
     this.status = problem.status
     this.type = problem.type
     this.detail = problem.detail
     this.errorCode = problem.errorCode
+    this.retryAfterMs = retryAfterMs
   }
 }
 
 export class AuthError extends APIError {
-  constructor(problem: IApiProblem) {
-    super(problem)
+  constructor(problem: IApiProblem, retryAfterMs?: number) {
+    super(problem, retryAfterMs)
     this.name = 'AuthError'
   }
 }
 
 export class ValidationError extends APIError {
-  constructor(problem: IApiProblem) {
-    super(problem)
+  constructor(problem: IApiProblem, retryAfterMs?: number) {
+    super(problem, retryAfterMs)
     this.name = 'ValidationError'
   }
 }
 
 export class RateLimitError extends APIError {
-  constructor(problem: IApiProblem) {
-    super(problem)
+  constructor(problem: IApiProblem, retryAfterMs?: number) {
+    super(problem, retryAfterMs)
     this.name = 'RateLimitError'
   }
 }
@@ -44,7 +46,7 @@ export const toApiProblem = (status: number, payload: unknown): IApiProblem => {
       return {
         type: problem.type,
         title: problem.title,
-        status: Number(problem.status || status),
+        status,
         detail: String(problem.detail || problem.title),
         errorCode: problem.errorCode,
       }
@@ -60,7 +62,11 @@ export const toApiProblem = (status: number, payload: unknown): IApiProblem => {
   }
 }
 
-export const createApiError = (status: number, payload: unknown): APIError => {
+export const createApiError = (
+  status: number,
+  payload: unknown,
+  retryAfterMs?: number
+): APIError => {
   const problem = toApiProblem(status, payload)
 
   if (status === 401 || status === 403) {
@@ -72,8 +78,8 @@ export const createApiError = (status: number, payload: unknown): APIError => {
   }
 
   if (status === 429) {
-    return new RateLimitError(problem)
+    return new RateLimitError(problem, retryAfterMs)
   }
 
-  return new APIError(problem)
+  return new APIError(problem, retryAfterMs)
 }

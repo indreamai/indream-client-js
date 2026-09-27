@@ -4,6 +4,7 @@
   "title": "IndreamEditorStateV1",
   "type": "object",
   "required": [
+    "stateSchemaVersion",
     "compositionWidth",
     "compositionHeight",
     "timebaseTicksPerSecond",
@@ -13,6 +14,10 @@
     "transitions"
   ],
   "properties": {
+    "stateSchemaVersion": {
+      "type": "string",
+      "const": "v1"
+    },
     "compositionWidth": {
       "type": "integer",
       "minimum": 50,
@@ -29,14 +34,7 @@
     },
     "outputRatio": {
       "type": "string",
-      "enum": [
-        "16:9",
-        "9:16",
-        "1:1",
-        "4:3",
-        "3:4",
-        "custom"
-      ]
+      "enum": ["16:9", "9:16", "1:1", "4:3", "3:4", "custom"]
     },
     "tracks": {
       "type": "array",
@@ -76,6 +74,9 @@
         "oneOf": [
           {
             "$ref": "#/definitions/imageItem"
+          },
+          {
+            "$ref": "#/definitions/motionGraphicItem"
           },
           {
             "$ref": "#/definitions/videoItem"
@@ -152,13 +153,7 @@
     },
     "baseAsset": {
       "type": "object",
-      "required": [
-        "id",
-        "type",
-        "filename",
-        "size",
-        "mimeType"
-      ],
+      "required": ["id", "type", "filename", "size", "mimeType"],
       "properties": {
         "id": {
           "type": "string",
@@ -176,16 +171,10 @@
           "minimum": 0
         },
         "remoteUrl": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": ["string", "null"]
         },
         "remoteKey": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": ["string", "null"]
         },
         "mimeType": {
           "type": "string",
@@ -201,11 +190,7 @@
         },
         {
           "type": "object",
-          "required": [
-            "type",
-            "width",
-            "height"
-          ],
+          "required": ["type", "width", "height"],
           "properties": {
             "type": {
               "const": "image"
@@ -229,13 +214,7 @@
         },
         {
           "type": "object",
-          "required": [
-            "type",
-            "durationInSeconds",
-            "hasAudioTrack",
-            "width",
-            "height"
-          ],
+          "required": ["type", "durationInSeconds", "hasAudioTrack", "width", "height"],
           "properties": {
             "type": {
               "const": "video"
@@ -266,13 +245,7 @@
         },
         {
           "type": "object",
-          "required": [
-            "type",
-            "durationInSeconds",
-            "width",
-            "height",
-            "loopBehavior"
-          ],
+          "required": ["type", "durationInSeconds", "width", "height", "loopBehavior"],
           "properties": {
             "type": {
               "const": "gif"
@@ -291,10 +264,7 @@
             },
             "loopBehavior": {
               "type": "string",
-              "enum": [
-                "finite",
-                "loop"
-              ]
+              "enum": ["finite", "loop"]
             }
           }
         }
@@ -307,10 +277,7 @@
         },
         {
           "type": "object",
-          "required": [
-            "type",
-            "durationInSeconds"
-          ],
+          "required": ["type", "durationInSeconds"],
           "properties": {
             "type": {
               "const": "audio"
@@ -330,13 +297,7 @@
         },
         {
           "type": "object",
-          "required": [
-            "type",
-            "durationInSeconds",
-            "width",
-            "height",
-            "resourceType"
-          ],
+          "required": ["type", "durationInSeconds", "width", "height", "resourceType"],
           "properties": {
             "type": {
               "const": "lottie"
@@ -355,29 +316,17 @@
             },
             "resourceType": {
               "type": "string",
-              "enum": [
-                "lottie",
-                "svg"
-              ]
+              "enum": ["lottie", "svg"]
             },
             "resourceJson": {
-              "type": [
-                "object",
-                "null"
-              ],
+              "type": ["object", "null"],
               "additionalProperties": true
             },
             "resourceComponentId": {
-              "type": [
-                "string",
-                "null"
-              ]
+              "type": ["string", "null"]
             },
             "materialConfig": {
-              "type": [
-                "object",
-                "null"
-              ],
+              "type": ["object", "null"],
               "additionalProperties": true
             }
           }
@@ -391,11 +340,7 @@
         },
         {
           "type": "object",
-          "required": [
-            "type",
-            "captions",
-            "timingGranularity"
-          ],
+          "required": ["type", "captions", "timingGranularity"],
           "properties": {
             "type": {
               "const": "caption"
@@ -408,10 +353,7 @@
             },
             "timingGranularity": {
               "type": "string",
-              "enum": [
-                "word",
-                "line"
-              ]
+              "enum": ["word", "line"]
             }
           }
         }
@@ -420,12 +362,7 @@
     "track": {
       "type": "object",
       "description": "One timeline track. Items in the same track must not overlap in time, but may touch end-to-start.",
-      "required": [
-        "id",
-        "items",
-        "hidden",
-        "muted"
-      ],
+      "required": ["id", "items", "hidden", "muted"],
       "properties": {
         "id": {
           "type": "string",
@@ -444,16 +381,16 @@
         },
         "muted": {
           "type": "boolean"
+        },
+        "syncLocked": {
+          "type": "boolean"
         }
       },
       "additionalProperties": false
     },
     "animationSpec": {
       "type": "object",
-      "required": [
-        "type",
-        "durationTicks"
-      ],
+      "required": ["type", "durationTicks"],
       "properties": {
         "type": {
           "type": "string",
@@ -473,12 +410,7 @@
         },
         "easing": {
           "type": "string",
-          "enum": [
-            "linear",
-            "ease-in",
-            "ease-out",
-            "ease-in-out"
-          ]
+          "enum": ["linear", "ease-in", "ease-out", "ease-in-out"]
         },
         "params": {
           "type": "object",
@@ -503,10 +435,7 @@
     },
     "captionAnimationSpec": {
       "type": "object",
-      "required": [
-        "type",
-        "durationTicks"
-      ],
+      "required": ["type", "durationTicks"],
       "properties": {
         "type": {
           "type": "string",
@@ -528,12 +457,7 @@
         },
         "easing": {
           "type": "string",
-          "enum": [
-            "linear",
-            "ease-in",
-            "ease-out",
-            "ease-in-out"
-          ]
+          "enum": ["linear", "ease-in", "ease-out", "ease-in-out"]
         },
         "params": {
           "type": "object",
@@ -561,10 +485,7 @@
     },
     "keyframePoint": {
       "type": "object",
-      "required": [
-        "timeTicks",
-        "value"
-      ],
+      "required": ["timeTicks", "value"],
       "properties": {
         "timeTicks": {
           "type": "integer",
@@ -579,10 +500,7 @@
     },
     "animatedNumberTrack": {
       "type": "object",
-      "required": [
-        "value",
-        "keyframes"
-      ],
+      "required": ["value", "keyframes"],
       "properties": {
         "value": {
           "type": "number"
@@ -599,13 +517,7 @@
     },
     "timelineItemBase": {
       "type": "object",
-      "required": [
-        "id",
-        "type",
-        "durationTicks",
-        "startTicks",
-        "isDraggingInTimeline"
-      ],
+      "required": ["id", "type", "durationTicks", "startTicks", "isDraggingInTimeline"],
       "properties": {
         "id": {
           "type": "string",
@@ -624,21 +536,17 @@
         },
         "isDraggingInTimeline": {
           "type": "boolean"
+        },
+        "linkGroupId": {
+          "type": ["string", "null"],
+          "minLength": 1
         }
       },
       "additionalProperties": true
     },
     "geometryItemBase": {
       "type": "object",
-      "required": [
-        "top",
-        "left",
-        "width",
-        "height",
-        "scaleX",
-        "scaleY",
-        "opacity"
-      ],
+      "required": ["top", "left", "width", "height", "scaleX", "scaleY", "opacity"],
       "properties": {
         "top": {
           "$ref": "#/definitions/animatedNumberTrack"
@@ -681,13 +589,7 @@
         },
         {
           "type": "object",
-          "required": [
-            "type",
-            "assetId",
-            "keepAspectRatio",
-            "borderRadius",
-            "rotation"
-          ],
+          "required": ["type", "assetId", "keepAspectRatio", "borderRadius", "rotation"],
           "properties": {
             "type": {
               "const": "image"
@@ -697,17 +599,11 @@
               "minLength": 1
             },
             "stickerId": {
-              "type": [
-                "string",
-                "null"
-              ],
+              "type": ["string", "null"],
               "minLength": 1
             },
             "stickerVersion": {
-              "type": [
-                "integer",
-                "null"
-              ],
+              "type": ["integer", "null"],
               "minimum": 1
             },
             "keepAspectRatio": {
@@ -738,6 +634,73 @@
         }
       ]
     },
+    "motionGraphicItem": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/baseItem"
+        },
+        {
+          "type": "object",
+          "not": {
+            "anyOf": [{ "required": ["componentId"] }, { "required": ["componentVersion"] }]
+          },
+          "required": [
+            "type",
+            "motionGraphicId",
+            "motionGraphicVersion",
+            "props",
+            "slots",
+            "rotation"
+          ],
+          "properties": {
+            "type": {
+              "const": "motion-graphic"
+            },
+            "motionGraphicId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "motionGraphicVersion": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "props": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/definitions/primitive"
+              }
+            },
+            "slots": {
+              "type": "object",
+              "additionalProperties": {
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "rotation": {
+              "$ref": "#/definitions/animatedNumberTrack"
+            },
+            "animations": {
+              "$ref": "#/definitions/clipAnimations"
+            }
+          }
+        }
+      ]
+    },
     "videoItem": {
       "allOf": [
         {
@@ -751,11 +714,11 @@
             "keepAspectRatio",
             "borderRadius",
             "rotation",
-            "videoStartFromInSeconds",
+            "sourceStartTicks",
             "decibelAdjustment",
             "playbackRate",
-            "audioFadeInDurationInSeconds",
-            "audioFadeOutDurationInSeconds"
+            "audioFadeInDurationTicks",
+            "audioFadeOutDurationTicks"
           ],
           "properties": {
             "type": {
@@ -774,8 +737,8 @@
             "rotation": {
               "$ref": "#/definitions/animatedNumberTrack"
             },
-            "videoStartFromInSeconds": {
-              "type": "number",
+            "sourceStartTicks": {
+              "type": "integer",
               "minimum": 0
             },
             "decibelAdjustment": {
@@ -785,12 +748,12 @@
               "type": "number",
               "minimum": 0.01
             },
-            "audioFadeInDurationInSeconds": {
-              "type": "number",
+            "audioFadeInDurationTicks": {
+              "type": "integer",
               "minimum": 0
             },
-            "audioFadeOutDurationInSeconds": {
-              "type": "number",
+            "audioFadeOutDurationTicks": {
+              "type": "integer",
               "minimum": 0
             },
             "cropLeft": {
@@ -825,7 +788,7 @@
             "keepAspectRatio",
             "borderRadius",
             "rotation",
-            "gifStartFromInSeconds",
+            "sourceStartTicks",
             "playbackRate"
           ],
           "properties": {
@@ -845,8 +808,8 @@
             "rotation": {
               "$ref": "#/definitions/animatedNumberTrack"
             },
-            "gifStartFromInSeconds": {
-              "type": "number",
+            "sourceStartTicks": {
+              "type": "integer",
               "minimum": 0
             },
             "playbackRate": {
@@ -884,7 +847,7 @@
             "assetId",
             "keepAspectRatio",
             "rotation",
-            "lottieStartFromInSeconds",
+            "sourceStartTicks",
             "playbackRate"
           ],
           "properties": {
@@ -895,14 +858,22 @@
               "type": "string",
               "minLength": 1
             },
+            "stickerId": {
+              "type": ["string", "null"],
+              "minLength": 1
+            },
+            "stickerVersion": {
+              "type": ["integer", "null"],
+              "minimum": 1
+            },
             "keepAspectRatio": {
               "type": "boolean"
             },
             "rotation": {
               "$ref": "#/definitions/animatedNumberTrack"
             },
-            "lottieStartFromInSeconds": {
-              "type": "number",
+            "sourceStartTicks": {
+              "type": "integer",
               "minimum": 0
             },
             "playbackRate": {
@@ -926,11 +897,11 @@
           "required": [
             "type",
             "assetId",
-            "audioStartFromInSeconds",
+            "sourceStartTicks",
             "decibelAdjustment",
             "playbackRate",
-            "audioFadeInDurationInSeconds",
-            "audioFadeOutDurationInSeconds"
+            "audioFadeInDurationTicks",
+            "audioFadeOutDurationTicks"
           ],
           "properties": {
             "type": {
@@ -940,8 +911,8 @@
               "type": "string",
               "minLength": 1
             },
-            "audioStartFromInSeconds": {
-              "type": "number",
+            "sourceStartTicks": {
+              "type": "integer",
               "minimum": 0
             },
             "decibelAdjustment": {
@@ -951,12 +922,12 @@
               "type": "number",
               "minimum": 0.01
             },
-            "audioFadeInDurationInSeconds": {
-              "type": "number",
+            "audioFadeInDurationTicks": {
+              "type": "integer",
               "minimum": 0
             },
-            "audioFadeOutDurationInSeconds": {
-              "type": "number",
+            "audioFadeOutDurationTicks": {
+              "type": "integer",
               "minimum": 0
             }
           }
@@ -997,11 +968,7 @@
             },
             "align": {
               "type": "string",
-              "enum": [
-                "left",
-                "center",
-                "right"
-              ]
+              "enum": ["left", "center", "right"]
             },
             "fontFamily": {
               "type": "string"
@@ -1025,10 +992,7 @@
             },
             "direction": {
               "type": "string",
-              "enum": [
-                "ltr",
-                "rtl"
-              ]
+              "enum": ["ltr", "rtl"]
             },
             "strokeWidth": {
               "type": "number",
@@ -1067,13 +1031,7 @@
         },
         {
           "type": "object",
-          "required": [
-            "type",
-            "schemaVersion",
-            "templateId",
-            "templateCategory",
-            "nodes"
-          ],
+          "required": ["type", "schemaVersion", "templateId", "templateCategory", "nodes"],
           "properties": {
             "type": {
               "const": "text-template"
@@ -1083,7 +1041,8 @@
               "const": 2
             },
             "templateId": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             },
             "templateCategory": {
               "type": "string"
@@ -1119,6 +1078,9 @@
         },
         {
           "type": "object",
+          "not": {
+            "required": ["text"]
+          },
           "required": [
             "type",
             "assetId",
@@ -1133,9 +1095,9 @@
             "strokeWidth",
             "strokeColor",
             "direction",
-            "pageDurationInMilliseconds",
+            "pageDurationTicks",
             "maxLines",
-            "contentStartOffsetMs",
+            "contentStartOffsetTicks",
             "source",
             "captionGroupId",
             "background"
@@ -1166,11 +1128,7 @@
             },
             "align": {
               "type": "string",
-              "enum": [
-                "left",
-                "center",
-                "right"
-              ]
+              "enum": ["left", "center", "right"]
             },
             "color": {
               "type": "string"
@@ -1187,36 +1145,26 @@
             },
             "direction": {
               "type": "string",
-              "enum": [
-                "ltr",
-                "rtl"
-              ]
+              "enum": ["ltr", "rtl"]
             },
-            "pageDurationInMilliseconds": {
-              "type": "number",
+            "pageDurationTicks": {
+              "type": "integer",
               "minimum": 1
             },
             "maxLines": {
               "type": "integer",
               "minimum": 1
             },
-            "contentStartOffsetMs": {
-              "type": "number",
+            "contentStartOffsetTicks": {
+              "type": "integer",
               "minimum": 0
             },
             "source": {
               "type": "string",
-              "enum": [
-                "manual",
-                "auto",
-                "upload"
-              ]
+              "enum": ["manual", "auto", "upload"]
             },
             "captionGroupId": {
-              "type": [
-                "string",
-                "null"
-              ]
+              "type": ["string", "null"]
             },
             "background": {
               "oneOf": [
@@ -1248,14 +1196,7 @@
         },
         {
           "type": "object",
-          "required": [
-            "type",
-            "color",
-            "shape",
-            "keepAspectRatio",
-            "borderRadius",
-            "rotation"
-          ],
+          "required": ["type", "color", "shape", "keepAspectRatio", "borderRadius", "rotation"],
           "properties": {
             "type": {
               "const": "solid"
@@ -1265,12 +1206,7 @@
             },
             "shape": {
               "type": "string",
-              "enum": [
-                "rectangle",
-                "circle",
-                "triangle",
-                "star"
-              ]
+              "enum": ["rectangle", "circle", "triangle", "star"]
             },
             "keepAspectRatio": {
               "type": "boolean"
@@ -1295,13 +1231,7 @@
         },
         {
           "type": "object",
-          "required": [
-            "type",
-            "illustrationName",
-            "color",
-            "keepAspectRatio",
-            "rotation"
-          ],
+          "required": ["type", "illustrationName", "color", "keepAspectRatio", "rotation"],
           "properties": {
             "type": {
               "const": "illustration"
@@ -1333,24 +1263,14 @@
         },
         {
           "type": "object",
-          "required": [
-            "type",
-            "effectType",
-            "intensity"
-          ],
+          "required": ["type", "effectType", "intensity"],
           "properties": {
             "type": {
               "const": "effect"
             },
             "effectType": {
               "type": "string",
-              "enum": [
-                "flash-to-black",
-                "blur",
-                "blurred-opening",
-                "fade-in",
-                "fade-out"
-              ]
+              "enum": ["flash-to-black", "blur", "blurred-opening", "fade-in", "fade-out"]
             },
             "intensity": {
               "type": "number",
@@ -1362,7 +1282,48 @@
                 "$ref": "#/definitions/primitive"
               }
             }
-          }
+          },
+          "allOf": [
+            {
+              "if": {
+                "required": ["effectType"],
+                "properties": {
+                  "effectType": {
+                    "const": "flash-to-black"
+                  }
+                }
+              },
+              "then": {
+                "required": ["params"],
+                "properties": {
+                  "params": {
+                    "type": "object",
+                    "required": ["brightTicks", "darkTicks", "tailDarkTicks", "maxOpacity"],
+                    "properties": {
+                      "brightTicks": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "darkTicks": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "tailDarkTicks": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "maxOpacity": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1
+                      }
+                    },
+                    "additionalProperties": false
+                  }
+                }
+              }
+            }
+          ]
         }
       ]
     },
@@ -1373,11 +1334,7 @@
         },
         {
           "type": "object",
-          "required": [
-            "type",
-            "filterType",
-            "intensity"
-          ],
+          "required": ["type", "filterType", "intensity"],
           "properties": {
             "type": {
               "const": "filter"
@@ -1656,14 +1613,7 @@
     },
     "transition": {
       "type": "object",
-      "required": [
-        "id",
-        "trackId",
-        "fromClipId",
-        "toClipId",
-        "type",
-        "durationTicks"
-      ],
+      "required": ["id", "trackId", "fromClipId", "toClipId", "type", "durationTicks"],
       "properties": {
         "id": {
           "type": "string",
@@ -1683,14 +1633,7 @@
         },
         "type": {
           "type": "string",
-          "enum": [
-            "fade",
-            "slide",
-            "wipe",
-            "flip",
-            "clock-wipe",
-            "iris"
-          ]
+          "enum": ["fade", "slide", "wipe", "flip", "clock-wipe", "iris"]
         },
         "durationTicks": {
           "type": "integer",
@@ -1698,12 +1641,7 @@
         },
         "easing": {
           "type": "string",
-          "enum": [
-            "linear",
-            "ease-in",
-            "ease-out",
-            "ease-in-out"
-          ]
+          "enum": ["linear", "ease-in", "ease-out", "ease-in-out"]
         },
         "params": {
           "type": "object",
@@ -1718,9 +1656,7 @@
       "oneOf": [
         {
           "type": "object",
-          "required": [
-            "type"
-          ],
+          "required": ["type"],
           "properties": {
             "type": {
               "const": "none"
@@ -1730,11 +1666,7 @@
         },
         {
           "type": "object",
-          "required": [
-            "type",
-            "color",
-            "gradient"
-          ],
+          "required": ["type", "color", "gradient"],
           "properties": {
             "type": {
               "const": "color"
@@ -1743,54 +1675,34 @@
               "type": "string"
             },
             "gradient": {
-              "type": [
-                "string",
-                "null"
-              ]
+              "type": ["string", "null"]
             }
           },
           "additionalProperties": false
         },
         {
           "type": "object",
-          "required": [
-            "type",
-            "level"
-          ],
+          "required": ["type", "level"],
           "properties": {
             "type": {
               "const": "blur"
             },
             "level": {
               "type": "integer",
-              "enum": [
-                0,
-                1,
-                2,
-                3,
-                4
-              ]
+              "enum": [0, 1, 2, 3, 4]
             }
           },
           "additionalProperties": false
         },
         {
           "type": "object",
-          "required": [
-            "type",
-            "imageAssetId",
-            "imageUrl",
-            "source"
-          ],
+          "required": ["type", "imageAssetId", "imageUrl", "source"],
           "properties": {
             "type": {
               "const": "image"
             },
             "imageAssetId": {
-              "type": [
-                "string",
-                "null"
-              ]
+              "type": ["string", "null"]
             },
             "imageUrl": {
               "type": "string",
@@ -1798,10 +1710,7 @@
             },
             "source": {
               "type": "string",
-              "enum": [
-                "preset",
-                "custom"
-              ]
+              "enum": ["preset", "custom"]
             }
           },
           "additionalProperties": false
@@ -1821,16 +1730,13 @@
             "logoY",
             "managedItemIds",
             "managedAssetIds",
-            "introShiftInFrames",
+            "introShiftTicks",
             "overlayTrackId",
             "underlayTrackId"
           ],
           "properties": {
             "brandId": {
-              "type": [
-                "string",
-                "null"
-              ]
+              "type": ["string", "null"]
             },
             "logoX": {
               "type": "number"
@@ -1850,20 +1756,14 @@
                 "type": "string"
               }
             },
-            "introShiftInFrames": {
+            "introShiftTicks": {
               "type": "integer"
             },
             "overlayTrackId": {
-              "type": [
-                "string",
-                "null"
-              ]
+              "type": ["string", "null"]
             },
             "underlayTrackId": {
-              "type": [
-                "string",
-                "null"
-              ]
+              "type": ["string", "null"]
             }
           },
           "additionalProperties": false
@@ -1872,10 +1772,7 @@
     },
     "fontStyle": {
       "type": "object",
-      "required": [
-        "variant",
-        "weight"
-      ],
+      "required": ["variant", "weight"],
       "properties": {
         "variant": {
           "type": "string"
@@ -1888,11 +1785,7 @@
     },
     "textBackground": {
       "type": "object",
-      "required": [
-        "color",
-        "horizontalPadding",
-        "borderRadius"
-      ],
+      "required": ["color", "horizontalPadding", "borderRadius"],
       "properties": {
         "color": {
           "type": "string"
@@ -1910,11 +1803,7 @@
     },
     "captionEntry": {
       "type": "object",
-      "required": [
-        "text",
-        "startMs",
-        "endMs"
-      ],
+      "required": ["text", "startMs", "endMs"],
       "properties": {
         "text": {
           "type": "string"
@@ -1928,28 +1817,18 @@
           "minimum": 0
         },
         "timestampMs": {
-          "type": [
-            "number",
-            "null"
-          ],
+          "type": ["number", "null"],
           "minimum": 0
         },
         "confidence": {
-          "type": [
-            "number",
-            "null"
-          ]
+          "type": ["number", "null"]
         }
       },
       "additionalProperties": false
     },
     "assetUploadProgress": {
       "type": "object",
-      "required": [
-        "progress",
-        "loadedBytes",
-        "totalBytes"
-      ],
+      "required": ["progress", "loadedBytes", "totalBytes"],
       "properties": {
         "progress": {
           "type": "number"
@@ -1969,9 +1848,7 @@
       "oneOf": [
         {
           "type": "object",
-          "required": [
-            "type"
-          ],
+          "required": ["type"],
           "properties": {
             "type": {
               "const": "pending-upload"
@@ -1981,10 +1858,7 @@
         },
         {
           "type": "object",
-          "required": [
-            "type",
-            "progress"
-          ],
+          "required": ["type", "progress"],
           "properties": {
             "type": {
               "const": "in-progress"
@@ -1997,9 +1871,7 @@
         },
         {
           "type": "object",
-          "required": [
-            "type"
-          ],
+          "required": ["type"],
           "properties": {
             "type": {
               "const": "uploaded"
@@ -2009,11 +1881,7 @@
         },
         {
           "type": "object",
-          "required": [
-            "type",
-            "error",
-            "canRetry"
-          ],
+          "required": ["type", "error", "canRetry"],
           "properties": {
             "type": {
               "const": "error"
@@ -2042,28 +1910,20 @@
     },
     "deletedAssetEntry": {
       "type": "object",
-      "required": [
-        "assetId",
-        "remoteUrl",
-        "remoteKey",
-        "statusAtDeletion"
-      ],
+      "required": ["assetId", "remoteUrl", "remoteKey", "statusAtDeletion"],
       "properties": {
         "assetId": {
           "type": "string",
           "minLength": 1
         },
         "remoteUrl": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": ["string", "null"]
         },
         "remoteKey": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": ["string", "null"]
+        },
+        "remoteAssetId": {
+          "type": ["string", "null"]
         },
         "statusAtDeletion": {
           "$ref": "#/definitions/assetUploadState"
@@ -2095,22 +1955,13 @@
         },
         "imageType": {
           "type": "string",
-          "enum": [
-            "svg",
-            "lottie"
-          ]
+          "enum": ["svg", "lottie"]
         },
         "imageComponentId": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": ["string", "null"]
         },
         "imageLottieJson": {
-          "type": [
-            "object",
-            "null"
-          ],
+          "type": ["object", "null"],
           "additionalProperties": true
         },
         "x": {
@@ -2184,11 +2035,7 @@
         },
         "align": {
           "type": "string",
-          "enum": [
-            "left",
-            "center",
-            "right"
-          ]
+          "enum": ["left", "center", "right"]
         },
         "fontFamily": {
           "type": "string"
@@ -2209,10 +2056,7 @@
         },
         "direction": {
           "type": "string",
-          "enum": [
-            "ltr",
-            "rtl"
-          ]
+          "enum": ["ltr", "rtl"]
         },
         "strokeWidth": {
           "type": "number",
@@ -2242,10 +2086,7 @@
     },
     "chartSeries": {
       "type": "object",
-      "required": [
-        "key",
-        "label"
-      ],
+      "required": ["key", "label"],
       "properties": {
         "key": {
           "type": "string",
@@ -2267,10 +2108,7 @@
     },
     "chartXYRow": {
       "type": "object",
-      "required": [
-        "label",
-        "values"
-      ],
+      "required": ["label", "values"],
       "properties": {
         "label": {
           "type": "string",
@@ -2284,10 +2122,7 @@
     },
     "chartXYData": {
       "type": "object",
-      "required": [
-        "series",
-        "rows"
-      ],
+      "required": ["series", "rows"],
       "properties": {
         "series": {
           "type": "array",
@@ -2308,10 +2143,7 @@
     },
     "chartPieSlice": {
       "type": "object",
-      "required": [
-        "label",
-        "value"
-      ],
+      "required": ["label", "value"],
       "properties": {
         "label": {
           "type": "string",
@@ -2326,9 +2158,7 @@
     },
     "chartPieData": {
       "type": "object",
-      "required": [
-        "slices"
-      ],
+      "required": ["slices"],
       "properties": {
         "slices": {
           "type": "array",
@@ -2342,11 +2172,7 @@
     },
     "chartScatterPoint": {
       "type": "object",
-      "required": [
-        "seriesKey",
-        "x",
-        "y"
-      ],
+      "required": ["seriesKey", "x", "y"],
       "properties": {
         "seriesKey": {
           "type": "string",
@@ -2363,10 +2189,7 @@
     },
     "chartScatterData": {
       "type": "object",
-      "required": [
-        "series",
-        "points"
-      ],
+      "required": ["series", "points"],
       "properties": {
         "series": {
           "type": "array",

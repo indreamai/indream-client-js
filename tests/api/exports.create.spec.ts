@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { IndreamClient } from '../../src/client'
 import type { TEditorStateV1 } from '../../src/types'
 import { buildMinimalValidEditorState } from '../editor-state/fixtures/builders'
-import { getIndreamApiUrl, getMockApiKey } from '../utils/env'
+import { getIndreamApiUrl, getMockApiKey } from '../utils/mock'
 
 const apiKey = getMockApiKey()
 const baseURL = getIndreamApiUrl()
@@ -44,6 +44,7 @@ describe('exports.create', () => {
 
     const result = await client.exports.create(
       {
+        stateSchemaVersion: 'v1',
         editorState: createEditorState(),
         ratio: '9:16',
         scale: 0.6,
@@ -54,7 +55,7 @@ describe('exports.create', () => {
     )
 
     expect(capturedUrl).toBe(`${baseURL}/v1/exports`)
-    expect(capturedHeaders['x-api-key']).toBe(apiKey)
+    expect(capturedHeaders['authorization']).toBe(`Bearer ${apiKey}`)
     expect(capturedHeaders['idempotency-key']).toBeUndefined()
     expect(capturedHeaders['content-type']).toContain('application/json')
     expect(result.taskId).toBe('2d531e48-d424-4acc-a3f7-88b0a4f9f73c')
@@ -92,6 +93,7 @@ describe('exports.create', () => {
 
     await client.exports.create(
       {
+        stateSchemaVersion: 'v1',
         editorState: createEditorState(),
         ratio: '9:16',
         scale: 0.6,

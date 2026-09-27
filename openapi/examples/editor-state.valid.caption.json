@@ -1,4 +1,5 @@
 {
+  "stateSchemaVersion": "v1",
   "compositionWidth": 1280,
   "compositionHeight": 720,
   "timebaseTicksPerSecond": 240000,
@@ -94,9 +95,9 @@
       "strokeWidth": 0,
       "strokeColor": "#000000",
       "direction": "ltr",
-      "pageDurationInMilliseconds": 1800,
+      "pageDurationTicks": 432000,
       "maxLines": 2,
-      "contentStartOffsetMs": 0,
+      "contentStartOffsetTicks": 0,
       "source": "auto",
       "captionGroupId": "caption-group-1",
       "background": null
